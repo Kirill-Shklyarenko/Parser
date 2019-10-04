@@ -16,19 +16,6 @@ def access_bit(data, num):
 """
 
 
-def byte_reader(type_w, size, wib):
-    with open(planner_RSF, 'rb') as file:
-        header = file.read(14).decode('cp1252')  # Имя файла заголовка [0 - 14]
-        wib *= 2  # Номер слова в блоке умножаем на размер слова (2 байта)
-        file.seek(wib + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
-        word = file.read(size)
-
-        value = unpack(type_w, word)[0]
-        print('BYTES: ' + str(word))
-        print('VALUE: ' + str(value))
-        return value
-
-
 def line_parser(number_of_line):
     with open(planner) as file:
         line = file.readlines()[number_of_line - 1: number_of_line]
@@ -40,6 +27,18 @@ def value_of_lines():
     with open(planner) as file:
         lines = file.readlines()
         return int(len(lines))
+
+def byte_reader(type_w, size, wib):
+    with open(planner_RSF, 'rb') as file:
+        header = file.read(14).decode('cp1252')  # Имя файла заголовка [0 - 14]
+        wib *= 2  # Номер слова в блоке умножаем на размер слова (2 байта)
+        file.seek(wib + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
+        word = file.read(size)
+
+        value = unpack(type_w, word)[0]
+        print('BYTES: ' + str(word))
+        print('VALUE: ' + str(value))
+        return value
 
 
 def parse_planner_rsf():
