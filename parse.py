@@ -22,7 +22,6 @@ def line_parser(number_of_line):
         line = line[0].split()
         return line
 
-
 def value_of_lines():
     with open(planner) as file:
         lines = file.readlines()
@@ -40,14 +39,13 @@ def byte_reader(type_w, size, wib):
         print('VALUE: ' + str(value))
         return value
 
-
 def parse_planner_rsf():
     number_of_line = 3
     vol = value_of_lines()
     info = {
         # 'block_size': None,
         # 'freq_rate': None,
-        'var_description': None,
+        'block_description': None,
         'params':
             {
                 'name': None,
@@ -63,8 +61,9 @@ def parse_planner_rsf():
 
     while number_of_line < vol:
         line = line_parser(number_of_line)
-        if ';' in line[0]:
-            info['var_description'] = line[1]
+        if ';' in line[0] and line[1][0].isupper():
+            # capital = line[1][0].isupper()
+            info['block_description'] = line[1]
             number_of_line += 1
         elif len(line) > 3:
             info['params']['name'] = line[0]
