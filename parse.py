@@ -33,7 +33,6 @@ def byte_reader(type_w, size, wib):
         wib *= 2  # Номер слова в блоке умножаем на размер слова (2 байта)
         file.seek(wib + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
         word = file.read(size)
-
         value = unpack(type_w, word)[0]
         print('BYTES: ' + str(word))
         print('VALUE: ' + str(value))
@@ -55,13 +54,17 @@ def parse_planner_rsf():
         'type': None,
         'dimension': None,
         'value': None,
-
     }
     while number_of_line < vol:
         line = line_parser(number_of_line)
         # Если строка начинается с ';' И с Заглавной буквы
-        if ';' in line[0] and line[1][0].isupper():
+        if ';' in line[0] and line[1][0].isupper() and len(line) == 2:
             info['block_name'] = line[1]
+            number_of_line += 1
+        elif ';' in line[0] and line[1][0].isupper() and len(line) > 2:
+            line.remove(';')
+            nwline = ''.join(line)
+            info['block_name'] = nwline
             number_of_line += 1
         # Если строка начинается с ';' И с маленькой буквы
         elif ';' in line[0] and not line[1][0].isupper():
@@ -76,6 +79,7 @@ def parse_planner_rsf():
             info['scale'] = float(line[4])
             info['type'] = line[5]
             info['dimension'] = None
+            # Если указана размерность
             if len(line) > 6:
                 info['dimension'] = line[6]
             # Определяем тип переменной
@@ -87,7 +91,7 @@ def parse_planner_rsf():
                 size = 2
             if 'U' in line[5]:
                 type_w = '<i'
-                size = 4  #
+                size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
                 next_line = line_parser(number_of_line + 1)
 
                 prev_wib = info['word_in_block']
