@@ -45,37 +45,40 @@ def parse_planner_rsf():
     info = {
         # 'block_size': None,
         # 'freq_rate': None,
-        'block_description': None,
-        'params':
-            {
-                'name': None,
-                'word_in_block': None,
-                'mask': None,
-                'shift': None,
-                'scale': None,
-                'type': None,
-                'dimension': None,
-                'value': None,
-            }
-    }
+        'block_name': None,
+        'parameter_name': None,
+        'variable_name': None,
+        'word_in_block': None,
+        'mask': None,
+        'shift': None,
+        'scale': None,
+        'type': None,
+        'dimension': None,
+        'value': None,
 
+    }
     while number_of_line < vol:
         line = line_parser(number_of_line)
+        # Если строка начинается с ';' И с Заглавной буквы
         if ';' in line[0] and line[1][0].isupper():
-            # capital = line[1][0].isupper()
-            info['block_description'] = line[1]
+            info['block_name'] = line[1]
             number_of_line += 1
+        # Если строка начинается с ';' И с маленькой буквы
+        elif ';' in line[0] and not line[1][0].isupper():
+            info['parameter_name'] = line[1]
+            number_of_line += 1
+        # Если параметров в строке больше 3
         elif len(line) > 3:
-            info['params']['name'] = line[0]
-            info['params']['word_in_block'] = int(line[1])
-            info['params']['mask'] = line[2]
-            info['params']['shift'] = int(line[3])
-            info['params']['scale'] = float(line[4])
-            info['params']['type'] = line[5]
-            info['params']['dimension'] = None
+            info['variable_name'] = line[0]
+            info['word_in_block'] = int(line[1])
+            info['mask'] = line[2]
+            info['shift'] = int(line[3])
+            info['scale'] = float(line[4])
+            info['type'] = line[5]
+            info['dimension'] = None
             if len(line) > 6:
-                info['params']['dimension'] = line[6]
-
+                info['dimension'] = line[6]
+            # Определяем тип переменной
             if 'W' in line[5]:
                 type_w = 'I'  # UINT_2t
                 size = 2
@@ -87,14 +90,14 @@ def parse_planner_rsf():
                 size = 4  #
                 next_line = line_parser(number_of_line + 1)
 
-                prev_wib = info['params']['word_in_block']
+                prev_wib = info['word_in_block']
                 curr_wib = int(next_line[0])
 
-                info['params']['word_in_block'] = [curr_wib, prev_wib]
-                info['params']['mask'] = next_line[1]
-                info['params']['shift'] = int(next_line[2])
+                info['word_in_block'] = [curr_wib, prev_wib]
+                info['mask'] = next_line[1]
+                info['shift'] = int(next_line[2])
 
-                info['params']['value'] = byte_reader(type_w, size, curr_wib)
+                info['value'] = byte_reader(type_w, size, curr_wib)
                 print(info, '\r\n')
                 number_of_line += 2
             if 'L' in line[5]:
@@ -106,8 +109,8 @@ def parse_planner_rsf():
             if 'F' in line[5]:
                 type_w = 'f'
                 size = 4  # 2 слова х 2 байта(размер слова)
-                wib = info['params']['word_in_block']
-                info['params']['value'] = byte_reader(type_w, size, wib)
+                wib = info['word_in_block']
+                info['value'] = byte_reader(type_w, size, wib)
                 number_of_line += 1
                 print(info, '\r\n')
 
