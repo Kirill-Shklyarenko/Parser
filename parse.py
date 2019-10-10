@@ -1,5 +1,7 @@
 from struct import *
 import psycopg2
+from database import *
+
 
 planner = r'Planner'
 planner_RSF = r'Planner.rsf'
@@ -41,47 +43,26 @@ def byte_reader(type_w, size, wib):
 def parse_planner_rsf():
     number_of_line = 3
     vol = value_of_lines()
-    info = {
-        # 'block_size': None,
-        # 'freq_rate': None,
-        'block_name': None,
-        'parameter_name': None,
-        'variable_name': None,
-        'word_in_block': None,
-        'mask': None,
-        'shift': None,
-        'scale': None,
-        'type': None,
-        'dimension': None,
-        'value': None,
-    }
+    info = ['group_name', ['variable_name', 'type', 'offset']]
     while number_of_line < vol:
         line = line_parser(number_of_line)
-        # Если строка начинается с ';' И с Заглавной буквы
-        if ';' in line[0] and line[1][0].isupper() and len(line) == 2:
-            info['block_name'] = line[1]
-            number_of_line += 1
-        elif ';' in line[0] and line[1][0].isupper() and len(line) > 2:
+
+        # Поиск имени группы
+        # Если строка начинается с ';' для случаев где есть "(MAPKI -> MTO) и т.д."
+        if ';' in line[0]:
             line.remove(';')
             nwline = ''.join(line)
-            info['block_name'] = nwline
-            number_of_line += 1
-        # Если строка начинается с ';' И с маленькой буквы
-        elif ';' in line[0] and not line[1][0].isupper():
-            info['parameter_name'] = line[1]
-            number_of_line += 1
-        # Если параметров в строке больше 3
+            # Проверка следующей строки (не является ли она именем группы)
+            next_line = line_parser(number_of_line + 1)
+            if ';' in next_line[0]:
+                info.append(next_line)
+                number_of_line += 1
+            else:
+                info.append(nwline)
+                number_of_line += 1
+
+        # Поиск параметров
         elif len(line) > 3:
-            info['variable_name'] = line[0]
-            info['word_in_block'] = int(line[1])
-            info['mask'] = line[2]
-            info['shift'] = int(line[3])
-            info['scale'] = float(line[4])
-            info['type'] = line[5]
-            info['dimension'] = None
-            # Если указана размерность
-            if len(line) > 6:
-                info['dimension'] = line[6]
             # Определяем тип переменной
             if 'W' in line[5]:
                 type_w = 'I'  # UINT_2t
@@ -100,10 +81,9 @@ def parse_planner_rsf():
                 info['word_in_block'] = [curr_wib, prev_wib]
                 info['mask'] = next_line[1]
                 info['shift'] = int(next_line[2])
-
                 info['value'] = byte_reader(type_w, size, curr_wib)
-                print(info, '\r\n')
                 number_of_line += 2
+                print(info, '\r\n')
             if 'L' in line[5]:
                 type_w = ''
                 size = 4
@@ -114,9 +94,10 @@ def parse_planner_rsf():
                 type_w = 'f'
                 size = 4  # 2 слова х 2 байта(размер слова)
                 wib = info['word_in_block']
-                info['value'] = byte_reader(type_w, size, wib)
+                # info['value'] = byte_reader(type_w, size, wib)
                 number_of_line += 1
                 print(info, '\r\n')
+
 
 
 if __name__ == "__main__":
