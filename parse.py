@@ -60,29 +60,29 @@ def parse_planner_stn():
                 ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 1
-            if 'SS' in line[5]:
+            elif 'SS' in line[5]:
                 ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 1
-            if 'UU' in line[5]:
+            elif 'UU' in line[5]:
                 next_line = line_parser(number_of_line + 1)
                 prev_offset = int(line[1])
                 curr_offset = int(next_line[0])
                 ca = [line[0], line[5], [curr_offset, prev_offset]]
                 struct.append(ca)
                 number_of_line += 2
-            if 'LL' in line[5]:
+            elif 'LL' in line[5]:
                 next_line = line_parser(number_of_line + 1)
                 prev_offset = int(line[1])
                 curr_offset = int(next_line[0])
                 ca = [line[0], line[5], [curr_offset, prev_offset]]
                 struct.append(ca)
                 number_of_line += 2
-            if 'RR' in line[5]:
+            elif 'RR' in line[5]:
                 ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 1
-            if 'FF' in line[5]:
+            elif 'FF' in line[5]:
                 ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 1
