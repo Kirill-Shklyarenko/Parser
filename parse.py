@@ -127,12 +127,12 @@ def parse_planner_rsf(struct):
 
 
 if __name__ == "__main__":
-    # Парсим текстовый файл planner.stn
+    # 1) Парсим текстовый файл planner.stn
     struct = parse_planner_stn()
     for s in struct: print(s)
-    print(10 * '\r\n')
+    print(20 * '\r\n')
 
-    # Парсим бинарный файл planner.rsf
+    # 2) Парсим бинарный файл planner.rsf
     struct_with_values = parse_planner_rsf(struct)
     for s in struct_with_values: print(s)
 
