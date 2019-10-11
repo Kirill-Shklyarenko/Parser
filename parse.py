@@ -52,41 +52,33 @@ def parse_planner_stn():
         # Поиск описания переменных
         elif len(line) > 3:
             # Определяем тип переменной
-            if 'W' in line[5]:
-                # type_w = 'I'  # UINT_2t
-                # size = 2
+            if 'WW' in line[5]:
                 ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 1
-            if 'S' in line[5]:
-                # type_w = 'i'  # INT_2t
-                # size = 2
+            if 'SS' in line[5]:
                 ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 1
-            if 'U' in line[5]:
+            if 'UU' in line[5]:
                 next_line = line_parser(number_of_line + 1)
                 prev_offset = int(line[1])
                 curr_offset = int(next_line[0])
                 ca = [line[0], line[5], [curr_offset, prev_offset]]
                 struct.append(ca)
                 number_of_line += 2
-            if 'L' in line[5]:
-                # type_w = ''
-                # size = 4
+            if 'LL' in line[5]:
                 next_line = line_parser(number_of_line + 1)
                 prev_offset = int(line[1])
                 curr_offset = int(next_line[0])
                 ca = [line[0], line[5], [curr_offset, prev_offset]]
                 struct.append(ca)
                 number_of_line += 2
-            if 'R' in line[5]:
-                # type_w = ''
-                # size = 1
+            if 'RR' in line[5]:
                 ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 1
-            if 'F' in line[5]:
+            if 'FF' in line[5]:
                 ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 1
@@ -95,25 +87,51 @@ def parse_planner_stn():
 def parse_planner_rsf(struct):
     for string in struct:
         if len(string) == 3:
-            if 'W' in string[1]:
-                lba = asd
-            elif 'S' in string[1]:
-                asd = asdd
+            if 'WW' in string[1]:
+                type_w = 'I'  # UINT_2t
+                size = 2
+                offset = string[2]
+                name = string[0]
+                value = byte_reader(type_w, size, offset)
+                string.clear()
+                string.insert(0, name)
+                string.insert(1, value)
+            elif 'SS' in string[1]:
+                type_w = 'i'  # INT_2t
+                size = 2
+                offset = string[2]
+                name = string[0]
+                value = byte_reader(type_w, size, offset)
+                string.clear()
+                string.insert(0, name)
+                string.insert(1, value)
             elif 'UU' in string[1]:
                 type_w = '<i'
                 size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
-                #for v in string[2]:
                 offset = string[2][0]
                 name = string[0]
                 value = byte_reader(type_w, size, offset)
                 string.clear()
                 string.insert(0, name)
                 string.insert(1, value)
-
-            elif 'L' in string[1]:
-                bla = bla
-            elif 'R' in string[1]:
-                bla = bla
+            elif 'LL' in string[1]:
+                type_w = '<i'
+                size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
+                offset = string[2][0]
+                name = string[0]
+                value = byte_reader(type_w, size, offset)
+                string.clear()
+                string.insert(0, name)
+                string.insert(1, value)
+            elif 'RR' in string[1]:
+                type_w = 'c'  # битовая переменная
+                size = 1      # Размер 1 байт
+                offset = string[2]
+                name = string[0]
+                value = byte_reader(type_w, size, offset)
+                string.clear()
+                string.insert(0, name)
+                string.insert(1, value)
             elif 'FF' in string[1]:
                 type_w = 'f'
                 size = 4  # 2 слова х 2 байта(размер слова)
