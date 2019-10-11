@@ -30,14 +30,19 @@ def byte_reader(type_w, size, offset):
         return value
 
 def parse_planner_stn():
-    number_of_line = 3
+    number_of_line = 1
     vol = value_of_lines()
     struct = []
     while number_of_line < vol:
         line = line_parser(number_of_line)
+        # Поиск размера блока данных
+        if len(line) == 1 and ';' not in line[0]:
+            next_line = line_parser(number_of_line + 1)
+            if len(next_line) == 1 and ';' not in next_line[0]:
+                block_size = int(line[0])
+                number_of_line += 2
         # Поиск имени группы
-        # Если строка начинается с ';'
-        if ';' in line[0]:
+        elif ';' in line[0]:
             line.remove(';')
             nwline = ''.join(line)
             # Проверка следующей строки (не является ли она именем группы)
@@ -48,7 +53,6 @@ def parse_planner_stn():
             else:
                 struct.append(nwline)
                 number_of_line += 1
-
         # Поиск описания переменных
         elif len(line) > 3:
             # Определяем тип переменной
