@@ -1,6 +1,6 @@
 from struct import *
-import psycopg2
 import os
+import copy
 
 planner = r'Planner'
 planner_RSF = r'Planner.rsf'
@@ -12,20 +12,24 @@ def line_parser(number_of_line):
         line = line[0].split()
         return line
 
+
 def value_of_lines():
     with open(planner) as file:
         lines = file.readlines()
         return int(len(lines))
 
+
 def byte_reader(type_w, size, offset):
     with open(planner_RSF, 'rb') as file:
         header = file.read(14).decode('cp1252')  # Имя файла заголовка [0 - 14]
         offset *= 2  # Номер слова в блоке умножаем на размер слова (2 байта)
-        file.seek(offset + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
+        file.seek(
+            offset + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
 
         word = file.read(size)
         value = unpack(type_w, word)[0]
         return value
+
 
 # def detect_frame_size():
 #     number_of_line = 1
@@ -102,10 +106,11 @@ def parse_planner_stn():
                 number_of_line += 1
     return struct, frame_size
 
+
 def frame_counter(frame_size):
     with open(planner_RSF, 'rb') as file:
-        file_size = os.path.getsize(planner_RSF) # Размер файла в байтах
-        file_size = file_size - 14 # отсекаем 14 байт заголовка
+        file_size = os.path.getsize(planner_RSF)  # Размер файла в байтах
+        file_size = file_size - 14  # отсекаем 14 байт заголовка
         try:
             frames_count = file_size / (frame_size * 2)
         except ZeroDivisionError as e:
@@ -115,9 +120,11 @@ def frame_counter(frame_size):
             frames_count = int(frames_count)
         return frames_count
 
+
 def parse_planner_rsf(struct, frame_size, frame):
-    for string in struct:
-        frame_rate = frame * frame_size
+    struct_with_values = copy.deepcopy(struct)
+    frame_rate = frame * frame_size
+    for string in struct_with_values:
         if len(string) == 3:
             if 'WW' in string[1]:
                 type_w = 'I'  # UINT_2t
@@ -157,7 +164,7 @@ def parse_planner_rsf(struct, frame_size, frame):
                 string.insert(1, value)
             elif 'RR' in string[1]:
                 type_w = 'c'  # битовая переменная
-                size = 1      # Размер 1 байт
+                size = 1  # Размер 1 байт
                 offset = string[2] + frame_rate
                 name = string[0]
                 value = byte_reader(type_w, size, offset)
@@ -173,26 +180,25 @@ def parse_planner_rsf(struct, frame_size, frame):
                 string.clear()
                 string.insert(0, name)
                 string.insert(1, value)
-    return struct
+    return struct_with_values
+
 
 if __name__ == "__main__":
     # 1) Парсим текстовый файл
     struct = parse_planner_stn()
-    #for s in struct: print(s)
-    #print(20 * '\r\n')
+    # for s in struct: print(s)
+    # print(20 * '\r\n')
 
     # 2) Парсим один кадр
-    #struct_with_values = parse_planner_rsf(struct)
-    #for s in struct_with_values: print(s)
+    # struct_with_values = parse_planner_rsf(struct)
+    # for s in struct_with_values: print(s)
 
-    # 3) Парсим весь бинарник, цикл по кадрам
+    # 3) Парсим весь бинарник по кадрам
     frame_c = frame_counter(struct[1])
-    for frame in range (frame_c):
-        if frame == 2:
-            breakpoint()
+    for frame in range(frame_c):
         print('FRAME № %s\r\n' % frame)
-
-        struct_with_values = parse_planner_rsf(struct[0], struct[1], frame)
+        struct_with_values = parse_planner_rsf(struct[0], frame_c, frame)
+        if frame == 2:
+            print()
         for s in struct_with_values: print(s)
-        print(5 * '\r\n')
-
+        print(50 * '\r\n')
