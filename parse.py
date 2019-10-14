@@ -80,37 +80,20 @@ def parse_planner_stn():
                 number_of_line += 1
         # Поиск описания переменных
         elif len(line) > 3:
-            # Определяем тип переменной
-            if 'WW' in line[5]:
+
+            if 'UU' in line[5]:
                 ca = [line[0], line[5], int(line[1])]
-                struct.append(ca)
-                number_of_line += 1
-            elif 'SS' in line[5]:
-                ca = [line[0], line[5], int(line[1])]
-                struct.append(ca)
-                number_of_line += 1
-            elif 'UU' in line[5]:
-                next_line = line_parser(number_of_line + 1)
-                prev_offset = int(line[1])
-                curr_offset = int(next_line[0])
-                ca = [line[0], line[5], curr_offset]
                 struct.append(ca)
                 number_of_line += 2
             elif 'LL' in line[5]:
-                next_line = line_parser(number_of_line + 1)
-                prev_offset = int(line[1])
-                curr_offset = int(next_line[0])
-                ca = [line[0], line[5],curr_offset]
+                ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 2
-            elif 'RR' in line[5]:
+            else:
                 ca = [line[0], line[5], int(line[1])]
                 struct.append(ca)
                 number_of_line += 1
-            elif 'FF' in line[5]:
-                ca = [line[0], line[5], int(line[1])]
-                struct.append(ca)
-                number_of_line += 1
+
     return struct, frame_size
 
 
