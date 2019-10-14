@@ -29,20 +29,20 @@ def byte_reader(type_w, size, offset):
         # print('VALUE: ' + str(value))
         return value
 
-def parse_planner_stn():
-    number_of_line = 1
-    vol = value_of_lines()
+def parse_planner_stn(frame_start, frame_end):
+    number_of_line = frame_start
+
+    vol = frame_end
     struct = []
     while number_of_line < vol:
         line = line_parser(number_of_line)
         # Поиск размера блока данных
-        if len(line) == 1 and ';' not in line[0]:
-            next_line = line_parser(number_of_line + 1)
-            if len(next_line) == 1 and ';' not in next_line[0]:
-                block_size = int(line[0])
-                number_of_line += 2
+        # if len(line) == 1 and ';' not in line[0]:
+        #     next_line = line_parser(number_of_line + 1)
+        #     if len(next_line) == 1 and ';' not in next_line[0]:
+        #         number_of_line += 2
         # Поиск имени группы
-        elif ';' in line[0]:
+        if ';' in line[0]:
             line.remove(';')
             nwline = ''.join(line)
             # Проверка следующей строки (не является ли она именем группы)
@@ -148,15 +148,45 @@ def parse_planner_rsf(struct):
     return struct
 
 
+def parse_by_frames():
+    number_of_line = 1
+    frame_count = 0
+    vol = value_of_lines()
+    while number_of_line < vol:
+        line = line_parser(number_of_line)
+        # Поиск размера блока данных
+        if len(line) == 1 and ';' not in line[0]:
+            next_line = line_parser(number_of_line + 1)
+            if len(next_line) == 1 and ';' not in next_line[0]:
+                number_of_line += 2
+                # frame_size = int(line[0])
+                frame_count += 1
+                frame_start = number_of_line
+        else:
+            frame_end = number_of_line
+            number_of_line += 1
+    return frame_count, frame_start, frame_end
+
+
 if __name__ == "__main__":
     # 1) Парсим текстовый файл planner.stn
-    struct = parse_planner_stn()
-    for s in struct: print(s)
-    print(20 * '\r\n')
+    #struct = parse_planner_stn()
+    #for s in struct: print(s)
+    #print(20 * '\r\n')
 
     # 2) Парсим бинарный файл planner.rsf
-    struct_with_values = parse_planner_rsf(struct)
-    for s in struct_with_values: print(s)
+    #struct_with_values = parse_planner_rsf(struct)
+    #for s in struct_with_values: print(s)
 
+    # 3) Парсим весь бинарник, цикл по кадрам
+    frame = parse_by_frames()
+    for f in range (frame[0]):
+        print('FRAME № %s\r\n' % f)
+        struct = parse_planner_stn(frame[1], frame[2])
+        for s in struct: print(s)
+        print(5 * '\r\n')
+
+        struct_with_values = parse_planner_rsf(struct)
+        for s in struct_with_values: print(s)
 
 
