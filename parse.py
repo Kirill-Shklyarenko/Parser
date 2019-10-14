@@ -54,22 +54,6 @@ def byte_reader(type_w, offset):
         return value
 
 
-# def detect_frame_size():
-#     number_of_line = 1
-#     frame_count = 0
-#     vol = value_of_lines()
-#     while number_of_line < vol:
-#         line = line_reader(number_of_line)
-#         # Поиск размера блока данных
-#         if len(line) == 1 and ';' not in line[0]:
-#             next_line = line_reader(number_of_line + 1)
-#             if len(next_line) == 1 and ';' not in next_line[0]:
-#                 frame_size = int(line[0])
-#                 number_of_line += 2
-#         else:
-#             number_of_line += 1
-#     return frame_size
-
 def parse_planner_stn():
     number_of_line = 1
     vol = value_of_lines()
@@ -177,4 +161,5 @@ if __name__ == "__main__":
 
         for i in range(50):
             print(250 * '*')
-
+        if frame == 1:
+           hh=78
