@@ -2,12 +2,11 @@ from struct import *
 import psycopg2
 
 
-
 planner = r'Planner'
 planner_RSF = r'Planner.rsf'
 
 
-def line_parser(number_of_line):
+def line_reader(number_of_line):
     with open(planner) as file:
         line = file.readlines()[number_of_line - 1: number_of_line]
         line = line[0].split()
@@ -25,9 +24,27 @@ def byte_reader(type_w, size, offset):
         file.seek(offset + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
         word = file.read(size)
         value = unpack(type_w, word)[0]
-        # print('BYTES: ' + str(word))
-        # print('VALUE: ' + str(value))
         return value
+
+def detect_frames():
+    number_of_line = 1
+    frame_count = 0
+    vol = value_of_lines()
+    while number_of_line < vol:
+        line = line_reader(number_of_line)
+        # Поиск размера блока данных
+        if len(line) == 1 and ';' not in line[0]:
+            next_line = line_reader(number_of_line + 1)
+            if len(next_line) == 1 and ';' not in next_line[0]:
+                number_of_line += 2
+                frame_count += 1
+                frame_start = number_of_line
+        else:
+            frame_end = number_of_line
+            number_of_line += 1
+    return frame_count, frame_start, frame_end
+
+
 
 def parse_planner_stn(frame_start, frame_end):
     number_of_line = frame_start
@@ -35,7 +52,7 @@ def parse_planner_stn(frame_start, frame_end):
     vol = frame_end
     struct = []
     while number_of_line < vol:
-        line = line_parser(number_of_line)
+        line = line_reader(number_of_line)
         # Поиск размера блока данных
         # if len(line) == 1 and ';' not in line[0]:
         #     next_line = line_parser(number_of_line + 1)
@@ -46,7 +63,7 @@ def parse_planner_stn(frame_start, frame_end):
             line.remove(';')
             nwline = ''.join(line)
             # Проверка следующей строки (не является ли она именем группы)
-            next_line = line_parser(number_of_line + 1)
+            next_line = line_reader(number_of_line + 1)
             if ';' in next_line[0]:
                 struct.append(next_line)
                 number_of_line += 1
@@ -65,14 +82,14 @@ def parse_planner_stn(frame_start, frame_end):
                 struct.append(ca)
                 number_of_line += 1
             elif 'UU' in line[5]:
-                next_line = line_parser(number_of_line + 1)
+                next_line = line_reader(number_of_line + 1)
                 prev_offset = int(line[1])
                 curr_offset = int(next_line[0])
                 ca = [line[0], line[5], [curr_offset, prev_offset]]
                 struct.append(ca)
                 number_of_line += 2
             elif 'LL' in line[5]:
-                next_line = line_parser(number_of_line + 1)
+                next_line = line_reader(number_of_line + 1)
                 prev_offset = int(line[1])
                 curr_offset = int(next_line[0])
                 ca = [line[0], line[5], [curr_offset, prev_offset]]
@@ -148,26 +165,6 @@ def parse_planner_rsf(struct):
     return struct
 
 
-def parse_by_frames():
-    number_of_line = 1
-    frame_count = 0
-    vol = value_of_lines()
-    while number_of_line < vol:
-        line = line_parser(number_of_line)
-        # Поиск размера блока данных
-        if len(line) == 1 and ';' not in line[0]:
-            next_line = line_parser(number_of_line + 1)
-            if len(next_line) == 1 and ';' not in next_line[0]:
-                number_of_line += 2
-                # frame_size = int(line[0])
-                frame_count += 1
-                frame_start = number_of_line
-        else:
-            frame_end = number_of_line
-            number_of_line += 1
-    return frame_count, frame_start, frame_end
-
-
 if __name__ == "__main__":
     # 1) Парсим текстовый файл planner.stn
     #struct = parse_planner_stn()
@@ -179,7 +176,7 @@ if __name__ == "__main__":
     #for s in struct_with_values: print(s)
 
     # 3) Парсим весь бинарник, цикл по кадрам
-    frame = parse_by_frames()
+    frame = detect_frames()
     for f in range (frame[0]):
         print('FRAME № %s\r\n' % f)
         struct = parse_planner_stn(frame[1], frame[2])
