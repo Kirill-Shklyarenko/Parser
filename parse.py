@@ -2,11 +2,11 @@ from struct import *
 import os
 import copy
 import re
-
+import lzma
 
 planner = r'Planner'
 planner_RSF = r'Planner.rsf'
-
+planner_zip = r'Planner.7z'
 
 def nxt_line(number_of_line):
     with open(planner) as file:
@@ -27,10 +27,10 @@ def byte_reader(type_w, offset):
             type_w = 'i'  # INT_2t
             size = 2
         elif 'UU' in type_w:
-            type_w = '<i'
+            type_w = '>i'
             size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
         elif 'LL' in type_w:
-            type_w = '<i'
+            type_w = '>i'
             size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
         elif 'RR' in type_w:
             type_w = 'c'  # битовая переменная
