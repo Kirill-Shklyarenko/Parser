@@ -15,30 +15,24 @@ def nxt_line(number_of_line):
 
 def byte_reader(type_w, offset):
     with open(planner_RSF, 'rb') as file:
-        header = file.read(14).decode('cp1252')  # Имя файла заголовка [0 - 14]
         offset *= 2  # Номер слова в блоке умножаем на размер слова (2 байта)
         file.seek(offset + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
 
         if 'WW' in type_w:
             type_w = 'I'  # UINT_2t
             size = 2
-
         elif 'SS' in type_w:
             type_w = 'i'  # INT_2t
             size = 2
-
         elif 'UU' in type_w:
             type_w = '<i'
             size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
-
         elif 'LL' in type_w:
             type_w = '<i'
             size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
-
         elif 'RR' in type_w:
             type_w = 'c'  # битовая переменная
             size = 1  # Размер 1 байт
-
         elif 'FF' in type_w:
             type_w = 'f'
             size = 4  # 2 слова х 2 байта(размер слова)
@@ -48,7 +42,7 @@ def byte_reader(type_w, offset):
         return value
 
 
-def parse_planner_stn():
+def parse_text_file():
     number_of_line = 1
     data = []
     with open(planner) as file:
@@ -123,7 +117,7 @@ def parse_planner_rsf(data, frame_size, frame_number):
 
 if __name__ == "__main__":
     # 1) Парсим текстовый файл
-    struct = parse_planner_stn()
+    struct = parse_text_file()
     # 2) Вычисляем количество кадров
     frame_c = frame_counter(struct[1])
     # 3) Парсим бинарник по кадрам
@@ -137,8 +131,7 @@ if __name__ == "__main__":
                     pass
                 else:
                     print(s)
-        for i in range(50):
-            print(250 * '*')
+        for i in range(50): print(250 * '*')
 
         if frame == 1:
             hh = 78
