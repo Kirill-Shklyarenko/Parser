@@ -138,7 +138,7 @@ if __name__ == "__main__":
     frame_size = struct[1]
     # 3) Парсим бинарник по кадрам
     for frame_number in range(frame_c):
-        print('\r\n FRAME № %s \r\n' % frame_number)
+        print('\r\nFRAME № %s \r\n' % frame_number)
         struct_with_values = parse_planner_rsf(struct[0], frame_size, frame_number)
 
         # Находим "слово" в структуре
