@@ -67,6 +67,7 @@ def parse_planner_stn():
                 # Проверка следующей строки (не является ли она именем группы)
                 next_line = nxt_line(number_of_line + 1)
                 if ';' in next_line[0]:
+                    next_line.remove(';')
                     data.append(next_line)
                     number_of_line += 1
                 else:
@@ -130,8 +131,14 @@ if __name__ == "__main__":
         print('FRAME № %s\r\n' % frame)
         struct_with_values = parse_planner_rsf(struct[0], frame_c, frame)
 
-        for s in struct_with_values: print(s)
-        for i in range(50): print(250 * '*')
+        for s in struct_with_values:
+            if len(s) > 1:
+                if s[1] == 0:
+                    pass
+                else:
+                    print(s)
+        for i in range(50):
+            print(250 * '*')
 
         if frame == 1:
             hh = 78
