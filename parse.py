@@ -10,7 +10,7 @@ def nxt_line(number_of_line):
     with open(planner) as file:
         line = file.readlines()[number_of_line - 1: number_of_line]
         line = line[0].split()
-        return line
+    return line
 
 
 def byte_reader(type_w, offset):
@@ -32,14 +32,14 @@ def byte_reader(type_w, offset):
             size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
         elif 'RR' in type_w:
             type_w = 'c'  # битовая переменная
-            size = 1  # Размер 1 байт
+            size = 1      # Размер 1 байт
         elif 'FF' in type_w:
             type_w = 'f'
-            size = 4  # 2 слова х 2 байта(размер слова)
+            size = 4      # 2 слова х 2 байта(размер слова)
 
         word = file.read(size)
         value = unpack(type_w, word)[0]
-        return value
+    return value
 
 
 def parse_text_file():
@@ -81,7 +81,6 @@ def parse_text_file():
                     ca = [line[0], line[5], int(line[1])]
                     data.append(ca)
                     number_of_line += 1
-
     return data, frame_size
 
 
@@ -96,7 +95,7 @@ def frame_counter(frame_size):
             print(e)
         else:
             frames_count = int(frames_count)
-        return frames_count
+    return frames_count
 
 
 def parse_planner_rsf(data, frame_size, frame_number):
@@ -120,10 +119,11 @@ if __name__ == "__main__":
     struct = parse_text_file()
     # 2) Вычисляем количество кадров
     frame_c = frame_counter(struct[1])
+    frame_size = struct[1]
     # 3) Парсим бинарник по кадрам
-    for frame in range(frame_c):
-        print('FRAME № %s\r\n' % frame)
-        struct_with_values = parse_planner_rsf(struct[0], frame_c, frame)
+    for frame_number in range(frame_c):
+        print('FRAME № %s\r\n' % frame_number)
+        struct_with_values = parse_planner_rsf(struct[0], frame_size, frame_number)
 
         for s in struct_with_values:
             if len(s) > 1:
@@ -133,5 +133,5 @@ if __name__ == "__main__":
                     print(s)
         for i in range(50): print(250 * '*')
 
-        if frame == 1:
+        if frame_number == 1:
             hh = 78
