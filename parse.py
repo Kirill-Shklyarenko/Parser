@@ -64,7 +64,7 @@ def parse_text_file():
                 next_line = nxt_line(number_of_line + 1)
                 if ';' in next_line[0]:
                     next_line.remove(';')
-                    data.append(next_line)
+                    data.append(next_line[0])
                     number_of_line += 1
                 else:
                     data.append(nwline)
@@ -138,18 +138,13 @@ if __name__ == "__main__":
     frame_size = struct[1]
     # 3) Парсим бинарник по кадрам
     for frame_number in range(frame_c):
-        print('FRAME № %s\r\n' % frame_number)
+        print('\r\n FRAME № %s \r\n' % frame_number)
         struct_with_values = parse_planner_rsf(struct[0], frame_size, frame_number)
 
         # Находим "слово" в структуре
         finded_data = find_in_structure(struct_with_values, 'beamTask')
+
         for s in finded_data: print(s)
-        # for s in struct_with_values:
-        #     if len(s) > 1:
-        #         if s[1] == 0:
-        #             pass
-        #         else:
-        #             print(s)
         for i in range(10): print(105 * '*')
 
         if frame_number == 1:
