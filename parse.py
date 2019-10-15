@@ -1,6 +1,8 @@
 from struct import *
 import os
 import copy
+import re
+
 
 planner = r'Planner'
 planner_RSF = r'Planner.rsf'
@@ -101,17 +103,31 @@ def frame_counter(frame_size):
 def parse_planner_rsf(data, frame_size, frame_number):
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
-    for string in data_with_values:
-        if len(string) == 3:
-            name = string[0]
-            type_w = string[1]
-            offset = string[2] + frame_rate
+    for line in data_with_values:
+        if len(line) == 3:
+            name = line[0]
+            type_w = line[1]
+            offset = line[2] + frame_rate
 
             value = byte_reader(type_w, offset)
-            string.clear()
-            string.insert(0, name)
-            string.insert(1, value)
+            line.clear()
+            line.insert(0, name)
+            line.insert(1, value)
     return data_with_values
+
+
+def find_in_structure(data, keyword):
+    finded_data = []
+    flag = False
+    for line in data:
+        if type(line) is str:
+            if re.search(keyword, line):
+                flag = True
+            else:
+                flag = False
+        if flag:
+            finded_data.append(line)
+    return finded_data
 
 
 if __name__ == "__main__":
@@ -125,13 +141,16 @@ if __name__ == "__main__":
         print('FRAME № %s\r\n' % frame_number)
         struct_with_values = parse_planner_rsf(struct[0], frame_size, frame_number)
 
-        for s in struct_with_values:
-            if len(s) > 1:
-                if s[1] == 0:
-                    pass
-                else:
-                    print(s)
-        for i in range(50): print(250 * '*')
+        # Находим "слово" в структуре
+        finded_data = find_in_structure(struct_with_values, 'beamTask')
+        for s in finded_data: print(s)
+        # for s in struct_with_values:
+        #     if len(s) > 1:
+        #         if s[1] == 0:
+        #             pass
+        #         else:
+        #             print(s)
+        for i in range(10): print(105 * '*')
 
         if frame_number == 1:
             hh = 78
