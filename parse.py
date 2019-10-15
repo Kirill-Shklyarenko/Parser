@@ -6,17 +6,11 @@ planner = r'Planner'
 planner_RSF = r'Planner.rsf'
 
 
-def line_parser(number_of_line):
+def nxt_line(number_of_line):
     with open(planner) as file:
         line = file.readlines()[number_of_line - 1: number_of_line]
         line = line[0].split()
         return line
-
-
-def value_of_lines():
-    with open(planner) as file:
-        lines = file.readlines()
-        return int(len(lines))
 
 
 def byte_reader(type_w, offset):
@@ -56,43 +50,42 @@ def byte_reader(type_w, offset):
 
 def parse_planner_stn():
     number_of_line = 1
-    vol = value_of_lines()
     struct = []
-    while number_of_line < vol:
-        line = line_parser(number_of_line)
-        # Поиск размера блока данных
-        if len(line) == 1 and ';' not in line[0]:
-            next_line = line_parser(number_of_line + 1)
-            if len(next_line) == 1 and ';' not in next_line[0]:
-                frame_size = int(line[0])
-                number_of_line += 2
-        # Поиск имени группы
-        if ';' in line[0]:
-            line.remove(';')
-            nwline = ''.join(line)
-            # Проверка следующей строки (не является ли она именем группы)
-            next_line = line_parser(number_of_line + 1)
-            if ';' in next_line[0]:
-                struct.append(next_line)
-                number_of_line += 1
-            else:
-                struct.append(nwline)
-                number_of_line += 1
-        # Поиск описания переменных
-        elif len(line) > 3:
-
-            if 'UU' in line[5]:
-                ca = [line[0], line[5], int(line[1])]
-                struct.append(ca)
-                number_of_line += 2
-            elif 'LL' in line[5]:
-                ca = [line[0], line[5], int(line[1])]
-                struct.append(ca)
-                number_of_line += 2
-            else:
-                ca = [line[0], line[5], int(line[1])]
-                struct.append(ca)
-                number_of_line += 1
+    with open(planner) as file:
+        for line in file:
+            line = line.split()
+            # Поиск размера блока данных
+            if len(line) == 1 and ';' not in line[0]:
+                next_line = nxt_line(number_of_line + 1)
+                if len(next_line) == 1 and ';' not in next_line[0]:
+                    frame_size = int(line[0])
+                    number_of_line += 2
+            # Поиск имени группы
+            elif ';' in line[0]:
+                line.remove(';')
+                nwline = ''.join(line)
+                # Проверка следующей строки (не является ли она именем группы)
+                next_line = nxt_line(number_of_line + 1)
+                if ';' in next_line[0]:
+                    struct.append(next_line)
+                    number_of_line += 1
+                else:
+                    struct.append(nwline)
+                    number_of_line += 1
+            # Поиск описания переменных
+            elif len(line) > 3:
+                if 'UU' in line[5]:
+                    ca = [line[0], line[5], int(line[1])]
+                    struct.append(ca)
+                    number_of_line += 2
+                elif 'LL' in line[5]:
+                    ca = [line[0], line[5], int(line[1])]
+                    struct.append(ca)
+                    number_of_line += 2
+                else:
+                    ca = [line[0], line[5], int(line[1])]
+                    struct.append(ca)
+                    number_of_line += 1
 
     return struct, frame_size
 
