@@ -1,6 +1,7 @@
 from struct import *
 import os
 import copy
+import numpy  as np
 
 planner = r'Planner'
 planner_RSF = r'Planner.rsf'
@@ -130,12 +131,10 @@ if __name__ == "__main__":
     # 3) Парсим бинарник по кадрам
     for frame in range(frame_c):
         print('FRAME № %s\r\n' % frame)
-
         struct_with_values = parse_planner_rsf(struct[0], frame_c, frame)
 
         for s in struct_with_values: print(s)
+        for i in range(50): print(250 * '*')
 
-        for i in range(50):
-            print(250 * '*')
         if frame == 1:
            hh=78
