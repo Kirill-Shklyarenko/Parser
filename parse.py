@@ -1,7 +1,6 @@
 from struct import *
 import os
 import copy
-import numpy  as np
 
 planner = r'Planner'
 planner_RSF = r'Planner.rsf'
@@ -51,7 +50,7 @@ def byte_reader(type_w, offset):
 
 def parse_planner_stn():
     number_of_line = 1
-    struct = []
+    data = []
     with open(planner) as file:
         for line in file:
             line = line.split()
@@ -68,27 +67,27 @@ def parse_planner_stn():
                 # Проверка следующей строки (не является ли она именем группы)
                 next_line = nxt_line(number_of_line + 1)
                 if ';' in next_line[0]:
-                    struct.append(next_line)
+                    data.append(next_line)
                     number_of_line += 1
                 else:
-                    struct.append(nwline)
+                    data.append(nwline)
                     number_of_line += 1
             # Поиск описания переменных
             elif len(line) > 3:
                 if 'UU' in line[5]:
                     ca = [line[0], line[5], int(line[1])]
-                    struct.append(ca)
+                    data.append(ca)
                     number_of_line += 2
                 elif 'LL' in line[5]:
                     ca = [line[0], line[5], int(line[1])]
-                    struct.append(ca)
+                    data.append(ca)
                     number_of_line += 2
                 else:
                     ca = [line[0], line[5], int(line[1])]
-                    struct.append(ca)
+                    data.append(ca)
                     number_of_line += 1
 
-    return struct, frame_size
+    return data, frame_size
 
 
 def frame_counter(frame_size):
@@ -105,10 +104,10 @@ def frame_counter(frame_size):
         return frames_count
 
 
-def parse_planner_rsf(struct, frame_size, frame):
-    struct_with_values = copy.deepcopy(struct)
-    frame_rate = frame * frame_size
-    for string in struct_with_values:
+def parse_planner_rsf(data, frame_size, frame_number):
+    data_with_values = copy.deepcopy(data)
+    frame_rate = frame_number * frame_size
+    for string in data_with_values:
         if len(string) == 3:
             name = string[0]
             type_w = string[1]
@@ -118,9 +117,7 @@ def parse_planner_rsf(struct, frame_size, frame):
             string.clear()
             string.insert(0, name)
             string.insert(1, value)
-
-
-    return struct_with_values
+    return data_with_values
 
 
 if __name__ == "__main__":
@@ -137,4 +134,4 @@ if __name__ == "__main__":
         for i in range(50): print(250 * '*')
 
         if frame == 1:
-           hh=78
+            hh = 78
