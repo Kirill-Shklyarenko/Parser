@@ -27,10 +27,10 @@ def byte_reader(type_w, offset):
             type_w = 'i'  # INT_2t
             size = 2
         elif 'UU' in type_w:
-            type_w = '>i'
+            type_w = '<i'
             size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
         elif 'LL' in type_w:
-            type_w = '>i'
+            type_w = '<i'
             size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
         elif 'RR' in type_w:
             type_w = 'c'  # битовая переменная
@@ -72,11 +72,11 @@ def parse_text_file():
             # Поиск описания переменных
             elif len(line) > 3:
                 if 'UU' in line[5]:
-                    ca = [line[0], line[5], int(line[1])]
+                    ca = [line[0], line[5], int(line[1]) - 1]
                     data.append(ca)
                     number_of_line += 2
                 elif 'LL' in line[5]:
-                    ca = [line[0], line[5], int(line[1])]
+                    ca = [line[0], line[5], int(line[1]) - 1]
                     data.append(ca)
                     number_of_line += 2
                 else:
