@@ -156,12 +156,40 @@ def db_insert(finded_data):
 
                 '''http://initd.org/psycopg/docs/usage.html#the-problem-with-the-query-parameters'''
                 try:
+                    lol = """CREATE TABLE beam_tasks (
+                    BeamTask serial PRIMARY KEY ,
+	                taskId integer NOT NULL,
+	                taskType integer NOT NULL,
+	                pulsePeriod integer NOT NULL,
+	                viewDirectionId integer NOT NULL,
+	                antennaId integer NOT NULL,
+	                epsilonBSK integer NOT NULL,
+	                betaBSK integer NOT NULL,
+	                threshold FLOAT NOT NULL,
+	                lowerDistanceTrim FLOAT NOT NULL,
+	                upperDistanceTrim FLOAT NOT NULL,
+	                upperVelocityTrim FLOAT NOT NULL,
+	                lowervelocitytrim FLOAT NOT NULL,
+	                isFake integer NOT NULL,
+	                techPointDistance integer NOT NULL,
+	                techPointHarmonic integer NOT NULL);"""
+                    asd = """
+                    DROP TABLE beam_tasks
+                    
+                    """
+                    cur.execute(asd)
+                    cur.execute(lol)
                     # keys_str = ', '.join(str(a) for a in keys)
-                    sqls = "INSERT INTO beam_tasks VALUES (%s);"
+                    query = """
+                    INSERT INTO beam_tasks (isFake, taskId,
+                    taskType, viewDirectionId, antennaId, pulsePeriod,
+                    threshold, lowerVelocityTrim, upperVelocityTrim,
+                    lowerDistanceTrim, upperDistanceTrim, betaBSK,
+                    epsilonBSK, techPointDistance, techPointHarmonic) VALUES (%s);
+                    """
+
                     data = ', '.join(str(o) for o in vals)
-                    cur.execute("SELECT * FROM candidates;")
-                    print(cur.fetchall())
-                    cur.executemany(sqls, data)
+                    cur.executemany(query, data)
                 except Exception as e:
                     print(e)
 
