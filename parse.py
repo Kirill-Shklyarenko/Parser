@@ -2,11 +2,14 @@ from struct import *
 import os
 import copy
 import re
-import lzma
+
+import psycopg2
+from psycopg2.extensions import adapt, register_adapter, AsIs
+from psycopg2 import sql
 
 planner = r'Planner'
 planner_RSF = r'Planner.rsf'
-planner_zip = r'Planner.7z'
+
 
 def nxt_line(number_of_line):
     with open(planner) as file:
@@ -130,6 +133,39 @@ def find_in_structure(data, keyword):
     return finded_data
 
 
+def db_insert(finded_data):
+    with psycopg2.connect(dbname='telemetry', user='postgres',
+                          password='123', host='localhost') as conn:
+        conn.autocommit = True
+        with conn.cursor() as cur:
+            keys = []
+            vals = []
+            count = 0
+
+            for string in finded_data:
+                if type(string) is str:
+                    count += 1
+
+            for i in range(count):
+                for string in finded_data:
+                    if type(string) is list and i == 1:
+                        keys.append(string[0])
+                        vals.append(string[1])
+                    if type(string) is str:
+                        i += 1
+
+                '''http://initd.org/psycopg/docs/usage.html#the-problem-with-the-query-parameters'''
+                try:
+                    # keys_str = ', '.join(str(a) for a in keys)
+                    sqls = "INSERT INTO beam_tasks VALUES (%s);"
+                    data = ', '.join(str(o) for o in vals)
+                    cur.execute("SELECT * FROM candidates;")
+                    print(cur.fetchall())
+                    cur.executemany(sqls, data)
+                except Exception as e:
+                    print(e)
+
+
 if __name__ == "__main__":
     # 1) Парсим текстовый файл
     struct = parse_text_file()
@@ -143,6 +179,7 @@ if __name__ == "__main__":
 
         # Находим "слово" в структуре
         finded_data = find_in_structure(struct_with_values, 'beamTask')
+        db_insert(finded_data)
 
         for s in finded_data: print(s)
         for i in range(10): print(105 * '*')
