@@ -37,10 +37,10 @@ def byte_reader(type_w, offset):
             size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
         elif 'RR' in type_w:
             type_w = 'c'  # битовая переменная
-            size = 1      # Размер 1 байт
+            size = 1  # Размер 1 байт
         elif 'FF' in type_w:
             type_w = 'f'
-            size = 4      # 2 слова х 2 байта(размер слова)
+            size = 4  # 2 слова х 2 байта(размер слова)
 
         word = file.read(size)
         value = unpack(type_w, word)[0]
@@ -89,20 +89,6 @@ def parse_text_file():
     return data, frame_size
 
 
-def frame_counter(frame_size):
-    with open(planner_RSF, 'rb') as file:
-        file_size = os.path.getsize(planner_RSF)  # Размер файла в байтах
-        file_size = file_size - 14  # отсекаем 14 байт заголовка
-        try:
-            frames_count = file_size / (frame_size * 2)
-        except ZeroDivisionError as e:
-            print(frames_count)
-            print(e)
-        else:
-            frames_count = int(frames_count)
-    return frames_count
-
-
 def parse_planner_rsf(data, frame_size, frame_number):
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
@@ -117,6 +103,20 @@ def parse_planner_rsf(data, frame_size, frame_number):
             line.insert(0, name)
             line.insert(1, value)
     return data_with_values
+
+
+def frame_counter(frame_size):
+    with open(planner_RSF, 'rb') as file:
+        file_size = os.path.getsize(planner_RSF)  # Размер файла в байтах
+        file_size = file_size - 14  # отсекаем 14 байт заголовка
+        try:
+            frames_count = file_size / (frame_size * 2)
+        except ZeroDivisionError as e:
+            print(frames_count)
+            print(e)
+        else:
+            frames_count = int(frames_count)
+    return frames_count
 
 
 def find_in_structure(data, keyword):
@@ -148,15 +148,18 @@ def db_insert(finded_data):
 
             for i in range(count):
                 for string in finded_data:
+
+                    if 'isFake' in string[0]:
+                        string[1] = bool(string[1])
                     if type(string) is list and i == 1:
-                        keys.append(string[0])
+                        keys.append(string)
                         vals.append(string[1])
                     if type(string) is str:
                         i += 1
 
-                '''http://initd.org/psycopg/docs/usage.html#the-problem-with-the-query-parameters'''
                 try:
-                    lol = """CREATE TABLE beam_tasks (
+                    lol = """
+                    CREATE TABLE beam_tasks (
                     BeamTask serial PRIMARY KEY ,
 	                taskId integer NOT NULL,
 	                taskType integer NOT NULL,
@@ -172,24 +175,18 @@ def db_insert(finded_data):
 	                lowervelocitytrim FLOAT NOT NULL,
 	                isFake integer NOT NULL,
 	                techPointDistance integer NOT NULL,
-	                techPointHarmonic integer NOT NULL);"""
-                    asd = """
-                    DROP TABLE beam_tasks
-                    
-                    """
-                    cur.execute(asd)
-                    cur.execute(lol)
-                    # keys_str = ', '.join(str(a) for a in keys)
-                    query = """
-                    INSERT INTO beam_tasks (isFake, taskId,
-                    taskType, viewDirectionId, antennaId, pulsePeriod,
-                    threshold, lowerVelocityTrim, upperVelocityTrim,
-                    lowerDistanceTrim, upperDistanceTrim, betaBSK,
-                    epsilonBSK, techPointDistance, techPointHarmonic) VALUES (%s);
-                    """
+	                techPointHarmonic integer NOT NULL);
+	                """
+                    asd = """DROP TABLE beam_tasks"""
 
-                    data = ', '.join(str(o) for o in vals)
-                    cur.executemany(query, data)
+                    columns = ','.join([f'"{x[0]}"' for x in keys])
+                    param_placeholders = ','.join(['%s' for x in range(len(keys))])
+                    query = f"INSERT INTO beam_tasks ({columns}) VALUES ({param_placeholders})"
+
+                    print(query)
+                    param_values = tuple(x[1] for x in keys)
+                    cur.execute(query, param_values)
+
                 except Exception as e:
                     print(e)
 
