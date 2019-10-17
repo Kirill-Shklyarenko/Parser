@@ -133,40 +133,44 @@ def find_in_structure(data, keyword):
     return finded_data
 
 
-def db_insert(finded_data):
+def line_counter(data):
+    block_count = 0
+    line_count = 0
+    for string in data:
+        if type(string) is str:
+            block_count += 1
+        if type(string) is list and block_count == 1:
+            line_count += 1
+    return line_count
+
+
+def slicer(data, count_of_lines_in_data):
+    for string in data:
+        if type(string) is str:
+            data.remove(string)
+    for i in range(0, len(data), count_of_lines_in_data):
+        yield data[i:i + count_of_lines_in_data]
+
+def db_insert(data):
     with psycopg2.connect(dbname='telemetry', user='postgres',
                           password='123', host='localhost') as conn:
         conn.autocommit = True
         with conn.cursor() as cur:
-            keys = []
-            vals = []
-            count = 0
 
-            for string in finded_data:
-                if type(string) is str:
-                    count += 1
+            for string in data:
+                if 'isFake' in string[0]:
+                    string[1] = bool(string[1])
 
-            for i in range(count):
-                for string in finded_data:
-
-                    if 'isFake' in string[0]:
-                        string[1] = bool(string[1])
-                    if type(string) is list and i == 1:
-                        keys.append(string)
-                        vals.append(string[1])
-                    if type(string) is str:
-                        i += 1
-
-                try:
-                    columns = ','.join([f'"{x[0]}"' for x in keys])
-                    param_placeholders = ','.join(['%s' for x in range(len(keys))])
-                    query = f"INSERT INTO beam_tasks ({columns}) VALUES ({param_placeholders})"
-
-                    print(query)
-                    param_values = tuple(x[1] for x in keys)
-                    cur.execute(query, param_values)
-                except Exception as e:
-                    print(e)
+            try:
+                columns = ','.join([f'"{x[0]}"' for x in data])
+                param_placeholders = ','.join(['%s' for x in range(len(data))])
+                query = f"INSERT INTO beam_tasks ({columns}) VALUES ({param_placeholders})"
+                param_values = tuple(x[1] for x in data)
+                cur.execute(query, param_values)
+            except Exception as e:
+                print(e)
+            finally:
+                print(query, param_values)
 
 
 if __name__ == "__main__":
@@ -181,11 +185,17 @@ if __name__ == "__main__":
         struct_with_values = parse_planner_rsf(struct[0], frame_size, frame_number)
 
         # Находим "слово" в структуре
-        finded_data = find_in_structure(struct_with_values, 'beamTask')
-        db_insert(finded_data)
+        fdata = find_in_structure(struct_with_values, 'beamTask')
 
-        for s in finded_data: print(s)
-        for i in range(10): print(105 * '*')
+        # Подсчитываем количество линий с параметрами у фрейма
+        count_of_lid = line_counter(fdata)
+
+        sliced_data = list(slicer(fdata, count_of_lid))
+        for sublist in sliced_data:
+            db_insert(sublist)
+
+        #for s in fdata: print(s)
+        for i in range(5): print(105 * '*')
 
         if frame_number == 1:
             hh = 78
