@@ -158,27 +158,6 @@ def db_insert(finded_data):
                         i += 1
 
                 try:
-                    lol = """
-                    CREATE TABLE beam_tasks (
-                    BeamTask serial PRIMARY KEY ,
-	                taskId integer NOT NULL,
-	                taskType integer NOT NULL,
-	                pulsePeriod integer NOT NULL,
-	                viewDirectionId integer NOT NULL,
-	                antennaId integer NOT NULL,
-	                epsilonBSK integer NOT NULL,
-	                betaBSK integer NOT NULL,
-	                threshold FLOAT NOT NULL,
-	                lowerDistanceTrim FLOAT NOT NULL,
-	                upperDistanceTrim FLOAT NOT NULL,
-	                upperVelocityTrim FLOAT NOT NULL,
-	                lowervelocitytrim FLOAT NOT NULL,
-	                isFake integer NOT NULL,
-	                techPointDistance integer NOT NULL,
-	                techPointHarmonic integer NOT NULL);
-	                """
-                    asd = """DROP TABLE beam_tasks"""
-
                     columns = ','.join([f'"{x[0]}"' for x in keys])
                     param_placeholders = ','.join(['%s' for x in range(len(keys))])
                     query = f"INSERT INTO beam_tasks ({columns}) VALUES ({param_placeholders})"
@@ -186,7 +165,6 @@ def db_insert(finded_data):
                     print(query)
                     param_values = tuple(x[1] for x in keys)
                     cur.execute(query, param_values)
-
                 except Exception as e:
                     print(e)
 
