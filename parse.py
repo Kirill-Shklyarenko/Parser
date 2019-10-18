@@ -4,8 +4,6 @@ import copy
 import re
 
 import psycopg2
-from psycopg2.extensions import adapt, register_adapter, AsIs
-from psycopg2 import sql
 
 planner = r'Planner'
 planner_RSF = r'Planner.rsf'
@@ -89,7 +87,7 @@ def parse_text_file():
     return data, frame_size
 
 
-def parse_planner_rsf(data, frame_size, frame_number):
+def parse_bin_file(data, frame_size, frame_number):
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
     for line in data_with_values:
@@ -191,7 +189,7 @@ if __name__ == "__main__":
     # 3) Парсим бинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
-        struct_with_values = parse_planner_rsf(struct[0], frame_size, frame_number)
+        struct_with_values = parse_bin_file(struct[0], frame_size, frame_number)
 
         # Находим "ключевое слово" в структуре
         table_names = 'beamTask', 'primaryMark', 'trackCandidate'
@@ -209,4 +207,4 @@ if __name__ == "__main__":
         for i in range(5): print(105 * '*')
 
         if frame_number == 1:
-            hh = 78
+            breakpoint()
