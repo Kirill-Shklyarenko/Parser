@@ -151,6 +151,7 @@ def slicer(data, count_of_lines_in_data):
     for i in range(0, len(data), count_of_lines_in_data):
         yield data[i:i + count_of_lines_in_data]
 
+
 def db_insert(data, table_name):
     with psycopg2.connect(dbname='telemetry', user='postgres',
                           password='123', host='localhost') as conn:
@@ -164,14 +165,20 @@ def db_insert(data, table_name):
                     string[1] = bool(string[1])
 
             try:
+                # Для того чтобы узнать имена полей таблицы
+                # cur.execute(f'SELECT * FROM "{table_name}";')
+                # col_names = []
+                # for elt in cur.description:
+                #     col_names.append(elt[0])
+                # print(f'Table {table_name} have columns: {col_names}')
                 columns = ','.join([f'"{x[0]}"' for x in data])
                 param_placeholders = ','.join(['%s' for x in range(len(data))])
                 query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
                 param_values = tuple(x[1] for x in data)
                 cur.execute(query, param_values)
             except Exception as e:
-                print(e)
-            finally:
+                print(f'\r\nException: {e}')
+            else:
                 print(query, param_values)
 
 
@@ -186,22 +193,19 @@ if __name__ == "__main__":
         print('\r\nFRAME № %s \r\n' % frame_number)
         struct_with_values = parse_planner_rsf(struct[0], frame_size, frame_number)
 
-
-        # Находим "слово" в структуре
+        # Находим "ключевое слово" в структуре
         table_names = 'beamTask', 'primaryMark', 'trackCandidate'
         for i in range(len(table_names)):
             fdata = find_in_structure(struct_with_values, table_names[i])
 
-            # Подсчитываем количество линий с параметрами у фрейма
+            # Подсчитываем количество линий с параметрами у фрейма, чтобы правильно нарезать данные
             count_of_lid = line_counter(fdata)
 
             sliced_data = list(slicer(fdata, count_of_lid))
             for sublist in sliced_data:
                 db_insert(sublist, table_names[i])
 
-
-
-        #for s in fdata: print(s)
+        # for s in fdata: print(s)
         for i in range(5): print(105 * '*')
 
         if frame_number == 1:
