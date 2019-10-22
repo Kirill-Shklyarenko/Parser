@@ -22,10 +22,10 @@ def byte_reader(type_w, offset):
         file.seek(offset + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
 
         if 'WW' in type_w:
-            type_w = 'I'  # UINT_2t
+            type_w = 'I'  # UINT_2
             size = 2
         elif 'SS' in type_w:
-            type_w = 'i'  # INT_2t
+            type_w = 'i'  # INT_2
             size = 2
         elif 'UU' in type_w:
             type_w = '<i'
