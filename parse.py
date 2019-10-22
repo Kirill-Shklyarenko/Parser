@@ -48,9 +48,12 @@ def byte_reader(type_w, offset):
 def parse_text_file():
     number_of_line = 1
     data = []
+    params = {}
     with open(planner) as file:
         for line in file:
             line = line.split()
+            if 'scanDataGroup' in line:
+                breakpoint()
             # Поиск размера блока данных
             if len(line) == 1 and ';' not in line[0]:
                 next_line = nxt_line(number_of_line + 1)
@@ -65,11 +68,10 @@ def parse_text_file():
                 next_line = nxt_line(number_of_line + 1)
                 if ';' in next_line[0]:
                     next_line.remove(';')
-                    data.append(next_line[0])
-                    number_of_line += 1
-                else:
-                    data.append(nwline)
-                    number_of_line += 1
+                    nwline = ''.join(next_line)
+                data.append(nwline)
+                number_of_line += 1
+
             # Поиск описания переменных
             elif len(line) > 3:
                 if 'UU' in line[5]:
@@ -186,7 +188,7 @@ if __name__ == "__main__":
     # 2) Вычисляем количество кадров
     frame_c = frame_counter(struct[1])
     frame_size = struct[1]
-    # 3) Парсим бинарник по кадрам
+    # 3) Парсим свинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
         struct_with_values = parse_bin_file(struct[0], frame_size, frame_number)
