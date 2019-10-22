@@ -51,8 +51,6 @@ def parse_text_file():
     with open(planner) as file:
         for line in file:
             line = line.split()
-            if 'scanDataGroup' in line:
-                breakpoint()
             # Поиск размера блока данных
             if len(line) == 1 and ';' not in line[0]:
                 next_line = nxt_line(number_of_line + 1)
