@@ -48,7 +48,6 @@ def byte_reader(type_w, offset):
 def parse_text_file():
     number_of_line = 1
     data = []
-    params = {}
     with open(planner) as file:
         for line in file:
             line = line.split()
@@ -92,6 +91,7 @@ def parse_text_file():
 def parse_bin_file(data, frame_size, frame_number):
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
+
     for line in data_with_values:
         if len(line) == 3:
             name = line[0]
@@ -99,6 +99,7 @@ def parse_bin_file(data, frame_size, frame_number):
             offset = line[2] + frame_rate
 
             value = byte_reader(type_w, offset)
+
             line.clear()
             line.insert(0, name)
             line.insert(1, value)
