@@ -151,58 +151,128 @@ def slicer(data, count_of_lines_in_data):
         yield data[i:i + count_of_lines_in_data]
 
 
-def db_insert(data, table_name):
-    with psycopg2.connect(dbname='telemetry', user='postgres',
-                          password='123', host='localhost') as conn:
-        conn.autocommit = True
-        with conn.cursor() as cur:
+def create_group(data):
+    group = []
+    substring = []
+    params = {}
+    cnt = 0
+    for string in data:
+        if type(string) is str:
+            cnt += 1
+            if cnt > 1:
+                substring.append(copy.copy(params))
+                params.clear()
+                group.append(copy.copy(substring))
+                substring.clear()
+            substring.append(string)
+        elif type(string) is list:
+            params[string[0]] = string[1]
+    return group
 
-            for string in data:
-                if 'isFake' in string[0]:
-                    string[1] = bool(string[1])
-                if 'hasMatchedTrack' in string[0]:
-                    string[1] = bool(string[1])
 
-            try:
-                # Для того чтобы узнать имена полей таблицы
-                # cur.execute(f'SELECT * FROM "{table_name}";')
-                # col_names = []
-                # for elt in cur.description:
-                #     col_names.append(elt[0])
-                # print(f'Table {table_name} have columns: {col_names}')
-                columns = ','.join([f'"{x[0]}"' for x in data])
-                param_placeholders = ','.join(['%s' for x in range(len(data))])
-                query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
-                param_values = tuple(x[1] for x in data)
-                cur.execute(query, param_values)
-            except Exception as e:
-                print(f'\r\nException: {e}')
-            else:
-                print(query, param_values)
+def find_group(group, name_to_find):
+    for node in group:
+        name = node[0]
+        if name == name_to_find:
+        # if re.search(name_to_find, name):
+            return node
+
+
+def connection():
+    conn = psycopg2.connect(dbname='telemetry', user='postgres',
+                            password='123', host='localhost')
+    conn.autocommit = True
+    cur = conn.cursor()
+    return cur, conn
+
+# def db_insert(data, table_name):
+#     for string in data:
+#         if 'isFake' in string[0]:
+#             string[1] = bool(string[1])
+#         if 'hasMatchedTrack' in string[0]:
+#             string[1] = bool(string[1])
+#
+#     try:
+#         # Для того чтобы узнать имена полей таблицы
+#         # cur.execute(f'SELECT * FROM "{table_name}";')
+#         # col_names = []
+#         # for elt in cur.description:
+#         #     col_names.append(elt[0])
+#         # print(f'Table {table_name} have columns: {col_names}')
+#         columns = ','.join([f'"{x[0]}"' for x in data])
+#         param_placeholders = ','.join(['%s' for x in range(len(data))])
+#         query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
+#         param_values = tuple(x[1] for x in data)
+#         cur.execute(query, param_values)
+#     except Exception as e:
+#         print(f'\r\nException: {e}')
+#     else:
+#         print(query, param_values)
+
+def insert_beam_tasks(data, cur):
+    table_name = 'BeamTasks'
+
+    # Для того чтобы узнать имена полей таблицы
+    cur.execute(f'SELECT * FROM "{table_name}";')
+    col_names = []
+    for elt in cur.description:
+        col_names.append(elt[0])
+
+    print(f'Table "{table_name}" have columns: {col_names}')
+
+    data_to_insert = []
+    
+    for key, value in data[1].items():
+        if key in col_names:
+            substr_to_insert = []
+            substr_to_insert.append(key)
+            substr_to_insert.append(value)
+            data_to_insert.append(substr_to_insert)
+
+    # Некоторые преобразования над данными
+    for string in data_to_insert:
+        if 'isFake' in string[0]:
+            string[1] = bool(string[1])
+        if 'hasMatchedTrack' in string[0]:
+            string[1] = bool(string[1])
+
+    columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
+    param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])
+    query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
+    param_values = tuple(x[1] for x in data_to_insert)
+    try:
+        cur.execute(query, param_values)
+    except Exception as e:
+        print(f'\r\nException: {e}')
+    else:
+        print(query, param_values)
 
 
 if __name__ == "__main__":
     # 1) Парсим текстовый файл
     struct = parse_text_file()
-    # 2) Вычисляем количество кадров
-    frame_c = frame_counter(struct[1])
+    data = struct[0]
     frame_size = struct[1]
+    # 2) Вычисляем количество кадров
+    frame_c = frame_counter(frame_size)
+    # Соединяемся с БД
+    cur, conn = connection()
     # 3) Парсим свинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
-        struct_with_values = parse_bin_file(struct[0], frame_size, frame_number)
 
-        # Находим "ключевое слово" в структуре
-        table_names = 'beamTask', 'primaryMark', 'trackCandidate'
-        for i in range(len(table_names)):
-            fdata = find_in_structure(struct_with_values, table_names[i])
+        # Возможно придется обьеденить два метода:
+        struct_with_values = parse_bin_file(data, frame_size, frame_number) #   ЭТОТ
+        group = create_group(struct_with_values)                            # И ЭТОТ
 
-            # Подсчитываем количество линий с параметрами у фрейма, чтобы правильно нарезать данные
-            count_of_lid = line_counter(fdata)
+        # Находим ноду по "ключевому слову" в группах
+        name_to_find = 'beamTask'
+        i_bt = find_group(group, name_to_find)
 
-            sliced_data = list(slicer(fdata, count_of_lid))
-            for sublist in sliced_data:
-                db_insert(sublist, table_names[i])
+        # Вставляем ее в бд
+        insert_beam_tasks(i_bt, cur)
+
+
 
         # for s in fdata: print(s)
         for i in range(5): print(105 * '*')
