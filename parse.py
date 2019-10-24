@@ -149,20 +149,6 @@ def frame_counter(frame_size):
     return frames_count
 
 
-# def find_in_structure(data, keyword):
-#     finded_data = []
-#     flag = False
-#     for line in data:
-#         if type(line) is str:
-#             if re.search(keyword, line):
-#                 flag = True
-#             else:
-#                 flag = False
-#         if flag:
-#             finded_data.append(line)
-#     return finded_data
-
-
 # def line_counter(data):
 #     block_count = 0
 #     line_count = 0
@@ -174,42 +160,20 @@ def frame_counter(frame_size):
 #     return line_count
 
 
-#def slicer(data, count_of_lines_in_data):
-#    for string in data:
-#        if type(string) is str:
-#            data.remove(string)
-#    for i in range(0, len(data), count_of_lines_in_data):
-#        yield data[i:i + count_of_lines_in_data]
-
-
-class Huyas():
-    def __init__(self, data):
-        self.data = data
-
-        self.name = self.name()
-        pass
-        # self.
-        # self.
-        # self.
-    def name(self):
-        for s in data:
-            if type(s) is str:
-                pass
-
-
 def find_group(group, name_to_find):
-    print("Match Case? ----> Y/N")
-    a = input()
+    print("Искать только целое слово? ----> Y/N")
+    finded_data = []
+    inp = input()
     for node in group:
         name = node[0]
-        if 'Y' in a:
+        flag = False
+        if inp == 'Y':
             if name == name_to_find:
-                print(node)
                 return node
         else:
             if re.search(name_to_find, name):
-                print(node)
-                return node
+                finded_data.append(node)
+    return finded_data
 
 
 def connection():
@@ -228,36 +192,68 @@ def insert_beam_tasks(data, cur):
     col_names = []
     for elt in cur.description:
         col_names.append(elt[0])
-    #print(f'Table "{table_name}" have columns: {col_names}')
 
-    # чето другое
+    # Проделываем некоторую работу над данными
     data_to_insert = []
-    
-    for key, value in data[1].items():
-        if key in col_names:
-            substr_to_insert = []
-            substr_to_insert.append(key)
-            substr_to_insert.append(value)
-            data_to_insert.append(substr_to_insert)
 
-    # int(0) ----> to False
-    for string in data_to_insert:
-        if 'isFake' in string[0]:
-            string[1] = bool(string[1])
-        if 'hasMatchedTrack' in string[0]:
-            string[1] = bool(string[1])
+    # Проверяем что data содержит одну ноду
+    if len(data) == 2:   # node = [str, dict]
+        for key, value in data[1].items():
+            if key in col_names:
+                substr_to_insert = []
+                substr_to_insert.append(key)
+                substr_to_insert.append(value)
+                data_to_insert.append(substr_to_insert)
 
-    # формирование строки запроса
-    columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
-    param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])
-    query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
-    param_values = tuple(x[1] for x in data_to_insert)
-    try:
-        cur.execute(query, param_values)
-    except Exception as e:
-        print(f'\r\nException: {e}')
+        # ------------------------------------------------#
+        # Преобразование типов (int ---> bool)
+        for string in data_to_insert:
+            if 'isFake' in string[0]:
+                string[1] = bool(string[1])
+            if 'hasMatchedTrack' in string[0]:
+                string[1] = bool(string[1])
+
+        # формирование строки запроса
+        columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
+        param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])
+        query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
+        param_values = tuple(x[1] for x in data_to_insert)
+        try:
+            cur.execute(query, param_values)
+        except Exception as e:
+            print(f'\r\nException: {e}')
+        else:
+            print(query, param_values)
     else:
-        print(query, param_values)
+        # node = slicer(data)
+        for name, node in data:
+            for key, value in node.items():
+                if key in col_names:
+                    substr_to_insert = []
+                    substr_to_insert.append(key)
+                    substr_to_insert.append(value)
+                    data_to_insert.append(substr_to_insert)
+
+            #------------------------------------------------#
+            # Преобразование типов (int ---> bool)
+            for string in data_to_insert:
+                if 'isFake' in string[0]:
+                    string[1] = bool(string[1])
+                if 'hasMatchedTrack' in string[0]:
+                    string[1] = bool(string[1])
+            
+            # формирование строки запроса
+            columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
+            param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])
+            query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
+            param_values = tuple(x[1] for x in data_to_insert)
+            try:
+                cur.execute(query, param_values)
+                data_to_insert.clear()
+            except Exception as e:
+                print(f'\r\nException: {e}')
+            else:
+                print(query, param_values)
 
 
 if __name__ == "__main__":
@@ -271,20 +267,14 @@ if __name__ == "__main__":
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
 
-        struct_with_values = parse_bin_file(data, frame_size, frame_number)
-        print('ololol')
+        group = parse_bin_file(data, frame_size, frame_number)
 
         # Находим ноду по "ключевому слову" в группах
         name_to_find = 'beamTask'
-        # i_bt = find_group(group, name_to_find)
+        i_bt = find_group(group, name_to_find)
 
         # Вставляем ее в бд
-        #insert_beam_tasks(i_bt, cur)
-
-
+        insert_beam_tasks(i_bt, cur)
 
         # for s in fdata: print(s)
-        for i in range(5): print(105 * '*')
-
-        if frame_number == 1:
-            breakpoint()
+        print(105 * '*')
