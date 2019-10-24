@@ -96,8 +96,6 @@ def parse_bin_file(data, frame_size, frame_number):
     cnt_entity = 0
 
     for index, line in enumerate(data_with_values):
-        if 'scanData' in line:
-            breakpoint()
         if type(line) is str:
             cnt_entity += 1
             if cnt_entity > 1 and substring:
