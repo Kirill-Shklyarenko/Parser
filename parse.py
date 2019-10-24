@@ -185,29 +185,6 @@ def connection():
     cur = conn.cursor()
     return cur, conn
 
-# def db_insert(data, table_name):
-#     for string in data:
-#         if 'isFake' in string[0]:
-#             string[1] = bool(string[1])
-#         if 'hasMatchedTrack' in string[0]:
-#             string[1] = bool(string[1])
-#
-#     try:
-#         # Для того чтобы узнать имена полей таблицы
-#         # cur.execute(f'SELECT * FROM "{table_name}";')
-#         # col_names = []
-#         # for elt in cur.description:
-#         #     col_names.append(elt[0])
-#         # print(f'Table {table_name} have columns: {col_names}')
-#         columns = ','.join([f'"{x[0]}"' for x in data])
-#         param_placeholders = ','.join(['%s' for x in range(len(data))])
-#         query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
-#         param_values = tuple(x[1] for x in data)
-#         cur.execute(query, param_values)
-#     except Exception as e:
-#         print(f'\r\nException: {e}')
-#     else:
-#         print(query, param_values)
 
 def insert_beam_tasks(data, cur):
     table_name = 'BeamTasks'
