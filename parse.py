@@ -2,7 +2,6 @@ from struct import *
 import os
 import copy
 import re
-
 import psycopg2
 
 planner = r'Planner'
@@ -149,10 +148,8 @@ def frame_counter(frame_size):
     return frames_count
 
 
-def find_group(group, name_to_find):
-    print("Искать только целое слово? ----> Y/N")
+def find_group(group, name_to_find, inp):
     finded_data = []
-    inp = input()
     for node in group:
         name = node[0]
         flag = False
@@ -194,9 +191,7 @@ def execute(data_to_insert, table_name, cur):
         print(query, param_values)
 
 
-def insert_into_bd(data, cur):
-    table_name = 'BeamTasks'
-
+def insert_into_bd(data, cur, table_name):
     # Для того чтобы узнать имена полей таблицы
     cur.execute(f'SELECT * FROM "{table_name}";')
     col_names = []
@@ -224,6 +219,7 @@ def insert_into_bd(data, cur):
                     data_to_insert.append(substr_to_insert)
 
             execute(data_to_insert, table_name, cur)
+            data_to_insert.clear()
 
 
 if __name__ == "__main__":
@@ -233,6 +229,8 @@ if __name__ == "__main__":
     frame_c = frame_counter(frame_size)
     # Соединяемся с БД
     cur, conn = connection()
+    print("Искать только целое слово? ----> Y/N")
+    inp = input()
     # 3) Парсим свинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
@@ -240,10 +238,11 @@ if __name__ == "__main__":
 
         # Находим ноду по "ключевому слову" в группах
         name_to_find = 'beamTask'
-        i_bt = find_group(group, name_to_find)
-
+        i_bt = find_group(group, name_to_find, inp)
         # Вставляем ее в бд
-        insert_into_bd(i_bt, cur)
+        table_name = 'BeamTasks'
+        insert_into_bd(i_bt, cur, table_name)
+
 
         # for s in fdata: print(s)
         print(105 * '*')
