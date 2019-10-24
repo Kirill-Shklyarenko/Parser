@@ -90,18 +90,49 @@ def parse_bin_file(data, frame_size, frame_number):
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
 
-    for line in data_with_values:
-        if len(line) == 3:
+    group = []  # просто список элементов [0, 1, 2]
+    substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
+    params = {}  # словарь из параметров "Lon, Lat" etc
+    cnt_entity = 0
+
+    for index, line in enumerate(data_with_values):
+        if type(line) is str:
+            cnt_entity += 1
+            if cnt_entity > 1:
+                substring.append(copy.copy(params))
+                params.clear()
+                group.append(copy.copy(substring))
+                substring.clear()
+
+            if type(data_with_values[index + 1]) is not str:
+                substring.append(line)
+        else:
             name = line[0]
             type_w = line[1]
             offset = line[2] + frame_rate
-
             value = byte_reader(type_w, offset)
 
-            line.clear()
-            line.insert(0, name)
-            line.insert(1, value)
-    return data_with_values
+            params[name] = value
+    return group
+
+
+def create_group(data):
+    group = []          # просто список элементов [000, 001, 002]
+    substring = []      # который соержит имя "NavigationData, Flags, Beamtask" etc
+    params = {}         # со словарем из параметров "Lon, Lat" etc
+    cnt = 0
+    for line in data:
+        if type(line) is str:
+            cnt += 1
+            if cnt > 1:
+                substring.append(copy.copy(params))
+                params.clear()
+                group.append(copy.copy(substring))
+                substring.clear()
+            substring.append(line)
+        elif type(line) is list:
+            params[line[0]] = line[1]
+    return group
 
 
 def frame_counter(frame_size):
@@ -164,25 +195,6 @@ class Huyas():
         for s in data:
             if type(s) is str:
                 pass
-
-
-def create_group(data):
-    group = []          # просто список элементов [000, 001, 002]
-    substring = []      # который соержит имя "NavigationData, Flags, Beamtask" etc
-    params = {}         # со словарем из параметров "Lon, Lat" etc
-    cnt = 0
-    for string in data:
-        if type(string) is str:
-            cnt += 1
-            if cnt > 1:
-                substring.append(copy.copy(params))
-                params.clear()
-                group.append(copy.copy(substring))
-                substring.clear()
-            substring.append(string)
-        elif type(string) is list:
-            params[string[0]] = string[1]
-    return group
 
 
 def find_group(group, name_to_find):
@@ -250,9 +262,7 @@ def insert_beam_tasks(data, cur):
 
 if __name__ == "__main__":
     # 1) Парсим текстовый файл
-    struct = parse_text_file()
-    data = struct[0]
-    frame_size = struct[1]
+    data, frame_size = parse_text_file()
     # 2) Вычисляем количество кадров
     frame_c = frame_counter(frame_size)
     # Соединяемся с БД
@@ -261,18 +271,15 @@ if __name__ == "__main__":
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
 
-        # Возможно придется обьеденить два метода:
-        struct_with_values = parse_bin_file(data, frame_size, frame_number) #   ЭТОТ
-        #group = create_group(struct_with_values)                            # И ЭТОТ
-        d = Huyas(struct_with_values)
-
+        struct_with_values = parse_bin_file(data, frame_size, frame_number)
+        print('ololol')
 
         # Находим ноду по "ключевому слову" в группах
         name_to_find = 'beamTask'
-        i_bt = find_group(group, name_to_find)
+        # i_bt = find_group(group, name_to_find)
 
         # Вставляем ее в бд
-        insert_beam_tasks(i_bt, cur)
+        #insert_beam_tasks(i_bt, cur)
 
 
 
