@@ -9,13 +9,6 @@ planner = r'Planner'
 planner_RSF = r'Planner.rsf'
 
 
-def nxt_line(number_of_line):
-    with open(planner) as file:
-        line = file.readlines()[number_of_line - 1: number_of_line]
-        line = line[0].split()
-    return line
-
-
 def byte_reader(type_w, offset):
     with open(planner_RSF, 'rb') as file:
         offset *= 2  # Номер слова в блоке умножаем на размер слова (2 байта)
@@ -43,6 +36,13 @@ def byte_reader(type_w, offset):
         word = file.read(size)
         value = unpack(type_w, word)[0]
     return value
+
+
+def nxt_line(number_of_line):
+    with open(planner) as file:
+        line = file.readlines()[number_of_line - 1: number_of_line]
+        line = line[0].split()
+    return line
 
 
 def parse_text_file():
@@ -149,17 +149,6 @@ def frame_counter(frame_size):
     return frames_count
 
 
-# def line_counter(data):
-#     block_count = 0
-#     line_count = 0
-#     for string in data:
-#         if type(string) is str:
-#             block_count += 1
-#         if type(string) is list and block_count == 1:
-#             line_count += 1
-#     return line_count
-
-
 def find_group(group, name_to_find):
     print("Искать только целое слово? ----> Y/N")
     finded_data = []
@@ -184,7 +173,28 @@ def connection():
     return cur, conn
 
 
-def insert_beam_tasks(data, cur):
+def execute(data_to_insert, table_name, cur):
+    # Преобразование типов (int ---> bool)
+    for string in data_to_insert:
+        if 'isFake' in string[0]:
+            string[1] = bool(string[1])
+        if 'hasMatchedTrack' in string[0]:
+            string[1] = bool(string[1])
+
+    # формирование строки запроса
+    columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
+    param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])
+    query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
+    param_values = tuple(x[1] for x in data_to_insert)
+    try:
+        cur.execute(query, param_values)
+    except Exception as e:
+        print(f'\r\nException: {e}')
+    else:
+        print(query, param_values)
+
+
+def insert_into_bd(data, cur):
     table_name = 'BeamTasks'
 
     # Для того чтобы узнать имена полей таблицы
@@ -193,9 +203,7 @@ def insert_beam_tasks(data, cur):
     for elt in cur.description:
         col_names.append(elt[0])
 
-    # Проделываем некоторую работу над данными
     data_to_insert = []
-
     # Проверяем что data содержит одну ноду
     if len(data) == 2:   # node = [str, dict]
         for key, value in data[1].items():
@@ -205,27 +213,8 @@ def insert_beam_tasks(data, cur):
                 substr_to_insert.append(value)
                 data_to_insert.append(substr_to_insert)
 
-        # ------------------------------------------------#
-        # Преобразование типов (int ---> bool)
-        for string in data_to_insert:
-            if 'isFake' in string[0]:
-                string[1] = bool(string[1])
-            if 'hasMatchedTrack' in string[0]:
-                string[1] = bool(string[1])
-
-        # формирование строки запроса
-        columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
-        param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])
-        query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
-        param_values = tuple(x[1] for x in data_to_insert)
-        try:
-            cur.execute(query, param_values)
-        except Exception as e:
-            print(f'\r\nException: {e}')
-        else:
-            print(query, param_values)
+        execute(data_to_insert, table_name, cur)
     else:
-        # node = slicer(data)
         for name, node in data:
             for key, value in node.items():
                 if key in col_names:
@@ -234,39 +223,19 @@ def insert_beam_tasks(data, cur):
                     substr_to_insert.append(value)
                     data_to_insert.append(substr_to_insert)
 
-            #------------------------------------------------#
-            # Преобразование типов (int ---> bool)
-            for string in data_to_insert:
-                if 'isFake' in string[0]:
-                    string[1] = bool(string[1])
-                if 'hasMatchedTrack' in string[0]:
-                    string[1] = bool(string[1])
-            
-            # формирование строки запроса
-            columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
-            param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])
-            query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
-            param_values = tuple(x[1] for x in data_to_insert)
-            try:
-                cur.execute(query, param_values)
-                data_to_insert.clear()
-            except Exception as e:
-                print(f'\r\nException: {e}')
-            else:
-                print(query, param_values)
+            execute(data_to_insert, table_name, cur)
 
 
 if __name__ == "__main__":
-    # 1) Парсим текстовый файл
+    # Парсим текстовый файл
     data, frame_size = parse_text_file()
-    # 2) Вычисляем количество кадров
+    # Вычисляем количество кадров
     frame_c = frame_counter(frame_size)
     # Соединяемся с БД
     cur, conn = connection()
     # 3) Парсим свинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
-
         group = parse_bin_file(data, frame_size, frame_number)
 
         # Находим ноду по "ключевому слову" в группах
@@ -274,7 +243,7 @@ if __name__ == "__main__":
         i_bt = find_group(group, name_to_find)
 
         # Вставляем ее в бд
-        insert_beam_tasks(i_bt, cur)
+        insert_into_bd(i_bt, cur)
 
         # for s in fdata: print(s)
         print(105 * '*')
