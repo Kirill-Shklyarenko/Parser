@@ -118,43 +118,58 @@ def frame_counter(frame_size):
     return frames_count
 
 
-def find_in_structure(data, keyword):
-    finded_data = []
-    flag = False
-    for line in data:
-        if type(line) is str:
-            if re.search(keyword, line):
-                flag = True
-            else:
-                flag = False
-        if flag:
-            finded_data.append(line)
-    return finded_data
+# def find_in_structure(data, keyword):
+#     finded_data = []
+#     flag = False
+#     for line in data:
+#         if type(line) is str:
+#             if re.search(keyword, line):
+#                 flag = True
+#             else:
+#                 flag = False
+#         if flag:
+#             finded_data.append(line)
+#     return finded_data
 
 
-def line_counter(data):
-    block_count = 0
-    line_count = 0
-    for string in data:
-        if type(string) is str:
-            block_count += 1
-        if type(string) is list and block_count == 1:
-            line_count += 1
-    return line_count
+# def line_counter(data):
+#     block_count = 0
+#     line_count = 0
+#     for string in data:
+#         if type(string) is str:
+#             block_count += 1
+#         if type(string) is list and block_count == 1:
+#             line_count += 1
+#     return line_count
 
 
-def slicer(data, count_of_lines_in_data):
-    for string in data:
-        if type(string) is str:
-            data.remove(string)
-    for i in range(0, len(data), count_of_lines_in_data):
-        yield data[i:i + count_of_lines_in_data]
+#def slicer(data, count_of_lines_in_data):
+#    for string in data:
+#        if type(string) is str:
+#            data.remove(string)
+#    for i in range(0, len(data), count_of_lines_in_data):
+#        yield data[i:i + count_of_lines_in_data]
+
+
+class Huyas():
+    def __init__(self, data):
+        self.data = data
+
+        self.name = self.name()
+        pass
+        # self.
+        # self.
+        # self.
+    def name(self):
+        for s in data:
+            if type(s) is str:
+                pass
 
 
 def create_group(data):
-    group = []
-    substring = []
-    params = {}
+    group = []          # просто список элементов [000, 001, 002]
+    substring = []      # который соержит имя "NavigationData, Flags, Beamtask" etc
+    params = {}         # со словарем из параметров "Lon, Lat" etc
     cnt = 0
     for string in data:
         if type(string) is str:
@@ -171,11 +186,18 @@ def create_group(data):
 
 
 def find_group(group, name_to_find):
+    print("Match Case? ----> Y/N")
+    a = input()
     for node in group:
         name = node[0]
-        if name == name_to_find:
-        # if re.search(name_to_find, name):
-            return node
+        if 'Y' in a:
+            if name == name_to_find:
+                print(node)
+                return node
+        else:
+            if re.search(name_to_find, name):
+                print(node)
+                return node
 
 
 def connection():
@@ -194,9 +216,9 @@ def insert_beam_tasks(data, cur):
     col_names = []
     for elt in cur.description:
         col_names.append(elt[0])
+    #print(f'Table "{table_name}" have columns: {col_names}')
 
-    print(f'Table "{table_name}" have columns: {col_names}')
-
+    # чето другое
     data_to_insert = []
     
     for key, value in data[1].items():
@@ -206,13 +228,14 @@ def insert_beam_tasks(data, cur):
             substr_to_insert.append(value)
             data_to_insert.append(substr_to_insert)
 
-    # Некоторые преобразования над данными
+    # int(0) ----> to False
     for string in data_to_insert:
         if 'isFake' in string[0]:
             string[1] = bool(string[1])
         if 'hasMatchedTrack' in string[0]:
             string[1] = bool(string[1])
 
+    # формирование строки запроса
     columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
     param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])
     query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
@@ -240,7 +263,9 @@ if __name__ == "__main__":
 
         # Возможно придется обьеденить два метода:
         struct_with_values = parse_bin_file(data, frame_size, frame_number) #   ЭТОТ
-        group = create_group(struct_with_values)                            # И ЭТОТ
+        #group = create_group(struct_with_values)                            # И ЭТОТ
+        d = Huyas(struct_with_values)
+
 
         # Находим ноду по "ключевому слову" в группах
         name_to_find = 'beamTask'
