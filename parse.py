@@ -46,8 +46,6 @@ def nxt_line(number_of_line):
 
 def parse_text_file():
     number_of_line = 1
-    data = []
-
     group = []  # просто список элементов [0, 1, 2]
     substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
     params = {}  # словарь из параметров "Lon, Lat" etc
@@ -110,7 +108,7 @@ def parse_text_file():
                     #data.append(ca)
                     substring.append(params)
                     number_of_line += 1
-    return data, frame_size
+    return group, frame_size
 
 
 def parse_bin_file(data, frame_size, frame_number):
