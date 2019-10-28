@@ -114,10 +114,6 @@ def parse_text_file():
 def parse_bin_file(data, frame_size, frame_number):
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
-    # group = []  # просто список элементов [0, 1, 2]
-    # substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
-    # params = {}  # словарь из параметров "Lon, Lat" etc
-    # cnt_entity = 0
     for index, line in enumerate(data_with_values):
         for i in line:
             if type(i) == dict:
@@ -129,25 +125,6 @@ def parse_bin_file(data, frame_size, frame_number):
                 i.pop('offset')
                 i.update({'value' : value})
     return data_with_values
-
-    #     if type(line) is str:
-    #         cnt_entity += 1
-    #         if cnt_entity > 1 and substring:
-    #             substring.append(copy.copy(params))
-    #             params.clear()
-    #             group.append(copy.copy(substring))
-    #             substring.clear()
-    #
-    #         if type(data_with_values[index + 1]) is not str:
-    #             substring.append(line)
-    #     else:
-    #         name = line[0]
-    #         type_w = line[1]
-    #         offset = line[2] + frame_rate
-    #         value = byte_reader(type_w, offset)
-    #
-    #         params[name] = value
-    # return group
 
 
 def create_group(data):
@@ -230,31 +207,32 @@ def insert_into_bd(data, cur, table_name):
 
     data_to_insert = []
     # Проверяем что data содержит одну ноду
-    if len(data) == 2:   # node = [str, dict]
-        for key, value in data[1].items():
-            if key in col_names:
-                substr_to_insert = []
-                substr_to_insert.append(key)
-                substr_to_insert.append(value)
-                data_to_insert.append(substr_to_insert)
-
-        execute(data_to_insert, table_name, cur)
-    else:
-        for name, node in data:
-            for key, value in node.items():
-                if key in col_names:
+    # if len(data) == 2:   # node = [str, dict]
+    #     for key, value in data[1].items():
+    #         if key in col_names:
+    #             substr_to_insert = []
+    #             substr_to_insert.append(key)
+    #             substr_to_insert.append(value)
+    #             data_to_insert.append(substr_to_insert)
+    #
+    #     execute(data_to_insert, table_name, cur)
+    # else:
+    for node in data:
+        for i in node:
+            if type(i) is dict:
+                if i.get('name') in col_names:
                     substr_to_insert = []
-                    substr_to_insert.append(key)
-                    substr_to_insert.append(value)
+                    substr_to_insert.append(i.get('name'))
+                    substr_to_insert.append(i.get('value'))
                     data_to_insert.append(substr_to_insert)
 
-            execute(data_to_insert, table_name, cur)
-            data_to_insert.clear()
+        execute(data_to_insert, table_name, cur)
+        data_to_insert.clear()
 
 
 if __name__ == "__main__":
     # Парсим текстовый файл
-    data, frame_size = parse_text_file()
+    data_structure, frame_size = parse_text_file()
     # Вычисляем количество кадров
     frame_c = frame_counter(frame_size)
     # Соединяемся с БД
@@ -262,15 +240,24 @@ if __name__ == "__main__":
     # Парсим свинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
-        data_with_values = parse_bin_file(data, frame_size, frame_number)
+        data = parse_bin_file(data_structure, frame_size, frame_number)
 
         # Находим группу по "ключевому слову"
         name_to_find = 'beamTask'
-        i_bt = find_group(data_with_values, name_to_find)
+        i_bt = find_group(data, name_to_find)
         # Вставляем ее в бд
-        table_name = 'BeamTasks'
+        table_name = 'beamTask'
         insert_into_bd(i_bt, cur, table_name)
 
 
         # for s in fdata: print(s)
         print(105 * '*')
+        """
+        data = Class()
+        bt
+        
+        
+        """
+
+
+
