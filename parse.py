@@ -254,7 +254,7 @@ def insert_into_bd(data, cur, table_name):
 
 if __name__ == "__main__":
     # Парсим текстовый файл
-    group, frame_size = parse_text_file()
+    data, frame_size = parse_text_file()
     # Вычисляем количество кадров
     frame_c = frame_counter(frame_size)
     # Соединяемся с БД
@@ -262,7 +262,7 @@ if __name__ == "__main__":
     # Парсим свинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
-        data_with_values = parse_bin_file(group, frame_size, frame_number)
+        data_with_values = parse_bin_file(data, frame_size, frame_number)
 
         # Находим группу по "ключевому слову"
         name_to_find = 'beamTask'
