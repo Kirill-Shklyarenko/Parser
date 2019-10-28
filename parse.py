@@ -114,31 +114,40 @@ def parse_text_file():
 def parse_bin_file(data, frame_size, frame_number):
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
-
-    group = []  # просто список элементов [0, 1, 2]
-    substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
-    params = {}  # словарь из параметров "Lon, Lat" etc
-    cnt_entity = 0
-
+    # group = []  # просто список элементов [0, 1, 2]
+    # substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
+    # params = {}  # словарь из параметров "Lon, Lat" etc
+    # cnt_entity = 0
     for index, line in enumerate(data_with_values):
-        if type(line) is str:
-            cnt_entity += 1
-            if cnt_entity > 1 and substring:
-                substring.append(copy.copy(params))
-                params.clear()
-                group.append(copy.copy(substring))
-                substring.clear()
+        for i in line:
+            if type(i) == dict:
+                name = i.get('name')
+                type_w = i.get('type')
+                offset = i.get('offset')
+                value = byte_reader(type_w, offset)
+                i.pop('type')
+                i.pop('offset')
+                i.update({'value' : value})
+    return data_with_values
 
-            if type(data_with_values[index + 1]) is not str:
-                substring.append(line)
-        else:
-            name = line[0]
-            type_w = line[1]
-            offset = line[2] + frame_rate
-            value = byte_reader(type_w, offset)
-
-            params[name] = value
-    return group
+    #     if type(line) is str:
+    #         cnt_entity += 1
+    #         if cnt_entity > 1 and substring:
+    #             substring.append(copy.copy(params))
+    #             params.clear()
+    #             group.append(copy.copy(substring))
+    #             substring.clear()
+    #
+    #         if type(data_with_values[index + 1]) is not str:
+    #             substring.append(line)
+    #     else:
+    #         name = line[0]
+    #         type_w = line[1]
+    #         offset = line[2] + frame_rate
+    #         value = byte_reader(type_w, offset)
+    #
+    #         params[name] = value
+    # return group
 
 
 def create_group(data):
@@ -174,7 +183,7 @@ def frame_counter(frame_size):
     return frames_count
 
 
-def find_group(group, name_to_find, inp):
+def find_group(group, name_to_find):
     finded_data = []
     for node in group:
         name = node[0]
@@ -245,7 +254,7 @@ def insert_into_bd(data, cur, table_name):
 
 if __name__ == "__main__":
     # Парсим текстовый файл
-    data, frame_size = parse_text_file()
+    group, frame_size = parse_text_file()
     # Вычисляем количество кадров
     frame_c = frame_counter(frame_size)
     # Соединяемся с БД
@@ -253,11 +262,11 @@ if __name__ == "__main__":
     # Парсим свинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
-        group = parse_bin_file(data, frame_size, frame_number)
+        data_with_values = parse_bin_file(group, frame_size, frame_number)
 
         # Находим группу по "ключевому слову"
         name_to_find = 'beamTask'
-        i_bt = find_group(group, name_to_find, inp)
+        i_bt = find_group(data_with_values, name_to_find)
         # Вставляем ее в бд
         table_name = 'BeamTasks'
         insert_into_bd(i_bt, cur, table_name)
