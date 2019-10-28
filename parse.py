@@ -152,12 +152,7 @@ def find_group(group, name_to_find, inp):
     finded_data = []
     for node in group:
         name = node[0]
-        flag = False
-        if inp == 'Y':
-            if name == name_to_find:
-                return node
-        else:
-            if re.search(name_to_find, name):
+        if re.search(name_to_find, name):
                 finded_data.append(node)
     return finded_data
 
