@@ -47,6 +47,11 @@ def nxt_line(number_of_line):
 def parse_text_file():
     number_of_line = 1
     data = []
+
+    group = []  # просто список элементов [0, 1, 2]
+    substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
+    params = {}  # словарь из параметров "Lon, Lat" etc
+
     with open(planner) as file:
         for line in file:
             line = line.split()
@@ -56,31 +61,54 @@ def parse_text_file():
                 if len(next_line) == 1 and ';' not in next_line[0]:
                     frame_size = int(line[0])
                     number_of_line += 2
+
             # Поиск имени группы
             elif ';' in line[0]:
-                line.remove(';')
-                nwline = ''.join(line)
-                # Проверка следующей строки (не является ли она именем группы)
                 next_line = nxt_line(number_of_line + 1)
-                if ';' in next_line[0]:
-                    next_line.remove(';')
-                    nwline = ''.join(next_line)
-                data.append(nwline)
-                number_of_line += 1
+                if ';' not in next_line[0]:
+                    if substring:
+                        group.append(copy.copy(substring))
+                        substring.clear()
+                    line.remove(';')
+                    nwline = ''.join(line)
+                    substring.append(nwline)
+                    number_of_line += 1
+                else:
+                    group.append(copy.copy(substring))
+                    substring.clear()
+                    number_of_line += 1
 
             # Поиск описания переменных
             elif len(line) > 3:
                 if 'UU' in line[5]:
-                    ca = [line[0], line[5], int(line[1]) - 1]
-                    data.append(ca)
+                    params = {
+                        'name' : line[0],
+                        'type' : line[5],
+                        'offset' : int(line[1]) - 1
+                    }
+                    #ca = [line[0], line[5], int(line[1]) - 1]
+                    #data.append(ca)
+                    substring.append(params)
                     number_of_line += 2
                 elif 'LL' in line[5]:
-                    ca = [line[0], line[5], int(line[1]) - 1]
-                    data.append(ca)
+                    params = {
+                        'name': line[0],
+                        'type': line[5],
+                        'offset': int(line[1]) - 1
+                    }
+                    #ca = [line[0], line[5], int(line[1]) - 1]
+                    #data.append(ca)
+                    substring.append(params)
                     number_of_line += 2
                 else:
-                    ca = [line[0], line[5], int(line[1])]
-                    data.append(ca)
+                    params = {
+                        'name': line[0],
+                        'type': line[5],
+                        'offset': int(line[1])
+                    }
+                    #ca = [line[0], line[5], int(line[1])]
+                    #data.append(ca)
+                    substring.append(params)
                     number_of_line += 1
     return data, frame_size
 
@@ -153,7 +181,7 @@ def find_group(group, name_to_find, inp):
     for node in group:
         name = node[0]
         if re.search(name_to_find, name):
-                finded_data.append(node)
+            finded_data.append(node)
     return finded_data
 
 
@@ -224,14 +252,12 @@ if __name__ == "__main__":
     frame_c = frame_counter(frame_size)
     # Соединяемся с БД
     cur, conn = connection()
-    print("Искать только целое слово? ----> Y/N")
-    inp = input()
-    # 3) Парсим свинарник по кадрам
+    # Парсим свинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
         group = parse_bin_file(data, frame_size, frame_number)
 
-        # Находим ноду по "ключевому слову" в группах
+        # Находим группу по "ключевому слову"
         name_to_find = 'beamTask'
         i_bt = find_group(group, name_to_find, inp)
         # Вставляем ее в бд
