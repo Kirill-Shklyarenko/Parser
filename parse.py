@@ -161,12 +161,6 @@ def find_group(data, keyword):
     return finded_data
 
 
-def add_to(group, value, field_name=None):
-    other_value = find_item(data, value)
-    for group in group:
-        group.append(other_value)
-
-
 def find_item(data, item):
     finded_data = []
     for group in data:
@@ -177,6 +171,12 @@ def find_item(data, item):
                     return i
                 else:
                     continue
+
+
+def add_to(group, value, field_name=None):
+    other_value = find_item(data, value)
+    for group in group:
+        group.append(other_value)
 
 
 def connection():
@@ -256,11 +256,6 @@ if __name__ == "__main__":
         scan_data = find_group(data,'scanData')
         scan_time = {'name' : 'scanTime',
                      'value' : scan_data[0][1].get('value')}
-
-
-        a = 1
-
-
 
     # class Data_structure:
     #     def __init__(self):
