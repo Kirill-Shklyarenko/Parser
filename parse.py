@@ -107,7 +107,7 @@ def parse_text_file():
 def parse_bin_file(data, frame_size, frame_number):
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
-    for index, line in enumerate(data_with_values):
+    for line in data_with_values:
         for i in line:
             if type(i) is dict:
                 name = i.get('name')
@@ -149,34 +149,6 @@ def frame_counter(frame_size):
     else:
         frames_count = int(frames_count)
     return frames_count
-
-
-def find_group(data, keyword):
-    finded_data = []
-    for group in data:
-        name = group[0]
-        if re.search(keyword, name):
-            finded_data.append(group)
-
-    return finded_data
-
-
-def find_item(data, item):
-    finded_data = []
-    for group in data:
-        for i in group:
-            if type(i) is dict:
-                key = [ x for x in i][0]
-                if re.search(item, key):
-                    return i
-                else:
-                    continue
-
-
-def add_to(group, value, field_name=None):
-    other_value = find_item(data, value)
-    for group in group:
-        group.append(other_value)
 
 
 def connection():
@@ -229,6 +201,75 @@ def insert_into_bd(data, cur, table_name):
         data_to_insert.clear()
 
 
+def find_group(data, keyword, id):
+    finded_data = []
+    first_string_in_match = False
+    gap = False
+    matches_count = 0
+    prev_id = id
+    for id, group in enumerate(data):
+        name = group[0]
+        if id > prev_id:
+
+            if re.search(keyword, name) and matches_count == 0:
+                first_string_in_match = True
+                matches_count += 1
+                finded_data.append(group)
+            elif re.search(keyword, name) and first_string_in_match and not gap:
+                matches_count += 1
+                finded_data.append(group)
+            elif re.search(keyword, name) and gap:
+                return finded_data, id - 2
+            elif matches_count >= 1:
+                gap = True
+
+
+def entity_counter(data, keyword):
+
+    first_string_in_match = False
+    gap = False
+    matches_count = 0
+    entity_c = 0
+    for group in data:
+        name = group[0]
+
+        if re.search(keyword, name) and matches_count == 0:
+            first_string_in_match = True
+            matches_count += 1
+        elif re.search(keyword, name) and first_string_in_match and not gap:
+            matches_count += 1
+        elif re.search(keyword, name) and gap:
+            gap = False
+            matches_count = 0
+            entity_c += 1
+        elif matches_count >= 1:
+            gap = True
+    return entity_c + 1
+
+
+def find_item(data, item):
+    finded_data = []
+    names = [k for k in item.keys()]
+    params =  [v for v in item.values()]
+    for group in data:
+        for name in names:
+            if name in group[0]:
+                for i in group:
+                    if type(i) is dict:
+                        key = [x for x in i][0]
+                        for param in params:
+                            if re.search(param, key):
+                                return i
+                            else:
+                                continue
+
+
+def add_to(group, item, field_name=None):
+    other_value = find_item(data, item)
+    for group in group:
+        group.append(other_value)
+
+
 if __name__ == "__main__":
     # Парсим текстовый файл
     data_structure, frame_size = parse_text_file()
@@ -242,17 +283,23 @@ if __name__ == "__main__":
         data = parse_bin_file(data_structure, frame_size, frame_number)
         #---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
         # Находим группы по "ключевому слову"
-        bt = find_group(data, 'beamTask')
-
-        # Добавляем значения из других групп
-        add_to(bt, 'taskId')
-        # Вставляем ее в бд
-        insert_into_bd(bt, cur, 'BeamTasks')
+        # bt = find_group(data, 'beamTask')
+        #
+        # # Добавляем значения из других групп
+        # item = {'Task' : 'taskId'}
+        # add_to(bt, item)
+        # # Вставляем ее в бд
+        # # insert_into_bd(bt, cur, 'BeamTasks')
         print(105 * '*')
 
         # ---------------------ЗАПОЛНЯЕМ "PrimaryMarks"----------------------#
         # Находим группы по "ключевому слову"
-        pm = find_group(data, 'primaryMark')
+        entity_c = entity_counter(data, 'primaryMark')
+        id = 0
+        for entity in range(entity_c):
+            pm, id = find_group(data, 'primaryMark', id)
+            print(pm)
+
         scan_data = find_group(data,'scanData')
         scan_time = {'name' : 'scanTime',
                      'value' : scan_data[0][1].get('value')}
