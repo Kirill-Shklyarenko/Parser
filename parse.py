@@ -365,8 +365,8 @@ if __name__ == "__main__":
     #
     # data_structure = Data_structure()
     # for frame_number in range(data_structure.frames_count):
-    #     group_with_values = Parsed_data(frame_number)
-    #     beam_tasks = group_with_values.find('beamTask')
+    #     data = Parsed_data(frame_number)
+    #     beam_tasks = data.find('beamTask')
     #     beam_tasks.insert_to_bd
 
 
