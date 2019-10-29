@@ -109,7 +109,7 @@ def parse_bin_file(data, frame_size, frame_number):
     frame_rate = frame_number * frame_size
     for index, line in enumerate(data_with_values):
         for i in line:
-            if type(i) == dict:
+            if type(i) is dict:
                 name = i.get('name')
                 type_w = i.get('type')
                 offset = i.get('offset')
@@ -151,13 +151,32 @@ def frame_counter(frame_size):
     return frames_count
 
 
-def find_group(group, name_to_find):
+def find_group(data, keyword):
     finded_data = []
-    for node in group:
-        name = node[0]
-        if re.search(name_to_find, name):
-            finded_data.append(node)
+    for group in data:
+        name = group[0]
+        if re.search(keyword, name):
+            finded_data.append(group)
+
     return finded_data
+
+
+def add_to(group, value, field_name=None):
+    other_value = find_item(data, value)
+    for group in group:
+        group.append(other_value)
+
+
+def find_item(data, item):
+    finded_data = []
+    for group in data:
+        for i in group:
+            if type(i) is dict:
+                key = [ x for x in i][0]
+                if re.search(item, key):
+                    return i
+                else:
+                    continue
 
 
 def connection():
@@ -224,10 +243,9 @@ if __name__ == "__main__":
         #---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
         # Находим группы по "ключевому слову"
         bt = find_group(data, 'beamTask')
-        tasks = find_group(data, 'Task')
-        task_id = [[k,v] for k, v in tasks[0][1].items()] [0]
-        for group in bt:
-            group.append(task_id)
+
+        # Добавляем значения из других групп
+        add_to(bt, 'taskId')
         # Вставляем ее в бд
         insert_into_bd(bt, cur, 'BeamTasks')
         print(105 * '*')
