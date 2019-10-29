@@ -48,7 +48,6 @@ def parse_text_file():
     number_of_line = 1
     group = []  # просто список элементов [0, 1, 2]
     substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
-    params = {}  # словарь из параметров "Lon, Lat" etc
 
     with open(planner) as file:
         for line in file:
@@ -80,12 +79,10 @@ def parse_text_file():
             elif len(line) > 3:
                 if 'UU' in line[5]:
                     params = {
-                        'name' : line[0],
-                        'type' : line[5],
-                        'offset' : int(line[1]) - 1
+                        'name': line[0],
+                        'type': line[5],
+                        'offset': int(line[1]) - 1
                     }
-                    #ca = [line[0], line[5], int(line[1]) - 1]
-                    #data.append(ca)
                     substring.append(params)
                     number_of_line += 2
                 elif 'LL' in line[5]:
@@ -94,8 +91,6 @@ def parse_text_file():
                         'type': line[5],
                         'offset': int(line[1]) - 1
                     }
-                    #ca = [line[0], line[5], int(line[1]) - 1]
-                    #data.append(ca)
                     substring.append(params)
                     number_of_line += 2
                 else:
@@ -104,8 +99,6 @@ def parse_text_file():
                         'type': line[5],
                         'offset': int(line[1])
                     }
-                    #ca = [line[0], line[5], int(line[1])]
-                    #data.append(ca)
                     substring.append(params)
                     number_of_line += 1
     return group, frame_size
@@ -116,21 +109,20 @@ def parse_bin_file(data, frame_size, frame_number):
     frame_rate = frame_number * frame_size
     for index, line in enumerate(data_with_values):
         for i in line:
-            if type(i) == dict:
+            if type(i) is dict:
                 name = i.get('name')
                 type_w = i.get('type')
                 offset = i.get('offset')
-                value = byte_reader(type_w, offset)
-                i.pop('type')
-                i.pop('offset')
-                i.update({'value' : value})
+                value = byte_reader(type_w, offset + frame_rate)
+                i.clear()
+                i.update({name : value})
     return data_with_values
 
 
 def create_group(data):
-    group = []          # просто список элементов [000, 001, 002]
-    substring = []      # который соержит имя "NavigationData, Flags, Beamtask" etc
-    params = {}         # со словарем из параметров "Lon, Lat" etc
+    group = []  # просто список элементов [000, 001, 002]
+    substring = []  # который соержит имя "NavigationData, Flags, Beamtask" etc
+    params = {}  # со словарем из параметров "Lon, Lat" etc
     cnt = 0
     for line in data:
         if type(line) is str:
@@ -147,26 +139,44 @@ def create_group(data):
 
 
 def frame_counter(frame_size):
-    with open(planner_RSF, 'rb') as file:
-        file_size = os.path.getsize(planner_RSF)  # Размер файла в байтах
-        file_size = file_size - 14  # отсекаем 14 байт заголовка
-        try:
-            frames_count = file_size / (frame_size * 2)
-        except ZeroDivisionError as e:
-            print(frames_count)
-            print(e)
-        else:
-            frames_count = int(frames_count)
+    file_size = os.path.getsize(planner_RSF)  # Размер файла в байтах
+    file_size = file_size - 14  # отсекаем 14 байт заголовка
+    try:
+        frames_count = file_size / (frame_size * 2)
+    except ZeroDivisionError as e:
+        print(frames_count)
+        print(e)
+    else:
+        frames_count = int(frames_count)
     return frames_count
 
 
-def find_group(group, name_to_find):
+def find_group(data, keyword):
     finded_data = []
-    for node in group:
-        name = node[0]
-        if re.search(name_to_find, name):
-            finded_data.append(node)
+    for group in data:
+        name = group[0]
+        if re.search(keyword, name):
+            finded_data.append(group)
+
     return finded_data
+
+
+def find_item(data, item):
+    finded_data = []
+    for group in data:
+        for i in group:
+            if type(i) is dict:
+                key = [ x for x in i][0]
+                if re.search(item, key):
+                    return i
+                else:
+                    continue
+
+
+def add_to(group, value, field_name=None):
+    other_value = find_item(data, value)
+    for group in group:
+        group.append(other_value)
 
 
 def connection():
@@ -210,11 +220,10 @@ def insert_into_bd(data, cur, table_name):
     for node in data:
         for i in node:
             if type(i) is dict:
-                if i.get('name') in col_names:
-                    substr_to_insert = []
-                    substr_to_insert.append(i.get('name'))
-                    substr_to_insert.append(i.get('value'))
-                    data_to_insert.append(substr_to_insert)
+                k = list(i.keys())[0]
+                if k in col_names:
+                    items = [[k, v] for k, v in i.items()] [0]
+                    data_to_insert.append(items)
 
         execute(data_to_insert, table_name, cur)
         data_to_insert.clear()
@@ -231,103 +240,100 @@ if __name__ == "__main__":
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
         data = parse_bin_file(data_structure, frame_size, frame_number)
+        #---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
+        # Находим группы по "ключевому слову"
+        bt = find_group(data, 'beamTask')
 
-        # Находим группу по "ключевому слову"
-        name_to_find = 'beamTask'
-        i_bt = find_group(data, name_to_find)
+        # Добавляем значения из других групп
+        add_to(bt, 'taskId')
         # Вставляем ее в бд
-        table_name = 'beamTask'
-        insert_into_bd(i_bt, cur, table_name)
-
-
-        # for s in fdata: print(s)
+        insert_into_bd(bt, cur, 'BeamTasks')
         print(105 * '*')
 
-    # class Data_structure():
+        # ---------------------ЗАПОЛНЯЕМ "PrimaryMarks"----------------------#
+        # Находим группы по "ключевому слову"
+        pm = find_group(data, 'primaryMark')
+        scan_data = find_group(data,'scanData')
+        scan_time = {'name' : 'scanTime',
+                     'value' : scan_data[0][1].get('value')}
+
+    # class Data_structure:
     #     def __init__(self):
-    #         self.find_frame_size()
-    #         self.find_count_of_frames()
+    #         self.file = self.open()
+    #         self.frame_size = self.find_frame_size()
+    #         self.frames_count = self.find_count_of_frames()
     #         self.data_structure = self.do_structure()
     #
-    #     def nxt_line(self):
+    #     @staticmethod
+    #     def open():
     #         with open(planner) as file:
-    #             line = file.readlines()[self.number_of_line: self.number_of_line + 1]
-    #             line = line[0].split()
-    #             return line
+    #             data = file.readlines()
+    #             return data
     #
     #     def find_count_of_frames(self):
-    #         with open(planner_RSF, 'rb') as file:
-    #             file_size = os.path.getsize(planner_RSF)  # Размер файла в байтах
-    #             file_size = file_size - 14  # отсекаем 14 байт заголовка
-    #             try:
-    #                 self.frames_count = file_size / (self.frame_size * 2)
-    #             except ZeroDivisionError as e:
-    #                 print(self.frames_count)
-    #                 print(e)
-    #             else:
-    #                 self.frames_count = int(self.frames_count)
-    #         return self.frames_count
+    #         file_size = os.path.getsize(planner_RSF)  # Размер файла в байтах
+    #         file_size = file_size - 14  # отсекаем 14 байт заголовка
+    #         try:
+    #             frames_count = file_size / (self.frame_size * 2)
+    #         except ZeroDivisionError as e:
+    #             print(frames_count)
+    #             print(e)
+    #         else:
+    #             return int(frames_count)
     #
     #     def do_structure(self):
-    #         self.number_of_line = 3
     #         group = []
     #         substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
     #
-    #         with open(planner) as file:
-    #             for line in file:
-    #                 line = line.split()
+    #         for i, line in enumerate(self.file):
+    #             line = line.split()
     #
-    #                 # Поиск имени группы
-    #                 if ';' in line[0]:
-    #                     next_line = self.nxt_line()
-    #                     if ';' not in next_line[0]:
-    #                         if substring:
-    #                             group.append(copy.copy(substring))
-    #                             substring.clear()
-    #                         line.remove(';')
-    #                         nwline = ''.join(line)
-    #                         substring.append(nwline)
-    #                         self.number_of_line += 1
-    #                     else:
+    #             # Поиск имени группы
+    #             if ';' in line[0]:
+    #                 next_line = self.file[i + 1].split()
+    #                 if ';' not in next_line[0]:
+    #                     if substring:
     #                         group.append(copy.copy(substring))
     #                         substring.clear()
-    #                         self.number_of_line += 1
+    #                     line.remove(';')
+    #                     nwline = ''.join(line)
+    #                     substring.append(nwline)
+    #                 else:
+    #                     group.append(copy.copy(substring))
+    #                     substring.clear()
     #
-    #                 # Поиск описания переменных
-    #                 elif len(line) > 3:
-    #                     if 'UU' in line[5]:
-    #                         params = {
-    #                             'name': line[0],
-    #                             'type': line[5],
-    #                             'offset': int(line[1]) - 1
-    #                         }
-    #                         substring.append(params)
-    #                         self.number_of_line += 2
-    #                     elif 'LL' in line[5]:
-    #                         params = {
-    #                             'name': line[0],
-    #                             'type': line[5],
-    #                             'offset': int(line[1]) - 1
-    #                         }
-    #                         substring.append(params)
-    #                         self.number_of_line += 2
-    #                     else:
-    #                         params = {
-    #                             'name': line[0],
-    #                             'type': line[5],
-    #                             'offset': int(line[1])
-    #                         }
-    #                         substring.append(params)
-    #                         self.number_of_line += 1
+    #             # Поиск описания переменных
+    #             elif len(line) > 3:
+    #                 if 'UU' in line[5]:
+    #                     params = {
+    #                         'name': line[0],
+    #                         'type': line[5],
+    #                         'offset': int(line[1]) - 1
+    #                     }
+    #                     substring.append(params)
+    #                 elif 'LL' in line[5]:
+    #                     params = {
+    #                         'name': line[0],
+    #                         'type': line[5],
+    #                         'offset': int(line[1]) - 1
+    #                     }
+    #                     substring.append(params)
+    #                 else:
+    #                     params = {
+    #                         'name': line[0],
+    #                         'type': line[5],
+    #                         'offset': int(line[1])
+    #                     }
+    #                     substring.append(params)
     #         return group
     #
     #     def find_frame_size(self):
     #         # Поиск размера блока данных
-    #         number_of_line = 1
-    #         with open(planner) as file:
-    #             line = file.readlines(1)
-    #             line = line[0].split()
-    #             self.frame_size = int(line[0])
+    #         for i, line in enumerate(self.file):
+    #             if i >= 1:
+    #                 break
+    #             line = line.split()
+    #             return int(line[0])
     #
     #
     # class Parsed_data(Data_structure):
@@ -342,7 +348,6 @@ if __name__ == "__main__":
     #         for index, line in enumerate(data_with_values):
     #             for i in line:
     #                 if type(i) == dict:
-    #                     name = i.get('name')
     #                     type_w = i.get('type')
     #                     offset = i.get('offset')
     #                     value = byte_reader(type_w, offset)
@@ -368,8 +373,7 @@ if __name__ == "__main__":
     #     data = Parsed_data(frame_number)
     #     beam_tasks = data.find('beamTask')
     #     beam_tasks.insert_to_bd
-
-
-
-
+    #     group_with_values = Parsed_data(frame_number)
+    #     beam_tasks = group_with_values.find('beamTask')
+    #     print('s')
 
