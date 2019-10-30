@@ -201,31 +201,7 @@ def insert_into_bd(data, cur, table_name):
         data_to_insert.clear()
 
 
-def find_group(data, keyword, id):
-    finded_data = []
-    first_string_in_match = False
-    gap = False
-    matches_count = 0
-    prev_id = id
-    for id, group in enumerate(data):
-        name = group[0]
-        if id > prev_id:
-
-            if re.search(keyword, name) and matches_count == 0:
-                first_string_in_match = True
-                matches_count += 1
-                finded_data.append(group)
-            elif re.search(keyword, name) and first_string_in_match and not gap:
-                matches_count += 1
-                finded_data.append(group)
-            elif re.search(keyword, name) and gap:
-                return finded_data, id - 2
-            elif matches_count >= 1:
-                gap = True
-
-
 def entity_counter(data, keyword):
-
     first_string_in_match = False
     gap = False
     matches_count = 0
@@ -247,10 +223,45 @@ def entity_counter(data, keyword):
     return entity_c + 1
 
 
-def find_item(data, item):
+def find_group(data, keyword, id = 0):
     finded_data = []
-    names = [k for k in item.keys()]
-    params =  [v for v in item.values()]
+    first_string_in_match = False
+    gap = False
+    matches_count = 0
+    prev_id = id
+    for id, group in enumerate(data):
+        name = group[0]
+        if id > prev_id:
+
+            if re.search(keyword, name) and matches_count == 0:
+                first_string_in_match = True
+                matches_count += 1
+                finded_data.append(group)
+            elif re.search(keyword, name) and first_string_in_match and not gap:
+                matches_count += 1
+                finded_data.append(group)
+            elif re.search(keyword, name) and gap:
+                return finded_data, id - 2
+            elif matches_count >= 1:
+                gap = True
+    return finded_data, id - 2
+
+
+def find_item(data, item, id = 0):
+    finded_data = []
+    names = []
+    params = []
+    prev_id = id
+    if id:
+        data = data[:id]
+        data = list(reversed(data))
+    for i, k in enumerate(item):
+        index = i + 1
+        if index % 2 == 0:
+            params.append(k)
+        else:
+            names.append(k)
+
     for group in data:
         for name in names:
             if name in group[0]:
@@ -258,16 +269,18 @@ def find_item(data, item):
                     if type(i) is dict:
                         key = [x for x in i][0]
                         for param in params:
-                            if re.search(param, key):
-                                return i
+                            if key == param:
+                                finded_data.append(i)
+                                if len(finded_data) == len(params):
+                                    return finded_data
                             else:
                                 continue
 
 
-def add_to(group, item, field_name=None):
-    other_value = find_item(data, item)
-    for group in group:
-        group.append(other_value)
+def add_to(group, item):
+    for i in group:
+        for val in item:
+            i.append(val)
 
 
 if __name__ == "__main__":
@@ -283,26 +296,57 @@ if __name__ == "__main__":
         data = parse_bin_file(data_structure, frame_size, frame_number)
         #---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
         # Находим группы по "ключевому слову"
-        # bt = find_group(data, 'beamTask')
-        #
-        # # Добавляем значения из других групп
-        # item = {'Task' : 'taskId'}
-        # add_to(bt, item)
-        # # Вставляем ее в бд
-        # # insert_into_bd(bt, cur, 'BeamTasks')
+
+        bt, id = find_group(data, 'beamTask')
+
+        # Добавляем значения из других групп
+        item = ['Task' , 'taskId']
+        bt_item = find_item(data, item)
+        add_to(bt, bt_item)
+        # Вставляем ее в бд
+        # insert_into_bd(bt, cur, 'BeamTasks')
         print(105 * '*')
 
         # ---------------------ЗАПОЛНЯЕМ "PrimaryMarks"----------------------#
         # Находим группы по "ключевому слову"
+
+
         entity_c = entity_counter(data, 'primaryMark')
         id = 0
         for entity in range(entity_c):
+            if entity == 3:
+                breakpoint()
             pm, id = find_group(data, 'primaryMark', id)
-            print(pm)
+            item = ['scanData' , 'processingTime',
+                    'scanData' , 'taskId',
+                    'scanData' , 'antennaId']
+            pm_item = find_item(data, item, id)
 
-        scan_data = find_group(data,'scanData')
-        scan_time = {'name' : 'scanTime',
-                     'value' : scan_data[0][1].get('value')}
+            bt_task_id = False
+            bt_antenna_id = False
+            pm_task_id = False
+            pm_antenna_id = False
+
+            for group in bt:
+                for i in group:
+                    if type(i) is dict:
+                        if 'taskId' in i: bt_task_id = i.get('taskId')
+                        if 'antennaId' in i: bt_antenna_id = i.get('antennaId')
+                        if bt_task_id and bt_antenna_id: break
+
+            for i in pm_item:
+                if 'taskId' in i: pm_task_id = i.get('taskId')
+                if 'antennaId' in i: pm_antenna_id = i.get('antennaId')
+                if pm_task_id and pm_antenna_id: break
+
+
+            if pm_task_id == bt_task_id and pm_antenna_id == bt_antenna_id:
+                add_to(pm, pm_item)
+                # Some converting with pm
+
+                insert_into_bd(pm, cur, 'PrimaryMarks')
+                print(105 * '*')
+
 
     # class Data_structure:
     #     def __init__(self):
