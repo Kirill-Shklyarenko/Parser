@@ -308,9 +308,6 @@ if __name__ == "__main__":
         print(105 * '*')
 
         # ---------------------ЗАПОЛНЯЕМ "PrimaryMarks"----------------------#
-        # Находим группы по "ключевому слову"
-
-
         entity_c = entity_counter(data, 'primaryMark')
         id = 0
         for entity in range(entity_c):
@@ -323,16 +320,16 @@ if __name__ == "__main__":
             pm_item = find_item(data, item, id)
 
             bt_task_id = False
-            bt_antenna_id = False
+            bt_antenna_id = [1,2,3,4]
             pm_task_id = False
             pm_antenna_id = False
 
             for group in bt:
                 for i in group:
                     if type(i) is dict:
-                        if 'taskId' in i: bt_task_id = i.get('taskId')
-                        if 'antennaId' in i: bt_antenna_id = i.get('antennaId')
-                        if bt_task_id and bt_antenna_id: break
+                        if 'taskId' in i:
+                            bt_task_id = i.get('taskId')
+                            break
 
             for i in pm_item:
                 if 'taskId' in i: pm_task_id = i.get('taskId')
@@ -341,10 +338,11 @@ if __name__ == "__main__":
 
 
             if pm_task_id == bt_task_id and pm_antenna_id == bt_antenna_id:
+                # Some convertings with pm
                 add_to(pm, pm_item)
-                # Some converting with pm
 
-                insert_into_bd(pm, cur, 'PrimaryMarks')
+
+                # insert_into_bd(pm, cur, 'PrimaryMarks')
                 print(105 * '*')
 
 
