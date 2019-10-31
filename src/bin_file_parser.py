@@ -5,7 +5,7 @@ import os
 planner_RSF = r'../data/Planner.rsf'
 
 
-def byte_reader(type_w, offset):
+def byte_reader(type_w: str, offset: int) -> any:
     with open(planner_RSF, 'rb') as file:
         offset *= 2  # Номер слова в блоке умножаем на размер слова (2 байта)
         file.seek(offset + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
@@ -34,7 +34,7 @@ def byte_reader(type_w, offset):
     return value
 
 
-def parse_bin_file(data, frame_size, frame_number):
+def parse_bin_file(data: list, frame_size: int, frame_number: int) -> list:
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
     for line in data_with_values:
@@ -49,7 +49,7 @@ def parse_bin_file(data, frame_size, frame_number):
     return data_with_values
 
 
-def frame_counter(frame_size):
+def frame_counter(frame_size: int) -> int:
     file_size = os.path.getsize(planner_RSF)  # Размер файла в байтах
     file_size = file_size - 14  # отсекаем 14 байт заголовка
     try:

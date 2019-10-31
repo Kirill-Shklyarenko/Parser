@@ -1,7 +1,7 @@
 import psycopg2
 
 
-def connection():
+def connection() -> any:
     conn = psycopg2.connect(dbname='telemetry', user='postgres',
                             password='123', host='localhost')
     conn.autocommit = True
@@ -9,7 +9,7 @@ def connection():
     return cur, conn
 
 
-def execute(data_to_insert, table_name, cur):
+def execute(data_to_insert: list, table_name: str, cur):
     # Преобразование типов (int ---> bool)
     for string in data_to_insert:
         if 'isFake' in string[0]:
@@ -30,7 +30,7 @@ def execute(data_to_insert, table_name, cur):
         print(query, param_values)
 
 
-def insert_into_bd(data, cur, table_name):
+def insert_into_bd(data: list, cur: any, table_name: str):
     data_to_insert = []
 
     # Для того чтобы узнать имена полей таблицы

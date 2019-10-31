@@ -3,14 +3,14 @@ import copy
 planner = r'../data/Planner'
 
 
-def opener():
+def opener() -> list:
     with open(planner) as file:
         data = file.readlines()
     return data
 
 
-def parse_text_file():
-    number_of_line = 1
+def parse_text_file() -> tuple:
+    frame_size = 0
     group = []  # просто список элементов [0, 1, 2]
     substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
     file = opener()
@@ -22,7 +22,6 @@ def parse_text_file():
             next_line = file[i + 1].split()
             if len(next_line) == 1 and ';' not in next_line[0]:
                 frame_size = int(line[0])
-                number_of_line += 2
 
         # Поиск имени группы
         elif ';' in line[0]:
@@ -34,11 +33,9 @@ def parse_text_file():
                 line.remove(';')
                 nwline = ''.join(line)
                 substring.append(nwline)
-                number_of_line += 1
             else:
                 group.append(copy.copy(substring))
                 substring.clear()
-                number_of_line += 1
 
         # Поиск описания переменных
         elif len(line) > 3:
@@ -49,7 +46,6 @@ def parse_text_file():
                     'offset': int(line[1]) - 1
                 }
                 substring.append(params)
-                number_of_line += 2
             elif 'LL' in line[5]:
                 params = {
                     'name': line[0],
@@ -57,7 +53,6 @@ def parse_text_file():
                     'offset': int(line[1]) - 1
                 }
                 substring.append(params)
-                number_of_line += 2
             else:
                 params = {
                     'name': line[0],
@@ -65,5 +60,4 @@ def parse_text_file():
                     'offset': int(line[1])
                 }
                 substring.append(params)
-                number_of_line += 1
     return group, frame_size

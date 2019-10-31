@@ -2,8 +2,8 @@ import re
 import copy
 
 
-def create_group(data):
-    group = []  # просто список элементов [000, 001, 002]
+def create_group(data: list) -> list:
+    group = []  # список элементов [000, 001, 002]
     substring = []  # который соержит имя "NavigationData, Flags, Beamtask" etc
     params = {}  # со словарем из параметров "Lon, Lat" etc
     cnt = 0
@@ -21,7 +21,7 @@ def create_group(data):
     return group
 
 
-def entity_counter(data, keyword):
+def entity_counter(data: list, keyword: str) -> int:
     first_string_in_match = False
     gap = False
     matches_count = 0
@@ -43,7 +43,7 @@ def entity_counter(data, keyword):
     return entity_c + 1
 
 
-def find_group(data, keyword, id=0):
+def find_group(data: list, keyword: str, id=0) -> tuple:
     finded_data = []
     first_string_in_match = False
     gap = False
@@ -67,7 +67,7 @@ def find_group(data, keyword, id=0):
     return finded_data, id - 2
 
 
-def find_item(data, item, id=0):
+def find_item(data: list, item: list, id=0) -> list:
     finded_data = []
     names = []
     params = []
@@ -96,7 +96,7 @@ def find_item(data, item, id=0):
                                 continue
 
 
-def add_to(group, item):
+def add_to(group: list, item: dict):
     for i in group:
         for val in item:
             i.append(val)
