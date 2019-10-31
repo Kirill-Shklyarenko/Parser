@@ -3,8 +3,6 @@ from bin_file_parser import *
 from data_base_methods import *
 from data_convert_methods import *
 
-
-
 if __name__ == "__main__":
     # Парсим текстовый файл
     data_structure, frame_size = parse_text_file()
@@ -19,7 +17,7 @@ if __name__ == "__main__":
         # ---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
         # Находим группы по "ключевому слову"
         bt, id = find_group(data, 'beamTask')
-        item = ['Task', 'taskId']               # [Groupname, parameter] what need to find
+        item = ['Task', 'taskId']  # [Groupname, parameter] what need to find
         bt_item = find_item(data, item)
         # Добавляем значения из других групп
         add_to(bt, bt_item)
