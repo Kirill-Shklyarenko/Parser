@@ -19,19 +19,15 @@ if __name__ == "__main__":
         # ---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
         # Находим группы по "ключевому слову"
         bt, id = find_group(data, 'beamTask')
-
-
         item = ['Task', 'taskId']               # [Groupname, parameter] what need to find
         bt_item = find_item(data, item)
-
         # Добавляем значения из других групп
         add_to(bt, bt_item)
-        # Преобразуем некоторые значения
+        # Преобразуем типы некоторых значений
         map_values(bt)
-        # Вставляем ее в бд
+        # Вставляем группы в бд
         insert_into_bd(bt, cur, 'BeamTasks')
         print(105 * '*')
-
         # ---------------------ЗАПОЛНЯЕМ "PrimaryMarks"----------------------#
         entity_c = entity_counter(data, 'primaryMark')
         id = 0
