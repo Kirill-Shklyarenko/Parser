@@ -9,14 +9,24 @@ def connection() -> any:
     return cur, conn
 
 
-def execute(data_to_insert: list, table_name: str, cur):
+def map_values(data_to_insert: list):
     # Преобразование типов (int ---> bool)
-    for string in data_to_insert:
-        if 'isFake' in string[0]:
-            string[1] = bool(string[1])
-        if 'hasMatchedTrack' in string[0]:
-            string[1] = bool(string[1])
+    for group in data_to_insert:
+        for i in group:
+            if type(i) is dict:
+                k = list(i.keys())[0]
+                v = list(i.values())[0]
 
+                if 'isFake' in k:
+                    v = bool(v)
+                    i['isFake'] = v
+
+                if 'hasMatchedTrack' in k:
+                    v = bool(v)
+                    i['hasMatchedTrack'] = v
+
+
+def execute(data_to_insert: list, table_name: str, cur):
     # формирование строки запроса
     columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
     param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])

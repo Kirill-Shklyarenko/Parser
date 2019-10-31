@@ -18,15 +18,18 @@ if __name__ == "__main__":
         data = parse_bin_file(data_structure, frame_size, frame_number)
         # ---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
         # Находим группы по "ключевому слову"
-
         bt, id = find_group(data, 'beamTask')
 
-        # Добавляем значения из других групп
-        item = ['Task', 'taskId']
+
+        item = ['Task', 'taskId']               # [Groupname, parameter] what need to find
         bt_item = find_item(data, item)
+
+        # Добавляем значения из других групп
         add_to(bt, bt_item)
+        # Преобразуем некоторые значения
+        map_values(bt)
         # Вставляем ее в бд
-        # insert_into_bd(bt, cur, 'BeamTasks')
+        insert_into_bd(bt, cur, 'BeamTasks')
         print(105 * '*')
 
         # ---------------------ЗАПОЛНЯЕМ "PrimaryMarks"----------------------#
