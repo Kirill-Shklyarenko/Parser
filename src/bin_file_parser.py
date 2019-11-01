@@ -46,6 +46,7 @@ def read_bin_file(data_structure: list, buffer: bytes) -> list:
 def frame_counter(planner_rsf_filename: str, frame_size: int) -> int:
     file_size = os.path.getsize(planner_rsf_filename)  # Размер файла в байтах
     file_size = file_size - 14  # отсекаем 14 байт заголовка
+    frames_count = 0
     try:
         frames_count = file_size / (frame_size * 2)
     except ZeroDivisionError as e:

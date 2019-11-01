@@ -36,9 +36,7 @@ if __name__ == "__main__":
             # Добавляем значения из других групп
             add_to(bt, bt_item)
             # Подготавливаем данные для вставки в таблицу
-            bt_transformed = prepare_data('BeamTasks', bt, cur)
-            # Вставляем группы в бд
-            insert_into('BeamTasks', bt_transformed, cur)
+            prepare_data('BeamTasks', bt, cur)
             print(105 * '*')
             # ---------------------ЗАПОЛНЯЕМ "PrimaryMarks"----------------------#
             entity_c = entity_counter(data, 'primaryMark')
@@ -73,5 +71,5 @@ if __name__ == "__main__":
                     # Some convertings with pm
                     add_to(pm, pm_item)
 
-                    # insert_into_bd(pm, cur, 'PrimaryMarks')
+                    # prepare_data(pm, cur, 'PrimaryMarks')
                     print(105 * '*')
