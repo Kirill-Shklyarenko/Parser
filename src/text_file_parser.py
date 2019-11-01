@@ -1,19 +1,18 @@
 import copy
+from typing import Tuple
 
-planner = r'../data/Planner'
 
-
-def opener() -> list:
+def opener(planner: str) -> list:
     with open(planner) as file:
         data = file.readlines()
     return data
 
 
-def parse_text_file() -> tuple:
+def parse_text_file(planner: str) -> Tuple[list, int]:
     frame_size = 0
     group = []  # просто список элементов [0, 1, 2]
     substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
-    file = opener()
+    file = opener(planner)
 
     for i, line in enumerate(file):
         line = line.split()
