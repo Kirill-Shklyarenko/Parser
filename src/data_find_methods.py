@@ -96,7 +96,7 @@ def find_item(data: list, item: list, id=0) -> list:
                                 continue
 
 
-def add_to(group: list, item: dict):
+def add_to(group: list, item: list):
     for i in group:
         for val in item:
             i.append(val)
