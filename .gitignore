@@ -1,0 +1,9 @@
+﻿__pycache__
+dist
+parser
+.idea
+.gitattributes
+.idea
+*.rsf
+*.7z
+~$отокол согласования телеметрии.docx

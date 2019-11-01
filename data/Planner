@@ -1,0 +1,5332 @@
+7722
+100
+; NavigationData
+latitude	0	$FFFF	0	1	FF	rad
+longitude	2	$FFFF	0	1	FF	rad
+yaw	4	$FFFF	0	1	FF	deg
+pitch	6	$FFFF	0	1	FF	deg
+roll	8	$FFFF	0	1	FF	deg
+northGroundSpeed	10	$FFFF	0	1	FF	m/s
+eastGroundSpeed	12	$FFFF	0	1	FF	m/s
+; Flags
+telemetryWriteSourceEvent	15	$FFFF	0	1	UU	
+14	$FFFF	0
+; Task
+taskId	17	$FFFF	0	1	UU	
+16	$FFFF	0
+readyMessageProcessingTime	19	$FFFF	0	1	UU	us
+18	$FFFF	0
+taskCreationTimeSeconds	21	$FFFF	0	1	UU	s
+20	$FFFF	0
+taskCreationTimeNanoSeconds	23	$FFFF	0	1	UU	ns
+22	$FFFF	0
+; beamTask
+isFake	25	$FFFF	0	1	UU	
+24	$FFFF	0
+trackId	27	$FFFF	0	1	UU	
+26	$FFFF	0
+taskType	29	$FFFF	0	1	UU	
+28	$FFFF	0
+viewDirectionId	31	$FFFF	0	1	UU	
+30	$FFFF	0
+antennaId	33	$FFFF	0	1	UU	
+32	$FFFF	0
+pulsePeriod	34	$FFFF	0	1	FF	s
+threshold	36	$FFFF	0	1	FF	
+lowerVelocityTrim	38	$FFFF	0	1	FF	m/s
+upperVelocityTrim	40	$FFFF	0	1	FF	m/s
+lowerDistanceTrim	42	$FFFF	0	1	FF	m
+upperDistanceTrim	44	$FFFF	0	1	FF	m
+betaBSK	46	$FFFF	0	1	FF	deg
+epsilonBSK	48	$FFFF	0	1	FF	deg
+techPointDistance	50	$FFFF	0	1	FF	
+techPointHarmonic	52	$FFFF	0	1	FF	
+; beamTask_1
+isFake	55	$FFFF	0	1	UU	
+54	$FFFF	0
+trackId	57	$FFFF	0	1	UU	
+56	$FFFF	0
+taskType	59	$FFFF	0	1	UU	
+58	$FFFF	0
+viewDirectionId	61	$FFFF	0	1	UU	
+60	$FFFF	0
+antennaId	63	$FFFF	0	1	UU	
+62	$FFFF	0
+pulsePeriod	64	$FFFF	0	1	FF	s
+threshold	66	$FFFF	0	1	FF	
+lowerVelocityTrim	68	$FFFF	0	1	FF	m/s
+upperVelocityTrim	70	$FFFF	0	1	FF	m/s
+lowerDistanceTrim	72	$FFFF	0	1	FF	m
+upperDistanceTrim	74	$FFFF	0	1	FF	m
+betaBSK	76	$FFFF	0	1	FF	deg
+epsilonBSK	78	$FFFF	0	1	FF	deg
+techPointDistance	80	$FFFF	0	1	FF	
+techPointHarmonic	82	$FFFF	0	1	FF	
+; beamTask_2
+isFake	85	$FFFF	0	1	UU	
+84	$FFFF	0
+trackId	87	$FFFF	0	1	UU	
+86	$FFFF	0
+taskType	89	$FFFF	0	1	UU	
+88	$FFFF	0
+viewDirectionId	91	$FFFF	0	1	UU	
+90	$FFFF	0
+antennaId	93	$FFFF	0	1	UU	
+92	$FFFF	0
+pulsePeriod	94	$FFFF	0	1	FF	s
+threshold	96	$FFFF	0	1	FF	
+lowerVelocityTrim	98	$FFFF	0	1	FF	m/s
+upperVelocityTrim	100	$FFFF	0	1	FF	m/s
+lowerDistanceTrim	102	$FFFF	0	1	FF	m
+upperDistanceTrim	104	$FFFF	0	1	FF	m
+betaBSK	106	$FFFF	0	1	FF	deg
+epsilonBSK	108	$FFFF	0	1	FF	deg
+techPointDistance	110	$FFFF	0	1	FF	
+techPointHarmonic	112	$FFFF	0	1	FF	
+; beamTask_3
+isFake	115	$FFFF	0	1	UU	
+114	$FFFF	0
+trackId	117	$FFFF	0	1	UU	
+116	$FFFF	0
+taskType	119	$FFFF	0	1	UU	
+118	$FFFF	0
+viewDirectionId	121	$FFFF	0	1	UU	
+120	$FFFF	0
+antennaId	123	$FFFF	0	1	UU	
+122	$FFFF	0
+pulsePeriod	124	$FFFF	0	1	FF	s
+threshold	126	$FFFF	0	1	FF	
+lowerVelocityTrim	128	$FFFF	0	1	FF	m/s
+upperVelocityTrim	130	$FFFF	0	1	FF	m/s
+lowerDistanceTrim	132	$FFFF	0	1	FF	m
+upperDistanceTrim	134	$FFFF	0	1	FF	m
+betaBSK	136	$FFFF	0	1	FF	deg
+epsilonBSK	138	$FFFF	0	1	FF	deg
+techPointDistance	140	$FFFF	0	1	FF	
+techPointHarmonic	142	$FFFF	0	1	FF	
+; scanDataGroup
+; scanData
+processingTime	145	$FFFF	0	1	UU	us
+144	$FFFF	0
+taskId	147	$FFFF	0	1	UU	
+146	$FFFF	0
+taskType	149	$FFFF	0	1	UU	
+148	$FFFF	0
+antennaId	151	$FFFF	0	1	UU	
+150	$FFFF	0
+beginAngle	152	$FFFF	0	1	FF	deg
+endAngle	154	$FFFF	0	1	FF	deg
+beamAzimuth	156	$FFFF	0	1	FF	deg
+beamElevation	158	$FFFF	0	1	FF	deg
+beginTimeSeconds	161	$FFFF	0	1	UU	s
+160	$FFFF	0
+beginTimeNanoseconds	163	$FFFF	0	1	UU	ns
+162	$FFFF	0
+primaryMarksCount	165	$FFFF	0	1	UU	
+164	$FFFF	0
+; primaryMark
+hasMatchedTrack	167	$FFFF	0	1	UU	
+166	$FFFF	0
+azimuth	168	$FFFF	0	1	FF	deg
+elevation	170	$FFFF	0	1	FF	deg
+type	173	$FFFF	0	1	UU	
+172	$FFFF	0
+beta	174	$FFFF	0	1	FF	deg
+epsilon	176	$FFFF	0	1	FF	deg
+distance	178	$FFFF	0	1	FF	m
+dopplerSpeed	180	$FFFF	0	1	FF	m/s
+signalLevel	182	$FFFF	0	1	FF	
+reflectedEnergy	184	$FFFF	0	1	FF	
+; primaryMark_1
+hasMatchedTrack	187	$FFFF	0	1	UU	
+186	$FFFF	0
+azimuth	188	$FFFF	0	1	FF	deg
+elevation	190	$FFFF	0	1	FF	deg
+type	193	$FFFF	0	1	UU	
+192	$FFFF	0
+beta	194	$FFFF	0	1	FF	deg
+epsilon	196	$FFFF	0	1	FF	deg
+distance	198	$FFFF	0	1	FF	m
+dopplerSpeed	200	$FFFF	0	1	FF	m/s
+signalLevel	202	$FFFF	0	1	FF	
+reflectedEnergy	204	$FFFF	0	1	FF	
+; primaryMark_2
+hasMatchedTrack	207	$FFFF	0	1	UU	
+206	$FFFF	0
+azimuth	208	$FFFF	0	1	FF	deg
+elevation	210	$FFFF	0	1	FF	deg
+type	213	$FFFF	0	1	UU	
+212	$FFFF	0
+beta	214	$FFFF	0	1	FF	deg
+epsilon	216	$FFFF	0	1	FF	deg
+distance	218	$FFFF	0	1	FF	m
+dopplerSpeed	220	$FFFF	0	1	FF	m/s
+signalLevel	222	$FFFF	0	1	FF	
+reflectedEnergy	224	$FFFF	0	1	FF	
+; primaryMark_3
+hasMatchedTrack	227	$FFFF	0	1	UU	
+226	$FFFF	0
+azimuth	228	$FFFF	0	1	FF	deg
+elevation	230	$FFFF	0	1	FF	deg
+type	233	$FFFF	0	1	UU	
+232	$FFFF	0
+beta	234	$FFFF	0	1	FF	deg
+epsilon	236	$FFFF	0	1	FF	deg
+distance	238	$FFFF	0	1	FF	m
+dopplerSpeed	240	$FFFF	0	1	FF	m/s
+signalLevel	242	$FFFF	0	1	FF	
+reflectedEnergy	244	$FFFF	0	1	FF	
+; primaryMark_4
+hasMatchedTrack	247	$FFFF	0	1	UU	
+246	$FFFF	0
+azimuth	248	$FFFF	0	1	FF	deg
+elevation	250	$FFFF	0	1	FF	deg
+type	253	$FFFF	0	1	UU	
+252	$FFFF	0
+beta	254	$FFFF	0	1	FF	deg
+epsilon	256	$FFFF	0	1	FF	deg
+distance	258	$FFFF	0	1	FF	m
+dopplerSpeed	260	$FFFF	0	1	FF	m/s
+signalLevel	262	$FFFF	0	1	FF	
+reflectedEnergy	264	$FFFF	0	1	FF	
+; primaryMark_5
+hasMatchedTrack	267	$FFFF	0	1	UU	
+266	$FFFF	0
+azimuth	268	$FFFF	0	1	FF	deg
+elevation	270	$FFFF	0	1	FF	deg
+type	273	$FFFF	0	1	UU	
+272	$FFFF	0
+beta	274	$FFFF	0	1	FF	deg
+epsilon	276	$FFFF	0	1	FF	deg
+distance	278	$FFFF	0	1	FF	m
+dopplerSpeed	280	$FFFF	0	1	FF	m/s
+signalLevel	282	$FFFF	0	1	FF	
+reflectedEnergy	284	$FFFF	0	1	FF	
+; primaryMark_6
+hasMatchedTrack	287	$FFFF	0	1	UU	
+286	$FFFF	0
+azimuth	288	$FFFF	0	1	FF	deg
+elevation	290	$FFFF	0	1	FF	deg
+type	293	$FFFF	0	1	UU	
+292	$FFFF	0
+beta	294	$FFFF	0	1	FF	deg
+epsilon	296	$FFFF	0	1	FF	deg
+distance	298	$FFFF	0	1	FF	m
+dopplerSpeed	300	$FFFF	0	1	FF	m/s
+signalLevel	302	$FFFF	0	1	FF	
+reflectedEnergy	304	$FFFF	0	1	FF	
+; primaryMark_7
+hasMatchedTrack	307	$FFFF	0	1	UU	
+306	$FFFF	0
+azimuth	308	$FFFF	0	1	FF	deg
+elevation	310	$FFFF	0	1	FF	deg
+type	313	$FFFF	0	1	UU	
+312	$FFFF	0
+beta	314	$FFFF	0	1	FF	deg
+epsilon	316	$FFFF	0	1	FF	deg
+distance	318	$FFFF	0	1	FF	m
+dopplerSpeed	320	$FFFF	0	1	FF	m/s
+signalLevel	322	$FFFF	0	1	FF	
+reflectedEnergy	324	$FFFF	0	1	FF	
+; primaryMark_8
+hasMatchedTrack	327	$FFFF	0	1	UU	
+326	$FFFF	0
+azimuth	328	$FFFF	0	1	FF	deg
+elevation	330	$FFFF	0	1	FF	deg
+type	333	$FFFF	0	1	UU	
+332	$FFFF	0
+beta	334	$FFFF	0	1	FF	deg
+epsilon	336	$FFFF	0	1	FF	deg
+distance	338	$FFFF	0	1	FF	m
+dopplerSpeed	340	$FFFF	0	1	FF	m/s
+signalLevel	342	$FFFF	0	1	FF	
+reflectedEnergy	344	$FFFF	0	1	FF	
+; primaryMark_9
+hasMatchedTrack	347	$FFFF	0	1	UU	
+346	$FFFF	0
+azimuth	348	$FFFF	0	1	FF	deg
+elevation	350	$FFFF	0	1	FF	deg
+type	353	$FFFF	0	1	UU	
+352	$FFFF	0
+beta	354	$FFFF	0	1	FF	deg
+epsilon	356	$FFFF	0	1	FF	deg
+distance	358	$FFFF	0	1	FF	m
+dopplerSpeed	360	$FFFF	0	1	FF	m/s
+signalLevel	362	$FFFF	0	1	FF	
+reflectedEnergy	364	$FFFF	0	1	FF	
+; scanData_1
+processingTime	367	$FFFF	0	1	UU	us
+366	$FFFF	0
+taskId	369	$FFFF	0	1	UU	
+368	$FFFF	0
+taskType	371	$FFFF	0	1	UU	
+370	$FFFF	0
+antennaId	373	$FFFF	0	1	UU	
+372	$FFFF	0
+beginAngle	374	$FFFF	0	1	FF	deg
+endAngle	376	$FFFF	0	1	FF	deg
+beamAzimuth	378	$FFFF	0	1	FF	deg
+beamElevation	380	$FFFF	0	1	FF	deg
+beginTimeSeconds	383	$FFFF	0	1	UU	s
+382	$FFFF	0
+beginTimeNanoseconds	385	$FFFF	0	1	UU	ns
+384	$FFFF	0
+primaryMarksCount	387	$FFFF	0	1	UU	
+386	$FFFF	0
+; primaryMark
+hasMatchedTrack	389	$FFFF	0	1	UU	
+388	$FFFF	0
+azimuth	390	$FFFF	0	1	FF	deg
+elevation	392	$FFFF	0	1	FF	deg
+type	395	$FFFF	0	1	UU	
+394	$FFFF	0
+beta	396	$FFFF	0	1	FF	deg
+epsilon	398	$FFFF	0	1	FF	deg
+distance	400	$FFFF	0	1	FF	m
+dopplerSpeed	402	$FFFF	0	1	FF	m/s
+signalLevel	404	$FFFF	0	1	FF	
+reflectedEnergy	406	$FFFF	0	1	FF	
+; primaryMark_1
+hasMatchedTrack	409	$FFFF	0	1	UU	
+408	$FFFF	0
+azimuth	410	$FFFF	0	1	FF	deg
+elevation	412	$FFFF	0	1	FF	deg
+type	415	$FFFF	0	1	UU	
+414	$FFFF	0
+beta	416	$FFFF	0	1	FF	deg
+epsilon	418	$FFFF	0	1	FF	deg
+distance	420	$FFFF	0	1	FF	m
+dopplerSpeed	422	$FFFF	0	1	FF	m/s
+signalLevel	424	$FFFF	0	1	FF	
+reflectedEnergy	426	$FFFF	0	1	FF	
+; primaryMark_2
+hasMatchedTrack	429	$FFFF	0	1	UU	
+428	$FFFF	0
+azimuth	430	$FFFF	0	1	FF	deg
+elevation	432	$FFFF	0	1	FF	deg
+type	435	$FFFF	0	1	UU	
+434	$FFFF	0
+beta	436	$FFFF	0	1	FF	deg
+epsilon	438	$FFFF	0	1	FF	deg
+distance	440	$FFFF	0	1	FF	m
+dopplerSpeed	442	$FFFF	0	1	FF	m/s
+signalLevel	444	$FFFF	0	1	FF	
+reflectedEnergy	446	$FFFF	0	1	FF	
+; primaryMark_3
+hasMatchedTrack	449	$FFFF	0	1	UU	
+448	$FFFF	0
+azimuth	450	$FFFF	0	1	FF	deg
+elevation	452	$FFFF	0	1	FF	deg
+type	455	$FFFF	0	1	UU	
+454	$FFFF	0
+beta	456	$FFFF	0	1	FF	deg
+epsilon	458	$FFFF	0	1	FF	deg
+distance	460	$FFFF	0	1	FF	m
+dopplerSpeed	462	$FFFF	0	1	FF	m/s
+signalLevel	464	$FFFF	0	1	FF	
+reflectedEnergy	466	$FFFF	0	1	FF	
+; primaryMark_4
+hasMatchedTrack	469	$FFFF	0	1	UU	
+468	$FFFF	0
+azimuth	470	$FFFF	0	1	FF	deg
+elevation	472	$FFFF	0	1	FF	deg
+type	475	$FFFF	0	1	UU	
+474	$FFFF	0
+beta	476	$FFFF	0	1	FF	deg
+epsilon	478	$FFFF	0	1	FF	deg
+distance	480	$FFFF	0	1	FF	m
+dopplerSpeed	482	$FFFF	0	1	FF	m/s
+signalLevel	484	$FFFF	0	1	FF	
+reflectedEnergy	486	$FFFF	0	1	FF	
+; primaryMark_5
+hasMatchedTrack	489	$FFFF	0	1	UU	
+488	$FFFF	0
+azimuth	490	$FFFF	0	1	FF	deg
+elevation	492	$FFFF	0	1	FF	deg
+type	495	$FFFF	0	1	UU	
+494	$FFFF	0
+beta	496	$FFFF	0	1	FF	deg
+epsilon	498	$FFFF	0	1	FF	deg
+distance	500	$FFFF	0	1	FF	m
+dopplerSpeed	502	$FFFF	0	1	FF	m/s
+signalLevel	504	$FFFF	0	1	FF	
+reflectedEnergy	506	$FFFF	0	1	FF	
+; primaryMark_6
+hasMatchedTrack	509	$FFFF	0	1	UU	
+508	$FFFF	0
+azimuth	510	$FFFF	0	1	FF	deg
+elevation	512	$FFFF	0	1	FF	deg
+type	515	$FFFF	0	1	UU	
+514	$FFFF	0
+beta	516	$FFFF	0	1	FF	deg
+epsilon	518	$FFFF	0	1	FF	deg
+distance	520	$FFFF	0	1	FF	m
+dopplerSpeed	522	$FFFF	0	1	FF	m/s
+signalLevel	524	$FFFF	0	1	FF	
+reflectedEnergy	526	$FFFF	0	1	FF	
+; primaryMark_7
+hasMatchedTrack	529	$FFFF	0	1	UU	
+528	$FFFF	0
+azimuth	530	$FFFF	0	1	FF	deg
+elevation	532	$FFFF	0	1	FF	deg
+type	535	$FFFF	0	1	UU	
+534	$FFFF	0
+beta	536	$FFFF	0	1	FF	deg
+epsilon	538	$FFFF	0	1	FF	deg
+distance	540	$FFFF	0	1	FF	m
+dopplerSpeed	542	$FFFF	0	1	FF	m/s
+signalLevel	544	$FFFF	0	1	FF	
+reflectedEnergy	546	$FFFF	0	1	FF	
+; primaryMark_8
+hasMatchedTrack	549	$FFFF	0	1	UU	
+548	$FFFF	0
+azimuth	550	$FFFF	0	1	FF	deg
+elevation	552	$FFFF	0	1	FF	deg
+type	555	$FFFF	0	1	UU	
+554	$FFFF	0
+beta	556	$FFFF	0	1	FF	deg
+epsilon	558	$FFFF	0	1	FF	deg
+distance	560	$FFFF	0	1	FF	m
+dopplerSpeed	562	$FFFF	0	1	FF	m/s
+signalLevel	564	$FFFF	0	1	FF	
+reflectedEnergy	566	$FFFF	0	1	FF	
+; primaryMark_9
+hasMatchedTrack	569	$FFFF	0	1	UU	
+568	$FFFF	0
+azimuth	570	$FFFF	0	1	FF	deg
+elevation	572	$FFFF	0	1	FF	deg
+type	575	$FFFF	0	1	UU	
+574	$FFFF	0
+beta	576	$FFFF	0	1	FF	deg
+epsilon	578	$FFFF	0	1	FF	deg
+distance	580	$FFFF	0	1	FF	m
+dopplerSpeed	582	$FFFF	0	1	FF	m/s
+signalLevel	584	$FFFF	0	1	FF	
+reflectedEnergy	586	$FFFF	0	1	FF	
+; scanData_2
+processingTime	589	$FFFF	0	1	UU	us
+588	$FFFF	0
+taskId	591	$FFFF	0	1	UU	
+590	$FFFF	0
+taskType	593	$FFFF	0	1	UU	
+592	$FFFF	0
+antennaId	595	$FFFF	0	1	UU	
+594	$FFFF	0
+beginAngle	596	$FFFF	0	1	FF	deg
+endAngle	598	$FFFF	0	1	FF	deg
+beamAzimuth	600	$FFFF	0	1	FF	deg
+beamElevation	602	$FFFF	0	1	FF	deg
+beginTimeSeconds	605	$FFFF	0	1	UU	s
+604	$FFFF	0
+beginTimeNanoseconds	607	$FFFF	0	1	UU	ns
+606	$FFFF	0
+primaryMarksCount	609	$FFFF	0	1	UU	
+608	$FFFF	0
+; primaryMark
+hasMatchedTrack	611	$FFFF	0	1	UU	
+610	$FFFF	0
+azimuth	612	$FFFF	0	1	FF	deg
+elevation	614	$FFFF	0	1	FF	deg
+type	617	$FFFF	0	1	UU	
+616	$FFFF	0
+beta	618	$FFFF	0	1	FF	deg
+epsilon	620	$FFFF	0	1	FF	deg
+distance	622	$FFFF	0	1	FF	m
+dopplerSpeed	624	$FFFF	0	1	FF	m/s
+signalLevel	626	$FFFF	0	1	FF	
+reflectedEnergy	628	$FFFF	0	1	FF	
+; primaryMark_1
+hasMatchedTrack	631	$FFFF	0	1	UU	
+630	$FFFF	0
+azimuth	632	$FFFF	0	1	FF	deg
+elevation	634	$FFFF	0	1	FF	deg
+type	637	$FFFF	0	1	UU	
+636	$FFFF	0
+beta	638	$FFFF	0	1	FF	deg
+epsilon	640	$FFFF	0	1	FF	deg
+distance	642	$FFFF	0	1	FF	m
+dopplerSpeed	644	$FFFF	0	1	FF	m/s
+signalLevel	646	$FFFF	0	1	FF	
+reflectedEnergy	648	$FFFF	0	1	FF	
+; primaryMark_2
+hasMatchedTrack	651	$FFFF	0	1	UU	
+650	$FFFF	0
+azimuth	652	$FFFF	0	1	FF	deg
+elevation	654	$FFFF	0	1	FF	deg
+type	657	$FFFF	0	1	UU	
+656	$FFFF	0
+beta	658	$FFFF	0	1	FF	deg
+epsilon	660	$FFFF	0	1	FF	deg
+distance	662	$FFFF	0	1	FF	m
+dopplerSpeed	664	$FFFF	0	1	FF	m/s
+signalLevel	666	$FFFF	0	1	FF	
+reflectedEnergy	668	$FFFF	0	1	FF	
+; primaryMark_3
+hasMatchedTrack	671	$FFFF	0	1	UU	
+670	$FFFF	0
+azimuth	672	$FFFF	0	1	FF	deg
+elevation	674	$FFFF	0	1	FF	deg
+type	677	$FFFF	0	1	UU	
+676	$FFFF	0
+beta	678	$FFFF	0	1	FF	deg
+epsilon	680	$FFFF	0	1	FF	deg
+distance	682	$FFFF	0	1	FF	m
+dopplerSpeed	684	$FFFF	0	1	FF	m/s
+signalLevel	686	$FFFF	0	1	FF	
+reflectedEnergy	688	$FFFF	0	1	FF	
+; primaryMark_4
+hasMatchedTrack	691	$FFFF	0	1	UU	
+690	$FFFF	0
+azimuth	692	$FFFF	0	1	FF	deg
+elevation	694	$FFFF	0	1	FF	deg
+type	697	$FFFF	0	1	UU	
+696	$FFFF	0
+beta	698	$FFFF	0	1	FF	deg
+epsilon	700	$FFFF	0	1	FF	deg
+distance	702	$FFFF	0	1	FF	m
+dopplerSpeed	704	$FFFF	0	1	FF	m/s
+signalLevel	706	$FFFF	0	1	FF	
+reflectedEnergy	708	$FFFF	0	1	FF	
+; primaryMark_5
+hasMatchedTrack	711	$FFFF	0	1	UU	
+710	$FFFF	0
+azimuth	712	$FFFF	0	1	FF	deg
+elevation	714	$FFFF	0	1	FF	deg
+type	717	$FFFF	0	1	UU	
+716	$FFFF	0
+beta	718	$FFFF	0	1	FF	deg
+epsilon	720	$FFFF	0	1	FF	deg
+distance	722	$FFFF	0	1	FF	m
+dopplerSpeed	724	$FFFF	0	1	FF	m/s
+signalLevel	726	$FFFF	0	1	FF	
+reflectedEnergy	728	$FFFF	0	1	FF	
+; primaryMark_6
+hasMatchedTrack	731	$FFFF	0	1	UU	
+730	$FFFF	0
+azimuth	732	$FFFF	0	1	FF	deg
+elevation	734	$FFFF	0	1	FF	deg
+type	737	$FFFF	0	1	UU	
+736	$FFFF	0
+beta	738	$FFFF	0	1	FF	deg
+epsilon	740	$FFFF	0	1	FF	deg
+distance	742	$FFFF	0	1	FF	m
+dopplerSpeed	744	$FFFF	0	1	FF	m/s
+signalLevel	746	$FFFF	0	1	FF	
+reflectedEnergy	748	$FFFF	0	1	FF	
+; primaryMark_7
+hasMatchedTrack	751	$FFFF	0	1	UU	
+750	$FFFF	0
+azimuth	752	$FFFF	0	1	FF	deg
+elevation	754	$FFFF	0	1	FF	deg
+type	757	$FFFF	0	1	UU	
+756	$FFFF	0
+beta	758	$FFFF	0	1	FF	deg
+epsilon	760	$FFFF	0	1	FF	deg
+distance	762	$FFFF	0	1	FF	m
+dopplerSpeed	764	$FFFF	0	1	FF	m/s
+signalLevel	766	$FFFF	0	1	FF	
+reflectedEnergy	768	$FFFF	0	1	FF	
+; primaryMark_8
+hasMatchedTrack	771	$FFFF	0	1	UU	
+770	$FFFF	0
+azimuth	772	$FFFF	0	1	FF	deg
+elevation	774	$FFFF	0	1	FF	deg
+type	777	$FFFF	0	1	UU	
+776	$FFFF	0
+beta	778	$FFFF	0	1	FF	deg
+epsilon	780	$FFFF	0	1	FF	deg
+distance	782	$FFFF	0	1	FF	m
+dopplerSpeed	784	$FFFF	0	1	FF	m/s
+signalLevel	786	$FFFF	0	1	FF	
+reflectedEnergy	788	$FFFF	0	1	FF	
+; primaryMark_9
+hasMatchedTrack	791	$FFFF	0	1	UU	
+790	$FFFF	0
+azimuth	792	$FFFF	0	1	FF	deg
+elevation	794	$FFFF	0	1	FF	deg
+type	797	$FFFF	0	1	UU	
+796	$FFFF	0
+beta	798	$FFFF	0	1	FF	deg
+epsilon	800	$FFFF	0	1	FF	deg
+distance	802	$FFFF	0	1	FF	m
+dopplerSpeed	804	$FFFF	0	1	FF	m/s
+signalLevel	806	$FFFF	0	1	FF	
+reflectedEnergy	808	$FFFF	0	1	FF	
+; scanData_3
+processingTime	811	$FFFF	0	1	UU	us
+810	$FFFF	0
+taskId	813	$FFFF	0	1	UU	
+812	$FFFF	0
+taskType	815	$FFFF	0	1	UU	
+814	$FFFF	0
+antennaId	817	$FFFF	0	1	UU	
+816	$FFFF	0
+beginAngle	818	$FFFF	0	1	FF	deg
+endAngle	820	$FFFF	0	1	FF	deg
+beamAzimuth	822	$FFFF	0	1	FF	deg
+beamElevation	824	$FFFF	0	1	FF	deg
+beginTimeSeconds	827	$FFFF	0	1	UU	s
+826	$FFFF	0
+beginTimeNanoseconds	829	$FFFF	0	1	UU	ns
+828	$FFFF	0
+primaryMarksCount	831	$FFFF	0	1	UU	
+830	$FFFF	0
+; primaryMark
+hasMatchedTrack	833	$FFFF	0	1	UU	
+832	$FFFF	0
+azimuth	834	$FFFF	0	1	FF	deg
+elevation	836	$FFFF	0	1	FF	deg
+type	839	$FFFF	0	1	UU	
+838	$FFFF	0
+beta	840	$FFFF	0	1	FF	deg
+epsilon	842	$FFFF	0	1	FF	deg
+distance	844	$FFFF	0	1	FF	m
+dopplerSpeed	846	$FFFF	0	1	FF	m/s
+signalLevel	848	$FFFF	0	1	FF	
+reflectedEnergy	850	$FFFF	0	1	FF	
+; primaryMark_1
+hasMatchedTrack	853	$FFFF	0	1	UU	
+852	$FFFF	0
+azimuth	854	$FFFF	0	1	FF	deg
+elevation	856	$FFFF	0	1	FF	deg
+type	859	$FFFF	0	1	UU	
+858	$FFFF	0
+beta	860	$FFFF	0	1	FF	deg
+epsilon	862	$FFFF	0	1	FF	deg
+distance	864	$FFFF	0	1	FF	m
+dopplerSpeed	866	$FFFF	0	1	FF	m/s
+signalLevel	868	$FFFF	0	1	FF	
+reflectedEnergy	870	$FFFF	0	1	FF	
+; primaryMark_2
+hasMatchedTrack	873	$FFFF	0	1	UU	
+872	$FFFF	0
+azimuth	874	$FFFF	0	1	FF	deg
+elevation	876	$FFFF	0	1	FF	deg
+type	879	$FFFF	0	1	UU	
+878	$FFFF	0
+beta	880	$FFFF	0	1	FF	deg
+epsilon	882	$FFFF	0	1	FF	deg
+distance	884	$FFFF	0	1	FF	m
+dopplerSpeed	886	$FFFF	0	1	FF	m/s
+signalLevel	888	$FFFF	0	1	FF	
+reflectedEnergy	890	$FFFF	0	1	FF	
+; primaryMark_3
+hasMatchedTrack	893	$FFFF	0	1	UU	
+892	$FFFF	0
+azimuth	894	$FFFF	0	1	FF	deg
+elevation	896	$FFFF	0	1	FF	deg
+type	899	$FFFF	0	1	UU	
+898	$FFFF	0
+beta	900	$FFFF	0	1	FF	deg
+epsilon	902	$FFFF	0	1	FF	deg
+distance	904	$FFFF	0	1	FF	m
+dopplerSpeed	906	$FFFF	0	1	FF	m/s
+signalLevel	908	$FFFF	0	1	FF	
+reflectedEnergy	910	$FFFF	0	1	FF	
+; primaryMark_4
+hasMatchedTrack	913	$FFFF	0	1	UU	
+912	$FFFF	0
+azimuth	914	$FFFF	0	1	FF	deg
+elevation	916	$FFFF	0	1	FF	deg
+type	919	$FFFF	0	1	UU	
+918	$FFFF	0
+beta	920	$FFFF	0	1	FF	deg
+epsilon	922	$FFFF	0	1	FF	deg
+distance	924	$FFFF	0	1	FF	m
+dopplerSpeed	926	$FFFF	0	1	FF	m/s
+signalLevel	928	$FFFF	0	1	FF	
+reflectedEnergy	930	$FFFF	0	1	FF	
+; primaryMark_5
+hasMatchedTrack	933	$FFFF	0	1	UU	
+932	$FFFF	0
+azimuth	934	$FFFF	0	1	FF	deg
+elevation	936	$FFFF	0	1	FF	deg
+type	939	$FFFF	0	1	UU	
+938	$FFFF	0
+beta	940	$FFFF	0	1	FF	deg
+epsilon	942	$FFFF	0	1	FF	deg
+distance	944	$FFFF	0	1	FF	m
+dopplerSpeed	946	$FFFF	0	1	FF	m/s
+signalLevel	948	$FFFF	0	1	FF	
+reflectedEnergy	950	$FFFF	0	1	FF	
+; primaryMark_6
+hasMatchedTrack	953	$FFFF	0	1	UU	
+952	$FFFF	0
+azimuth	954	$FFFF	0	1	FF	deg
+elevation	956	$FFFF	0	1	FF	deg
+type	959	$FFFF	0	1	UU	
+958	$FFFF	0
+beta	960	$FFFF	0	1	FF	deg
+epsilon	962	$FFFF	0	1	FF	deg
+distance	964	$FFFF	0	1	FF	m
+dopplerSpeed	966	$FFFF	0	1	FF	m/s
+signalLevel	968	$FFFF	0	1	FF	
+reflectedEnergy	970	$FFFF	0	1	FF	
+; primaryMark_7
+hasMatchedTrack	973	$FFFF	0	1	UU	
+972	$FFFF	0
+azimuth	974	$FFFF	0	1	FF	deg
+elevation	976	$FFFF	0	1	FF	deg
+type	979	$FFFF	0	1	UU	
+978	$FFFF	0
+beta	980	$FFFF	0	1	FF	deg
+epsilon	982	$FFFF	0	1	FF	deg
+distance	984	$FFFF	0	1	FF	m
+dopplerSpeed	986	$FFFF	0	1	FF	m/s
+signalLevel	988	$FFFF	0	1	FF	
+reflectedEnergy	990	$FFFF	0	1	FF	
+; primaryMark_8
+hasMatchedTrack	993	$FFFF	0	1	UU	
+992	$FFFF	0
+azimuth	994	$FFFF	0	1	FF	deg
+elevation	996	$FFFF	0	1	FF	deg
+type	999	$FFFF	0	1	UU	
+998	$FFFF	0
+beta	1000	$FFFF	0	1	FF	deg
+epsilon	1002	$FFFF	0	1	FF	deg
+distance	1004	$FFFF	0	1	FF	m
+dopplerSpeed	1006	$FFFF	0	1	FF	m/s
+signalLevel	1008	$FFFF	0	1	FF	
+reflectedEnergy	1010	$FFFF	0	1	FF	
+; primaryMark_9
+hasMatchedTrack	1013	$FFFF	0	1	UU	
+1012	$FFFF	0
+azimuth	1014	$FFFF	0	1	FF	deg
+elevation	1016	$FFFF	0	1	FF	deg
+type	1019	$FFFF	0	1	UU	
+1018	$FFFF	0
+beta	1020	$FFFF	0	1	FF	deg
+epsilon	1022	$FFFF	0	1	FF	deg
+distance	1024	$FFFF	0	1	FF	m
+dopplerSpeed	1026	$FFFF	0	1	FF	m/s
+signalLevel	1028	$FFFF	0	1	FF	
+reflectedEnergy	1030	$FFFF	0	1	FF	
+; TrackCandidates
+candidatesQueueSize	1033	$FFFF	0	1	UU	
+1032	$FFFF	0
+; trackCandidate
+id	1035	$FFFF	0	1	UU	
+1034	$FFFF	0
+taskId	1037	$FFFF	0	1	UU	
+1036	$FFFF	0
+antennaId	1039	$FFFF	0	1	UU	
+1038	$FFFF	0
+beamAzimuth	1040	$FFFF	0	1	FF	
+beamElevation	1042	$FFFF	0	1	FF	
+azimuth	1044	$FFFF	0	1	FF	
+elevation	1046	$FFFF	0	1	FF	
+state	1049	$FFFF	0	1	UU	
+1048	$FFFF	0
+; viewSpot
+taskId	1051	$FFFF	0	1	UU	
+1050	$FFFF	0
+pulsePeriod	1052	$FFFF	0	1	FF	
+beamAzimuth	1054	$FFFF	0	1	FF	
+beamElevation	1056	$FFFF	0	1	FF	
+distancePeriod	1058	$FFFF	0	1	FF	
+velocityPeriod	1060	$FFFF	0	1	FF	
+threshold	1062	$FFFF	0	1	FF	
+distance	1064	$FFFF	0	1	FF	
+velocity	1066	$FFFF	0	1	FF	
+resolvedDistance	1068	$FFFF	0	1	FF	
+resolvedVelocity	1070	$FFFF	0	1	FF	
+creationTimeSeconds	1073	$FFFF	0	1	UU	s
+1072	$FFFF	0
+creationTimeNanoSeconds	1075	$FFFF	0	1	UU	ns
+1074	$FFFF	0
+; distanceResolutionSpot
+taskId	1077	$FFFF	0	1	UU	
+1076	$FFFF	0
+pulsePeriod	1078	$FFFF	0	1	FF	
+beamAzimuth	1080	$FFFF	0	1	FF	
+beamElevation	1082	$FFFF	0	1	FF	
+distancePeriod	1084	$FFFF	0	1	FF	
+velocityPeriod	1086	$FFFF	0	1	FF	
+threshold	1088	$FFFF	0	1	FF	
+distance	1090	$FFFF	0	1	FF	
+velocity	1092	$FFFF	0	1	FF	
+resolvedDistance	1094	$FFFF	0	1	FF	
+resolvedVelocity	1096	$FFFF	0	1	FF	
+creationTimeSeconds	1099	$FFFF	0	1	UU	s
+1098	$FFFF	0
+creationTimeNanoSeconds	1101	$FFFF	0	1	UU	ns
+1100	$FFFF	0
+; velocityResolutionSpot
+taskId	1103	$FFFF	0	1	UU	
+1102	$FFFF	0
+pulsePeriod	1104	$FFFF	0	1	FF	
+beamAzimuth	1106	$FFFF	0	1	FF	
+beamElevation	1108	$FFFF	0	1	FF	
+distancePeriod	1110	$FFFF	0	1	FF	
+velocityPeriod	1112	$FFFF	0	1	FF	
+threshold	1114	$FFFF	0	1	FF	
+distance	1116	$FFFF	0	1	FF	
+velocity	1118	$FFFF	0	1	FF	
+resolvedDistance	1120	$FFFF	0	1	FF	
+resolvedVelocity	1122	$FFFF	0	1	FF	
+creationTimeSeconds	1125	$FFFF	0	1	UU	s
+1124	$FFFF	0
+creationTimeNanoSeconds	1127	$FFFF	0	1	UU	ns
+1126	$FFFF	0
+nextUpdateTimeSeconds	1129	$FFFF	0	1	UU	s
+1128	$FFFF	0
+nextUpdateTimeNanoSeconds	1131	$FFFF	0	1	UU	ns
+1130	$FFFF	0
+; trackCandidate_1
+id	1133	$FFFF	0	1	UU	
+1132	$FFFF	0
+taskId	1135	$FFFF	0	1	UU	
+1134	$FFFF	0
+antennaId	1137	$FFFF	0	1	UU	
+1136	$FFFF	0
+beamAzimuth	1138	$FFFF	0	1	FF	
+beamElevation	1140	$FFFF	0	1	FF	
+azimuth	1142	$FFFF	0	1	FF	
+elevation	1144	$FFFF	0	1	FF	
+state	1147	$FFFF	0	1	UU	
+1146	$FFFF	0
+; viewSpot
+taskId	1149	$FFFF	0	1	UU	
+1148	$FFFF	0
+pulsePeriod	1150	$FFFF	0	1	FF	
+beamAzimuth	1152	$FFFF	0	1	FF	
+beamElevation	1154	$FFFF	0	1	FF	
+distancePeriod	1156	$FFFF	0	1	FF	
+velocityPeriod	1158	$FFFF	0	1	FF	
+threshold	1160	$FFFF	0	1	FF	
+distance	1162	$FFFF	0	1	FF	
+velocity	1164	$FFFF	0	1	FF	
+resolvedDistance	1166	$FFFF	0	1	FF	
+resolvedVelocity	1168	$FFFF	0	1	FF	
+creationTimeSeconds	1171	$FFFF	0	1	UU	s
+1170	$FFFF	0
+creationTimeNanoSeconds	1173	$FFFF	0	1	UU	ns
+1172	$FFFF	0
+; distanceResolutionSpot
+taskId	1175	$FFFF	0	1	UU	
+1174	$FFFF	0
+pulsePeriod	1176	$FFFF	0	1	FF	
+beamAzimuth	1178	$FFFF	0	1	FF	
+beamElevation	1180	$FFFF	0	1	FF	
+distancePeriod	1182	$FFFF	0	1	FF	
+velocityPeriod	1184	$FFFF	0	1	FF	
+threshold	1186	$FFFF	0	1	FF	
+distance	1188	$FFFF	0	1	FF	
+velocity	1190	$FFFF	0	1	FF	
+resolvedDistance	1192	$FFFF	0	1	FF	
+resolvedVelocity	1194	$FFFF	0	1	FF	
+creationTimeSeconds	1197	$FFFF	0	1	UU	s
+1196	$FFFF	0
+creationTimeNanoSeconds	1199	$FFFF	0	1	UU	ns
+1198	$FFFF	0
+; velocityResolutionSpot
+taskId	1201	$FFFF	0	1	UU	
+1200	$FFFF	0
+pulsePeriod	1202	$FFFF	0	1	FF	
+beamAzimuth	1204	$FFFF	0	1	FF	
+beamElevation	1206	$FFFF	0	1	FF	
+distancePeriod	1208	$FFFF	0	1	FF	
+velocityPeriod	1210	$FFFF	0	1	FF	
+threshold	1212	$FFFF	0	1	FF	
+distance	1214	$FFFF	0	1	FF	
+velocity	1216	$FFFF	0	1	FF	
+resolvedDistance	1218	$FFFF	0	1	FF	
+resolvedVelocity	1220	$FFFF	0	1	FF	
+creationTimeSeconds	1223	$FFFF	0	1	UU	s
+1222	$FFFF	0
+creationTimeNanoSeconds	1225	$FFFF	0	1	UU	ns
+1224	$FFFF	0
+nextUpdateTimeSeconds	1227	$FFFF	0	1	UU	s
+1226	$FFFF	0
+nextUpdateTimeNanoSeconds	1229	$FFFF	0	1	UU	ns
+1228	$FFFF	0
+; trackCandidate_2
+id	1231	$FFFF	0	1	UU	
+1230	$FFFF	0
+taskId	1233	$FFFF	0	1	UU	
+1232	$FFFF	0
+antennaId	1235	$FFFF	0	1	UU	
+1234	$FFFF	0
+beamAzimuth	1236	$FFFF	0	1	FF	
+beamElevation	1238	$FFFF	0	1	FF	
+azimuth	1240	$FFFF	0	1	FF	
+elevation	1242	$FFFF	0	1	FF	
+state	1245	$FFFF	0	1	UU	
+1244	$FFFF	0
+; viewSpot
+taskId	1247	$FFFF	0	1	UU	
+1246	$FFFF	0
+pulsePeriod	1248	$FFFF	0	1	FF	
+beamAzimuth	1250	$FFFF	0	1	FF	
+beamElevation	1252	$FFFF	0	1	FF	
+distancePeriod	1254	$FFFF	0	1	FF	
+velocityPeriod	1256	$FFFF	0	1	FF	
+threshold	1258	$FFFF	0	1	FF	
+distance	1260	$FFFF	0	1	FF	
+velocity	1262	$FFFF	0	1	FF	
+resolvedDistance	1264	$FFFF	0	1	FF	
+resolvedVelocity	1266	$FFFF	0	1	FF	
+creationTimeSeconds	1269	$FFFF	0	1	UU	s
+1268	$FFFF	0
+creationTimeNanoSeconds	1271	$FFFF	0	1	UU	ns
+1270	$FFFF	0
+; distanceResolutionSpot
+taskId	1273	$FFFF	0	1	UU	
+1272	$FFFF	0
+pulsePeriod	1274	$FFFF	0	1	FF	
+beamAzimuth	1276	$FFFF	0	1	FF	
+beamElevation	1278	$FFFF	0	1	FF	
+distancePeriod	1280	$FFFF	0	1	FF	
+velocityPeriod	1282	$FFFF	0	1	FF	
+threshold	1284	$FFFF	0	1	FF	
+distance	1286	$FFFF	0	1	FF	
+velocity	1288	$FFFF	0	1	FF	
+resolvedDistance	1290	$FFFF	0	1	FF	
+resolvedVelocity	1292	$FFFF	0	1	FF	
+creationTimeSeconds	1295	$FFFF	0	1	UU	s
+1294	$FFFF	0
+creationTimeNanoSeconds	1297	$FFFF	0	1	UU	ns
+1296	$FFFF	0
+; velocityResolutionSpot
+taskId	1299	$FFFF	0	1	UU	
+1298	$FFFF	0
+pulsePeriod	1300	$FFFF	0	1	FF	
+beamAzimuth	1302	$FFFF	0	1	FF	
+beamElevation	1304	$FFFF	0	1	FF	
+distancePeriod	1306	$FFFF	0	1	FF	
+velocityPeriod	1308	$FFFF	0	1	FF	
+threshold	1310	$FFFF	0	1	FF	
+distance	1312	$FFFF	0	1	FF	
+velocity	1314	$FFFF	0	1	FF	
+resolvedDistance	1316	$FFFF	0	1	FF	
+resolvedVelocity	1318	$FFFF	0	1	FF	
+creationTimeSeconds	1321	$FFFF	0	1	UU	s
+1320	$FFFF	0
+creationTimeNanoSeconds	1323	$FFFF	0	1	UU	ns
+1322	$FFFF	0
+nextUpdateTimeSeconds	1325	$FFFF	0	1	UU	s
+1324	$FFFF	0
+nextUpdateTimeNanoSeconds	1327	$FFFF	0	1	UU	ns
+1326	$FFFF	0
+; trackCandidate_3
+id	1329	$FFFF	0	1	UU	
+1328	$FFFF	0
+taskId	1331	$FFFF	0	1	UU	
+1330	$FFFF	0
+antennaId	1333	$FFFF	0	1	UU	
+1332	$FFFF	0
+beamAzimuth	1334	$FFFF	0	1	FF	
+beamElevation	1336	$FFFF	0	1	FF	
+azimuth	1338	$FFFF	0	1	FF	
+elevation	1340	$FFFF	0	1	FF	
+state	1343	$FFFF	0	1	UU	
+1342	$FFFF	0
+; viewSpot
+taskId	1345	$FFFF	0	1	UU	
+1344	$FFFF	0
+pulsePeriod	1346	$FFFF	0	1	FF	
+beamAzimuth	1348	$FFFF	0	1	FF	
+beamElevation	1350	$FFFF	0	1	FF	
+distancePeriod	1352	$FFFF	0	1	FF	
+velocityPeriod	1354	$FFFF	0	1	FF	
+threshold	1356	$FFFF	0	1	FF	
+distance	1358	$FFFF	0	1	FF	
+velocity	1360	$FFFF	0	1	FF	
+resolvedDistance	1362	$FFFF	0	1	FF	
+resolvedVelocity	1364	$FFFF	0	1	FF	
+creationTimeSeconds	1367	$FFFF	0	1	UU	s
+1366	$FFFF	0
+creationTimeNanoSeconds	1369	$FFFF	0	1	UU	ns
+1368	$FFFF	0
+; distanceResolutionSpot
+taskId	1371	$FFFF	0	1	UU	
+1370	$FFFF	0
+pulsePeriod	1372	$FFFF	0	1	FF	
+beamAzimuth	1374	$FFFF	0	1	FF	
+beamElevation	1376	$FFFF	0	1	FF	
+distancePeriod	1378	$FFFF	0	1	FF	
+velocityPeriod	1380	$FFFF	0	1	FF	
+threshold	1382	$FFFF	0	1	FF	
+distance	1384	$FFFF	0	1	FF	
+velocity	1386	$FFFF	0	1	FF	
+resolvedDistance	1388	$FFFF	0	1	FF	
+resolvedVelocity	1390	$FFFF	0	1	FF	
+creationTimeSeconds	1393	$FFFF	0	1	UU	s
+1392	$FFFF	0
+creationTimeNanoSeconds	1395	$FFFF	0	1	UU	ns
+1394	$FFFF	0
+; velocityResolutionSpot
+taskId	1397	$FFFF	0	1	UU	
+1396	$FFFF	0
+pulsePeriod	1398	$FFFF	0	1	FF	
+beamAzimuth	1400	$FFFF	0	1	FF	
+beamElevation	1402	$FFFF	0	1	FF	
+distancePeriod	1404	$FFFF	0	1	FF	
+velocityPeriod	1406	$FFFF	0	1	FF	
+threshold	1408	$FFFF	0	1	FF	
+distance	1410	$FFFF	0	1	FF	
+velocity	1412	$FFFF	0	1	FF	
+resolvedDistance	1414	$FFFF	0	1	FF	
+resolvedVelocity	1416	$FFFF	0	1	FF	
+creationTimeSeconds	1419	$FFFF	0	1	UU	s
+1418	$FFFF	0
+creationTimeNanoSeconds	1421	$FFFF	0	1	UU	ns
+1420	$FFFF	0
+nextUpdateTimeSeconds	1423	$FFFF	0	1	UU	s
+1422	$FFFF	0
+nextUpdateTimeNanoSeconds	1425	$FFFF	0	1	UU	ns
+1424	$FFFF	0
+; trackCandidate_4
+id	1427	$FFFF	0	1	UU	
+1426	$FFFF	0
+taskId	1429	$FFFF	0	1	UU	
+1428	$FFFF	0
+antennaId	1431	$FFFF	0	1	UU	
+1430	$FFFF	0
+beamAzimuth	1432	$FFFF	0	1	FF	
+beamElevation	1434	$FFFF	0	1	FF	
+azimuth	1436	$FFFF	0	1	FF	
+elevation	1438	$FFFF	0	1	FF	
+state	1441	$FFFF	0	1	UU	
+1440	$FFFF	0
+; viewSpot
+taskId	1443	$FFFF	0	1	UU	
+1442	$FFFF	0
+pulsePeriod	1444	$FFFF	0	1	FF	
+beamAzimuth	1446	$FFFF	0	1	FF	
+beamElevation	1448	$FFFF	0	1	FF	
+distancePeriod	1450	$FFFF	0	1	FF	
+velocityPeriod	1452	$FFFF	0	1	FF	
+threshold	1454	$FFFF	0	1	FF	
+distance	1456	$FFFF	0	1	FF	
+velocity	1458	$FFFF	0	1	FF	
+resolvedDistance	1460	$FFFF	0	1	FF	
+resolvedVelocity	1462	$FFFF	0	1	FF	
+creationTimeSeconds	1465	$FFFF	0	1	UU	s
+1464	$FFFF	0
+creationTimeNanoSeconds	1467	$FFFF	0	1	UU	ns
+1466	$FFFF	0
+; distanceResolutionSpot
+taskId	1469	$FFFF	0	1	UU	
+1468	$FFFF	0
+pulsePeriod	1470	$FFFF	0	1	FF	
+beamAzimuth	1472	$FFFF	0	1	FF	
+beamElevation	1474	$FFFF	0	1	FF	
+distancePeriod	1476	$FFFF	0	1	FF	
+velocityPeriod	1478	$FFFF	0	1	FF	
+threshold	1480	$FFFF	0	1	FF	
+distance	1482	$FFFF	0	1	FF	
+velocity	1484	$FFFF	0	1	FF	
+resolvedDistance	1486	$FFFF	0	1	FF	
+resolvedVelocity	1488	$FFFF	0	1	FF	
+creationTimeSeconds	1491	$FFFF	0	1	UU	s
+1490	$FFFF	0
+creationTimeNanoSeconds	1493	$FFFF	0	1	UU	ns
+1492	$FFFF	0
+; velocityResolutionSpot
+taskId	1495	$FFFF	0	1	UU	
+1494	$FFFF	0
+pulsePeriod	1496	$FFFF	0	1	FF	
+beamAzimuth	1498	$FFFF	0	1	FF	
+beamElevation	1500	$FFFF	0	1	FF	
+distancePeriod	1502	$FFFF	0	1	FF	
+velocityPeriod	1504	$FFFF	0	1	FF	
+threshold	1506	$FFFF	0	1	FF	
+distance	1508	$FFFF	0	1	FF	
+velocity	1510	$FFFF	0	1	FF	
+resolvedDistance	1512	$FFFF	0	1	FF	
+resolvedVelocity	1514	$FFFF	0	1	FF	
+creationTimeSeconds	1517	$FFFF	0	1	UU	s
+1516	$FFFF	0
+creationTimeNanoSeconds	1519	$FFFF	0	1	UU	ns
+1518	$FFFF	0
+nextUpdateTimeSeconds	1521	$FFFF	0	1	UU	s
+1520	$FFFF	0
+nextUpdateTimeNanoSeconds	1523	$FFFF	0	1	UU	ns
+1522	$FFFF	0
+; trackCandidate_5
+id	1525	$FFFF	0	1	UU	
+1524	$FFFF	0
+taskId	1527	$FFFF	0	1	UU	
+1526	$FFFF	0
+antennaId	1529	$FFFF	0	1	UU	
+1528	$FFFF	0
+beamAzimuth	1530	$FFFF	0	1	FF	
+beamElevation	1532	$FFFF	0	1	FF	
+azimuth	1534	$FFFF	0	1	FF	
+elevation	1536	$FFFF	0	1	FF	
+state	1539	$FFFF	0	1	UU	
+1538	$FFFF	0
+; viewSpot
+taskId	1541	$FFFF	0	1	UU	
+1540	$FFFF	0
+pulsePeriod	1542	$FFFF	0	1	FF	
+beamAzimuth	1544	$FFFF	0	1	FF	
+beamElevation	1546	$FFFF	0	1	FF	
+distancePeriod	1548	$FFFF	0	1	FF	
+velocityPeriod	1550	$FFFF	0	1	FF	
+threshold	1552	$FFFF	0	1	FF	
+distance	1554	$FFFF	0	1	FF	
+velocity	1556	$FFFF	0	1	FF	
+resolvedDistance	1558	$FFFF	0	1	FF	
+resolvedVelocity	1560	$FFFF	0	1	FF	
+creationTimeSeconds	1563	$FFFF	0	1	UU	s
+1562	$FFFF	0
+creationTimeNanoSeconds	1565	$FFFF	0	1	UU	ns
+1564	$FFFF	0
+; distanceResolutionSpot
+taskId	1567	$FFFF	0	1	UU	
+1566	$FFFF	0
+pulsePeriod	1568	$FFFF	0	1	FF	
+beamAzimuth	1570	$FFFF	0	1	FF	
+beamElevation	1572	$FFFF	0	1	FF	
+distancePeriod	1574	$FFFF	0	1	FF	
+velocityPeriod	1576	$FFFF	0	1	FF	
+threshold	1578	$FFFF	0	1	FF	
+distance	1580	$FFFF	0	1	FF	
+velocity	1582	$FFFF	0	1	FF	
+resolvedDistance	1584	$FFFF	0	1	FF	
+resolvedVelocity	1586	$FFFF	0	1	FF	
+creationTimeSeconds	1589	$FFFF	0	1	UU	s
+1588	$FFFF	0
+creationTimeNanoSeconds	1591	$FFFF	0	1	UU	ns
+1590	$FFFF	0
+; velocityResolutionSpot
+taskId	1593	$FFFF	0	1	UU	
+1592	$FFFF	0
+pulsePeriod	1594	$FFFF	0	1	FF	
+beamAzimuth	1596	$FFFF	0	1	FF	
+beamElevation	1598	$FFFF	0	1	FF	
+distancePeriod	1600	$FFFF	0	1	FF	
+velocityPeriod	1602	$FFFF	0	1	FF	
+threshold	1604	$FFFF	0	1	FF	
+distance	1606	$FFFF	0	1	FF	
+velocity	1608	$FFFF	0	1	FF	
+resolvedDistance	1610	$FFFF	0	1	FF	
+resolvedVelocity	1612	$FFFF	0	1	FF	
+creationTimeSeconds	1615	$FFFF	0	1	UU	s
+1614	$FFFF	0
+creationTimeNanoSeconds	1617	$FFFF	0	1	UU	ns
+1616	$FFFF	0
+nextUpdateTimeSeconds	1619	$FFFF	0	1	UU	s
+1618	$FFFF	0
+nextUpdateTimeNanoSeconds	1621	$FFFF	0	1	UU	ns
+1620	$FFFF	0
+; trackCandidate_6
+id	1623	$FFFF	0	1	UU	
+1622	$FFFF	0
+taskId	1625	$FFFF	0	1	UU	
+1624	$FFFF	0
+antennaId	1627	$FFFF	0	1	UU	
+1626	$FFFF	0
+beamAzimuth	1628	$FFFF	0	1	FF	
+beamElevation	1630	$FFFF	0	1	FF	
+azimuth	1632	$FFFF	0	1	FF	
+elevation	1634	$FFFF	0	1	FF	
+state	1637	$FFFF	0	1	UU	
+1636	$FFFF	0
+; viewSpot
+taskId	1639	$FFFF	0	1	UU	
+1638	$FFFF	0
+pulsePeriod	1640	$FFFF	0	1	FF	
+beamAzimuth	1642	$FFFF	0	1	FF	
+beamElevation	1644	$FFFF	0	1	FF	
+distancePeriod	1646	$FFFF	0	1	FF	
+velocityPeriod	1648	$FFFF	0	1	FF	
+threshold	1650	$FFFF	0	1	FF	
+distance	1652	$FFFF	0	1	FF	
+velocity	1654	$FFFF	0	1	FF	
+resolvedDistance	1656	$FFFF	0	1	FF	
+resolvedVelocity	1658	$FFFF	0	1	FF	
+creationTimeSeconds	1661	$FFFF	0	1	UU	s
+1660	$FFFF	0
+creationTimeNanoSeconds	1663	$FFFF	0	1	UU	ns
+1662	$FFFF	0
+; distanceResolutionSpot
+taskId	1665	$FFFF	0	1	UU	
+1664	$FFFF	0
+pulsePeriod	1666	$FFFF	0	1	FF	
+beamAzimuth	1668	$FFFF	0	1	FF	
+beamElevation	1670	$FFFF	0	1	FF	
+distancePeriod	1672	$FFFF	0	1	FF	
+velocityPeriod	1674	$FFFF	0	1	FF	
+threshold	1676	$FFFF	0	1	FF	
+distance	1678	$FFFF	0	1	FF	
+velocity	1680	$FFFF	0	1	FF	
+resolvedDistance	1682	$FFFF	0	1	FF	
+resolvedVelocity	1684	$FFFF	0	1	FF	
+creationTimeSeconds	1687	$FFFF	0	1	UU	s
+1686	$FFFF	0
+creationTimeNanoSeconds	1689	$FFFF	0	1	UU	ns
+1688	$FFFF	0
+; velocityResolutionSpot
+taskId	1691	$FFFF	0	1	UU	
+1690	$FFFF	0
+pulsePeriod	1692	$FFFF	0	1	FF	
+beamAzimuth	1694	$FFFF	0	1	FF	
+beamElevation	1696	$FFFF	0	1	FF	
+distancePeriod	1698	$FFFF	0	1	FF	
+velocityPeriod	1700	$FFFF	0	1	FF	
+threshold	1702	$FFFF	0	1	FF	
+distance	1704	$FFFF	0	1	FF	
+velocity	1706	$FFFF	0	1	FF	
+resolvedDistance	1708	$FFFF	0	1	FF	
+resolvedVelocity	1710	$FFFF	0	1	FF	
+creationTimeSeconds	1713	$FFFF	0	1	UU	s
+1712	$FFFF	0
+creationTimeNanoSeconds	1715	$FFFF	0	1	UU	ns
+1714	$FFFF	0
+nextUpdateTimeSeconds	1717	$FFFF	0	1	UU	s
+1716	$FFFF	0
+nextUpdateTimeNanoSeconds	1719	$FFFF	0	1	UU	ns
+1718	$FFFF	0
+; trackCandidate_7
+id	1721	$FFFF	0	1	UU	
+1720	$FFFF	0
+taskId	1723	$FFFF	0	1	UU	
+1722	$FFFF	0
+antennaId	1725	$FFFF	0	1	UU	
+1724	$FFFF	0
+beamAzimuth	1726	$FFFF	0	1	FF	
+beamElevation	1728	$FFFF	0	1	FF	
+azimuth	1730	$FFFF	0	1	FF	
+elevation	1732	$FFFF	0	1	FF	
+state	1735	$FFFF	0	1	UU	
+1734	$FFFF	0
+; viewSpot
+taskId	1737	$FFFF	0	1	UU	
+1736	$FFFF	0
+pulsePeriod	1738	$FFFF	0	1	FF	
+beamAzimuth	1740	$FFFF	0	1	FF	
+beamElevation	1742	$FFFF	0	1	FF	
+distancePeriod	1744	$FFFF	0	1	FF	
+velocityPeriod	1746	$FFFF	0	1	FF	
+threshold	1748	$FFFF	0	1	FF	
+distance	1750	$FFFF	0	1	FF	
+velocity	1752	$FFFF	0	1	FF	
+resolvedDistance	1754	$FFFF	0	1	FF	
+resolvedVelocity	1756	$FFFF	0	1	FF	
+creationTimeSeconds	1759	$FFFF	0	1	UU	s
+1758	$FFFF	0
+creationTimeNanoSeconds	1761	$FFFF	0	1	UU	ns
+1760	$FFFF	0
+; distanceResolutionSpot
+taskId	1763	$FFFF	0	1	UU	
+1762	$FFFF	0
+pulsePeriod	1764	$FFFF	0	1	FF	
+beamAzimuth	1766	$FFFF	0	1	FF	
+beamElevation	1768	$FFFF	0	1	FF	
+distancePeriod	1770	$FFFF	0	1	FF	
+velocityPeriod	1772	$FFFF	0	1	FF	
+threshold	1774	$FFFF	0	1	FF	
+distance	1776	$FFFF	0	1	FF	
+velocity	1778	$FFFF	0	1	FF	
+resolvedDistance	1780	$FFFF	0	1	FF	
+resolvedVelocity	1782	$FFFF	0	1	FF	
+creationTimeSeconds	1785	$FFFF	0	1	UU	s
+1784	$FFFF	0
+creationTimeNanoSeconds	1787	$FFFF	0	1	UU	ns
+1786	$FFFF	0
+; velocityResolutionSpot
+taskId	1789	$FFFF	0	1	UU	
+1788	$FFFF	0
+pulsePeriod	1790	$FFFF	0	1	FF	
+beamAzimuth	1792	$FFFF	0	1	FF	
+beamElevation	1794	$FFFF	0	1	FF	
+distancePeriod	1796	$FFFF	0	1	FF	
+velocityPeriod	1798	$FFFF	0	1	FF	
+threshold	1800	$FFFF	0	1	FF	
+distance	1802	$FFFF	0	1	FF	
+velocity	1804	$FFFF	0	1	FF	
+resolvedDistance	1806	$FFFF	0	1	FF	
+resolvedVelocity	1808	$FFFF	0	1	FF	
+creationTimeSeconds	1811	$FFFF	0	1	UU	s
+1810	$FFFF	0
+creationTimeNanoSeconds	1813	$FFFF	0	1	UU	ns
+1812	$FFFF	0
+nextUpdateTimeSeconds	1815	$FFFF	0	1	UU	s
+1814	$FFFF	0
+nextUpdateTimeNanoSeconds	1817	$FFFF	0	1	UU	ns
+1816	$FFFF	0
+; trackCandidate_8
+id	1819	$FFFF	0	1	UU	
+1818	$FFFF	0
+taskId	1821	$FFFF	0	1	UU	
+1820	$FFFF	0
+antennaId	1823	$FFFF	0	1	UU	
+1822	$FFFF	0
+beamAzimuth	1824	$FFFF	0	1	FF	
+beamElevation	1826	$FFFF	0	1	FF	
+azimuth	1828	$FFFF	0	1	FF	
+elevation	1830	$FFFF	0	1	FF	
+state	1833	$FFFF	0	1	UU	
+1832	$FFFF	0
+; viewSpot
+taskId	1835	$FFFF	0	1	UU	
+1834	$FFFF	0
+pulsePeriod	1836	$FFFF	0	1	FF	
+beamAzimuth	1838	$FFFF	0	1	FF	
+beamElevation	1840	$FFFF	0	1	FF	
+distancePeriod	1842	$FFFF	0	1	FF	
+velocityPeriod	1844	$FFFF	0	1	FF	
+threshold	1846	$FFFF	0	1	FF	
+distance	1848	$FFFF	0	1	FF	
+velocity	1850	$FFFF	0	1	FF	
+resolvedDistance	1852	$FFFF	0	1	FF	
+resolvedVelocity	1854	$FFFF	0	1	FF	
+creationTimeSeconds	1857	$FFFF	0	1	UU	s
+1856	$FFFF	0
+creationTimeNanoSeconds	1859	$FFFF	0	1	UU	ns
+1858	$FFFF	0
+; distanceResolutionSpot
+taskId	1861	$FFFF	0	1	UU	
+1860	$FFFF	0
+pulsePeriod	1862	$FFFF	0	1	FF	
+beamAzimuth	1864	$FFFF	0	1	FF	
+beamElevation	1866	$FFFF	0	1	FF	
+distancePeriod	1868	$FFFF	0	1	FF	
+velocityPeriod	1870	$FFFF	0	1	FF	
+threshold	1872	$FFFF	0	1	FF	
+distance	1874	$FFFF	0	1	FF	
+velocity	1876	$FFFF	0	1	FF	
+resolvedDistance	1878	$FFFF	0	1	FF	
+resolvedVelocity	1880	$FFFF	0	1	FF	
+creationTimeSeconds	1883	$FFFF	0	1	UU	s
+1882	$FFFF	0
+creationTimeNanoSeconds	1885	$FFFF	0	1	UU	ns
+1884	$FFFF	0
+; velocityResolutionSpot
+taskId	1887	$FFFF	0	1	UU	
+1886	$FFFF	0
+pulsePeriod	1888	$FFFF	0	1	FF	
+beamAzimuth	1890	$FFFF	0	1	FF	
+beamElevation	1892	$FFFF	0	1	FF	
+distancePeriod	1894	$FFFF	0	1	FF	
+velocityPeriod	1896	$FFFF	0	1	FF	
+threshold	1898	$FFFF	0	1	FF	
+distance	1900	$FFFF	0	1	FF	
+velocity	1902	$FFFF	0	1	FF	
+resolvedDistance	1904	$FFFF	0	1	FF	
+resolvedVelocity	1906	$FFFF	0	1	FF	
+creationTimeSeconds	1909	$FFFF	0	1	UU	s
+1908	$FFFF	0
+creationTimeNanoSeconds	1911	$FFFF	0	1	UU	ns
+1910	$FFFF	0
+nextUpdateTimeSeconds	1913	$FFFF	0	1	UU	s
+1912	$FFFF	0
+nextUpdateTimeNanoSeconds	1915	$FFFF	0	1	UU	ns
+1914	$FFFF	0
+; trackCandidate_9
+id	1917	$FFFF	0	1	UU	
+1916	$FFFF	0
+taskId	1919	$FFFF	0	1	UU	
+1918	$FFFF	0
+antennaId	1921	$FFFF	0	1	UU	
+1920	$FFFF	0
+beamAzimuth	1922	$FFFF	0	1	FF	
+beamElevation	1924	$FFFF	0	1	FF	
+azimuth	1926	$FFFF	0	1	FF	
+elevation	1928	$FFFF	0	1	FF	
+state	1931	$FFFF	0	1	UU	
+1930	$FFFF	0
+; viewSpot
+taskId	1933	$FFFF	0	1	UU	
+1932	$FFFF	0
+pulsePeriod	1934	$FFFF	0	1	FF	
+beamAzimuth	1936	$FFFF	0	1	FF	
+beamElevation	1938	$FFFF	0	1	FF	
+distancePeriod	1940	$FFFF	0	1	FF	
+velocityPeriod	1942	$FFFF	0	1	FF	
+threshold	1944	$FFFF	0	1	FF	
+distance	1946	$FFFF	0	1	FF	
+velocity	1948	$FFFF	0	1	FF	
+resolvedDistance	1950	$FFFF	0	1	FF	
+resolvedVelocity	1952	$FFFF	0	1	FF	
+creationTimeSeconds	1955	$FFFF	0	1	UU	s
+1954	$FFFF	0
+creationTimeNanoSeconds	1957	$FFFF	0	1	UU	ns
+1956	$FFFF	0
+; distanceResolutionSpot
+taskId	1959	$FFFF	0	1	UU	
+1958	$FFFF	0
+pulsePeriod	1960	$FFFF	0	1	FF	
+beamAzimuth	1962	$FFFF	0	1	FF	
+beamElevation	1964	$FFFF	0	1	FF	
+distancePeriod	1966	$FFFF	0	1	FF	
+velocityPeriod	1968	$FFFF	0	1	FF	
+threshold	1970	$FFFF	0	1	FF	
+distance	1972	$FFFF	0	1	FF	
+velocity	1974	$FFFF	0	1	FF	
+resolvedDistance	1976	$FFFF	0	1	FF	
+resolvedVelocity	1978	$FFFF	0	1	FF	
+creationTimeSeconds	1981	$FFFF	0	1	UU	s
+1980	$FFFF	0
+creationTimeNanoSeconds	1983	$FFFF	0	1	UU	ns
+1982	$FFFF	0
+; velocityResolutionSpot
+taskId	1985	$FFFF	0	1	UU	
+1984	$FFFF	0
+pulsePeriod	1986	$FFFF	0	1	FF	
+beamAzimuth	1988	$FFFF	0	1	FF	
+beamElevation	1990	$FFFF	0	1	FF	
+distancePeriod	1992	$FFFF	0	1	FF	
+velocityPeriod	1994	$FFFF	0	1	FF	
+threshold	1996	$FFFF	0	1	FF	
+distance	1998	$FFFF	0	1	FF	
+velocity	2000	$FFFF	0	1	FF	
+resolvedDistance	2002	$FFFF	0	1	FF	
+resolvedVelocity	2004	$FFFF	0	1	FF	
+creationTimeSeconds	2007	$FFFF	0	1	UU	s
+2006	$FFFF	0
+creationTimeNanoSeconds	2009	$FFFF	0	1	UU	ns
+2008	$FFFF	0
+nextUpdateTimeSeconds	2011	$FFFF	0	1	UU	s
+2010	$FFFF	0
+nextUpdateTimeNanoSeconds	2013	$FFFF	0	1	UU	ns
+2012	$FFFF	0
+; trackCandidate_10
+id	2015	$FFFF	0	1	UU	
+2014	$FFFF	0
+taskId	2017	$FFFF	0	1	UU	
+2016	$FFFF	0
+antennaId	2019	$FFFF	0	1	UU	
+2018	$FFFF	0
+beamAzimuth	2020	$FFFF	0	1	FF	
+beamElevation	2022	$FFFF	0	1	FF	
+azimuth	2024	$FFFF	0	1	FF	
+elevation	2026	$FFFF	0	1	FF	
+state	2029	$FFFF	0	1	UU	
+2028	$FFFF	0
+; viewSpot
+taskId	2031	$FFFF	0	1	UU	
+2030	$FFFF	0
+pulsePeriod	2032	$FFFF	0	1	FF	
+beamAzimuth	2034	$FFFF	0	1	FF	
+beamElevation	2036	$FFFF	0	1	FF	
+distancePeriod	2038	$FFFF	0	1	FF	
+velocityPeriod	2040	$FFFF	0	1	FF	
+threshold	2042	$FFFF	0	1	FF	
+distance	2044	$FFFF	0	1	FF	
+velocity	2046	$FFFF	0	1	FF	
+resolvedDistance	2048	$FFFF	0	1	FF	
+resolvedVelocity	2050	$FFFF	0	1	FF	
+creationTimeSeconds	2053	$FFFF	0	1	UU	s
+2052	$FFFF	0
+creationTimeNanoSeconds	2055	$FFFF	0	1	UU	ns
+2054	$FFFF	0
+; distanceResolutionSpot
+taskId	2057	$FFFF	0	1	UU	
+2056	$FFFF	0
+pulsePeriod	2058	$FFFF	0	1	FF	
+beamAzimuth	2060	$FFFF	0	1	FF	
+beamElevation	2062	$FFFF	0	1	FF	
+distancePeriod	2064	$FFFF	0	1	FF	
+velocityPeriod	2066	$FFFF	0	1	FF	
+threshold	2068	$FFFF	0	1	FF	
+distance	2070	$FFFF	0	1	FF	
+velocity	2072	$FFFF	0	1	FF	
+resolvedDistance	2074	$FFFF	0	1	FF	
+resolvedVelocity	2076	$FFFF	0	1	FF	
+creationTimeSeconds	2079	$FFFF	0	1	UU	s
+2078	$FFFF	0
+creationTimeNanoSeconds	2081	$FFFF	0	1	UU	ns
+2080	$FFFF	0
+; velocityResolutionSpot
+taskId	2083	$FFFF	0	1	UU	
+2082	$FFFF	0
+pulsePeriod	2084	$FFFF	0	1	FF	
+beamAzimuth	2086	$FFFF	0	1	FF	
+beamElevation	2088	$FFFF	0	1	FF	
+distancePeriod	2090	$FFFF	0	1	FF	
+velocityPeriod	2092	$FFFF	0	1	FF	
+threshold	2094	$FFFF	0	1	FF	
+distance	2096	$FFFF	0	1	FF	
+velocity	2098	$FFFF	0	1	FF	
+resolvedDistance	2100	$FFFF	0	1	FF	
+resolvedVelocity	2102	$FFFF	0	1	FF	
+creationTimeSeconds	2105	$FFFF	0	1	UU	s
+2104	$FFFF	0
+creationTimeNanoSeconds	2107	$FFFF	0	1	UU	ns
+2106	$FFFF	0
+nextUpdateTimeSeconds	2109	$FFFF	0	1	UU	s
+2108	$FFFF	0
+nextUpdateTimeNanoSeconds	2111	$FFFF	0	1	UU	ns
+2110	$FFFF	0
+; trackCandidate_11
+id	2113	$FFFF	0	1	UU	
+2112	$FFFF	0
+taskId	2115	$FFFF	0	1	UU	
+2114	$FFFF	0
+antennaId	2117	$FFFF	0	1	UU	
+2116	$FFFF	0
+beamAzimuth	2118	$FFFF	0	1	FF	
+beamElevation	2120	$FFFF	0	1	FF	
+azimuth	2122	$FFFF	0	1	FF	
+elevation	2124	$FFFF	0	1	FF	
+state	2127	$FFFF	0	1	UU	
+2126	$FFFF	0
+; viewSpot
+taskId	2129	$FFFF	0	1	UU	
+2128	$FFFF	0
+pulsePeriod	2130	$FFFF	0	1	FF	
+beamAzimuth	2132	$FFFF	0	1	FF	
+beamElevation	2134	$FFFF	0	1	FF	
+distancePeriod	2136	$FFFF	0	1	FF	
+velocityPeriod	2138	$FFFF	0	1	FF	
+threshold	2140	$FFFF	0	1	FF	
+distance	2142	$FFFF	0	1	FF	
+velocity	2144	$FFFF	0	1	FF	
+resolvedDistance	2146	$FFFF	0	1	FF	
+resolvedVelocity	2148	$FFFF	0	1	FF	
+creationTimeSeconds	2151	$FFFF	0	1	UU	s
+2150	$FFFF	0
+creationTimeNanoSeconds	2153	$FFFF	0	1	UU	ns
+2152	$FFFF	0
+; distanceResolutionSpot
+taskId	2155	$FFFF	0	1	UU	
+2154	$FFFF	0
+pulsePeriod	2156	$FFFF	0	1	FF	
+beamAzimuth	2158	$FFFF	0	1	FF	
+beamElevation	2160	$FFFF	0	1	FF	
+distancePeriod	2162	$FFFF	0	1	FF	
+velocityPeriod	2164	$FFFF	0	1	FF	
+threshold	2166	$FFFF	0	1	FF	
+distance	2168	$FFFF	0	1	FF	
+velocity	2170	$FFFF	0	1	FF	
+resolvedDistance	2172	$FFFF	0	1	FF	
+resolvedVelocity	2174	$FFFF	0	1	FF	
+creationTimeSeconds	2177	$FFFF	0	1	UU	s
+2176	$FFFF	0
+creationTimeNanoSeconds	2179	$FFFF	0	1	UU	ns
+2178	$FFFF	0
+; velocityResolutionSpot
+taskId	2181	$FFFF	0	1	UU	
+2180	$FFFF	0
+pulsePeriod	2182	$FFFF	0	1	FF	
+beamAzimuth	2184	$FFFF	0	1	FF	
+beamElevation	2186	$FFFF	0	1	FF	
+distancePeriod	2188	$FFFF	0	1	FF	
+velocityPeriod	2190	$FFFF	0	1	FF	
+threshold	2192	$FFFF	0	1	FF	
+distance	2194	$FFFF	0	1	FF	
+velocity	2196	$FFFF	0	1	FF	
+resolvedDistance	2198	$FFFF	0	1	FF	
+resolvedVelocity	2200	$FFFF	0	1	FF	
+creationTimeSeconds	2203	$FFFF	0	1	UU	s
+2202	$FFFF	0
+creationTimeNanoSeconds	2205	$FFFF	0	1	UU	ns
+2204	$FFFF	0
+nextUpdateTimeSeconds	2207	$FFFF	0	1	UU	s
+2206	$FFFF	0
+nextUpdateTimeNanoSeconds	2209	$FFFF	0	1	UU	ns
+2208	$FFFF	0
+; trackCandidate_12
+id	2211	$FFFF	0	1	UU	
+2210	$FFFF	0
+taskId	2213	$FFFF	0	1	UU	
+2212	$FFFF	0
+antennaId	2215	$FFFF	0	1	UU	
+2214	$FFFF	0
+beamAzimuth	2216	$FFFF	0	1	FF	
+beamElevation	2218	$FFFF	0	1	FF	
+azimuth	2220	$FFFF	0	1	FF	
+elevation	2222	$FFFF	0	1	FF	
+state	2225	$FFFF	0	1	UU	
+2224	$FFFF	0
+; viewSpot
+taskId	2227	$FFFF	0	1	UU	
+2226	$FFFF	0
+pulsePeriod	2228	$FFFF	0	1	FF	
+beamAzimuth	2230	$FFFF	0	1	FF	
+beamElevation	2232	$FFFF	0	1	FF	
+distancePeriod	2234	$FFFF	0	1	FF	
+velocityPeriod	2236	$FFFF	0	1	FF	
+threshold	2238	$FFFF	0	1	FF	
+distance	2240	$FFFF	0	1	FF	
+velocity	2242	$FFFF	0	1	FF	
+resolvedDistance	2244	$FFFF	0	1	FF	
+resolvedVelocity	2246	$FFFF	0	1	FF	
+creationTimeSeconds	2249	$FFFF	0	1	UU	s
+2248	$FFFF	0
+creationTimeNanoSeconds	2251	$FFFF	0	1	UU	ns
+2250	$FFFF	0
+; distanceResolutionSpot
+taskId	2253	$FFFF	0	1	UU	
+2252	$FFFF	0
+pulsePeriod	2254	$FFFF	0	1	FF	
+beamAzimuth	2256	$FFFF	0	1	FF	
+beamElevation	2258	$FFFF	0	1	FF	
+distancePeriod	2260	$FFFF	0	1	FF	
+velocityPeriod	2262	$FFFF	0	1	FF	
+threshold	2264	$FFFF	0	1	FF	
+distance	2266	$FFFF	0	1	FF	
+velocity	2268	$FFFF	0	1	FF	
+resolvedDistance	2270	$FFFF	0	1	FF	
+resolvedVelocity	2272	$FFFF	0	1	FF	
+creationTimeSeconds	2275	$FFFF	0	1	UU	s
+2274	$FFFF	0
+creationTimeNanoSeconds	2277	$FFFF	0	1	UU	ns
+2276	$FFFF	0
+; velocityResolutionSpot
+taskId	2279	$FFFF	0	1	UU	
+2278	$FFFF	0
+pulsePeriod	2280	$FFFF	0	1	FF	
+beamAzimuth	2282	$FFFF	0	1	FF	
+beamElevation	2284	$FFFF	0	1	FF	
+distancePeriod	2286	$FFFF	0	1	FF	
+velocityPeriod	2288	$FFFF	0	1	FF	
+threshold	2290	$FFFF	0	1	FF	
+distance	2292	$FFFF	0	1	FF	
+velocity	2294	$FFFF	0	1	FF	
+resolvedDistance	2296	$FFFF	0	1	FF	
+resolvedVelocity	2298	$FFFF	0	1	FF	
+creationTimeSeconds	2301	$FFFF	0	1	UU	s
+2300	$FFFF	0
+creationTimeNanoSeconds	2303	$FFFF	0	1	UU	ns
+2302	$FFFF	0
+nextUpdateTimeSeconds	2305	$FFFF	0	1	UU	s
+2304	$FFFF	0
+nextUpdateTimeNanoSeconds	2307	$FFFF	0	1	UU	ns
+2306	$FFFF	0
+; trackCandidate_13
+id	2309	$FFFF	0	1	UU	
+2308	$FFFF	0
+taskId	2311	$FFFF	0	1	UU	
+2310	$FFFF	0
+antennaId	2313	$FFFF	0	1	UU	
+2312	$FFFF	0
+beamAzimuth	2314	$FFFF	0	1	FF	
+beamElevation	2316	$FFFF	0	1	FF	
+azimuth	2318	$FFFF	0	1	FF	
+elevation	2320	$FFFF	0	1	FF	
+state	2323	$FFFF	0	1	UU	
+2322	$FFFF	0
+; viewSpot
+taskId	2325	$FFFF	0	1	UU	
+2324	$FFFF	0
+pulsePeriod	2326	$FFFF	0	1	FF	
+beamAzimuth	2328	$FFFF	0	1	FF	
+beamElevation	2330	$FFFF	0	1	FF	
+distancePeriod	2332	$FFFF	0	1	FF	
+velocityPeriod	2334	$FFFF	0	1	FF	
+threshold	2336	$FFFF	0	1	FF	
+distance	2338	$FFFF	0	1	FF	
+velocity	2340	$FFFF	0	1	FF	
+resolvedDistance	2342	$FFFF	0	1	FF	
+resolvedVelocity	2344	$FFFF	0	1	FF	
+creationTimeSeconds	2347	$FFFF	0	1	UU	s
+2346	$FFFF	0
+creationTimeNanoSeconds	2349	$FFFF	0	1	UU	ns
+2348	$FFFF	0
+; distanceResolutionSpot
+taskId	2351	$FFFF	0	1	UU	
+2350	$FFFF	0
+pulsePeriod	2352	$FFFF	0	1	FF	
+beamAzimuth	2354	$FFFF	0	1	FF	
+beamElevation	2356	$FFFF	0	1	FF	
+distancePeriod	2358	$FFFF	0	1	FF	
+velocityPeriod	2360	$FFFF	0	1	FF	
+threshold	2362	$FFFF	0	1	FF	
+distance	2364	$FFFF	0	1	FF	
+velocity	2366	$FFFF	0	1	FF	
+resolvedDistance	2368	$FFFF	0	1	FF	
+resolvedVelocity	2370	$FFFF	0	1	FF	
+creationTimeSeconds	2373	$FFFF	0	1	UU	s
+2372	$FFFF	0
+creationTimeNanoSeconds	2375	$FFFF	0	1	UU	ns
+2374	$FFFF	0
+; velocityResolutionSpot
+taskId	2377	$FFFF	0	1	UU	
+2376	$FFFF	0
+pulsePeriod	2378	$FFFF	0	1	FF	
+beamAzimuth	2380	$FFFF	0	1	FF	
+beamElevation	2382	$FFFF	0	1	FF	
+distancePeriod	2384	$FFFF	0	1	FF	
+velocityPeriod	2386	$FFFF	0	1	FF	
+threshold	2388	$FFFF	0	1	FF	
+distance	2390	$FFFF	0	1	FF	
+velocity	2392	$FFFF	0	1	FF	
+resolvedDistance	2394	$FFFF	0	1	FF	
+resolvedVelocity	2396	$FFFF	0	1	FF	
+creationTimeSeconds	2399	$FFFF	0	1	UU	s
+2398	$FFFF	0
+creationTimeNanoSeconds	2401	$FFFF	0	1	UU	ns
+2400	$FFFF	0
+nextUpdateTimeSeconds	2403	$FFFF	0	1	UU	s
+2402	$FFFF	0
+nextUpdateTimeNanoSeconds	2405	$FFFF	0	1	UU	ns
+2404	$FFFF	0
+; trackCandidate_14
+id	2407	$FFFF	0	1	UU	
+2406	$FFFF	0
+taskId	2409	$FFFF	0	1	UU	
+2408	$FFFF	0
+antennaId	2411	$FFFF	0	1	UU	
+2410	$FFFF	0
+beamAzimuth	2412	$FFFF	0	1	FF	
+beamElevation	2414	$FFFF	0	1	FF	
+azimuth	2416	$FFFF	0	1	FF	
+elevation	2418	$FFFF	0	1	FF	
+state	2421	$FFFF	0	1	UU	
+2420	$FFFF	0
+; viewSpot
+taskId	2423	$FFFF	0	1	UU	
+2422	$FFFF	0
+pulsePeriod	2424	$FFFF	0	1	FF	
+beamAzimuth	2426	$FFFF	0	1	FF	
+beamElevation	2428	$FFFF	0	1	FF	
+distancePeriod	2430	$FFFF	0	1	FF	
+velocityPeriod	2432	$FFFF	0	1	FF	
+threshold	2434	$FFFF	0	1	FF	
+distance	2436	$FFFF	0	1	FF	
+velocity	2438	$FFFF	0	1	FF	
+resolvedDistance	2440	$FFFF	0	1	FF	
+resolvedVelocity	2442	$FFFF	0	1	FF	
+creationTimeSeconds	2445	$FFFF	0	1	UU	s
+2444	$FFFF	0
+creationTimeNanoSeconds	2447	$FFFF	0	1	UU	ns
+2446	$FFFF	0
+; distanceResolutionSpot
+taskId	2449	$FFFF	0	1	UU	
+2448	$FFFF	0
+pulsePeriod	2450	$FFFF	0	1	FF	
+beamAzimuth	2452	$FFFF	0	1	FF	
+beamElevation	2454	$FFFF	0	1	FF	
+distancePeriod	2456	$FFFF	0	1	FF	
+velocityPeriod	2458	$FFFF	0	1	FF	
+threshold	2460	$FFFF	0	1	FF	
+distance	2462	$FFFF	0	1	FF	
+velocity	2464	$FFFF	0	1	FF	
+resolvedDistance	2466	$FFFF	0	1	FF	
+resolvedVelocity	2468	$FFFF	0	1	FF	
+creationTimeSeconds	2471	$FFFF	0	1	UU	s
+2470	$FFFF	0
+creationTimeNanoSeconds	2473	$FFFF	0	1	UU	ns
+2472	$FFFF	0
+; velocityResolutionSpot
+taskId	2475	$FFFF	0	1	UU	
+2474	$FFFF	0
+pulsePeriod	2476	$FFFF	0	1	FF	
+beamAzimuth	2478	$FFFF	0	1	FF	
+beamElevation	2480	$FFFF	0	1	FF	
+distancePeriod	2482	$FFFF	0	1	FF	
+velocityPeriod	2484	$FFFF	0	1	FF	
+threshold	2486	$FFFF	0	1	FF	
+distance	2488	$FFFF	0	1	FF	
+velocity	2490	$FFFF	0	1	FF	
+resolvedDistance	2492	$FFFF	0	1	FF	
+resolvedVelocity	2494	$FFFF	0	1	FF	
+creationTimeSeconds	2497	$FFFF	0	1	UU	s
+2496	$FFFF	0
+creationTimeNanoSeconds	2499	$FFFF	0	1	UU	ns
+2498	$FFFF	0
+nextUpdateTimeSeconds	2501	$FFFF	0	1	UU	s
+2500	$FFFF	0
+nextUpdateTimeNanoSeconds	2503	$FFFF	0	1	UU	ns
+2502	$FFFF	0
+; trackCandidate_15
+id	2505	$FFFF	0	1	UU	
+2504	$FFFF	0
+taskId	2507	$FFFF	0	1	UU	
+2506	$FFFF	0
+antennaId	2509	$FFFF	0	1	UU	
+2508	$FFFF	0
+beamAzimuth	2510	$FFFF	0	1	FF	
+beamElevation	2512	$FFFF	0	1	FF	
+azimuth	2514	$FFFF	0	1	FF	
+elevation	2516	$FFFF	0	1	FF	
+state	2519	$FFFF	0	1	UU	
+2518	$FFFF	0
+; viewSpot
+taskId	2521	$FFFF	0	1	UU	
+2520	$FFFF	0
+pulsePeriod	2522	$FFFF	0	1	FF	
+beamAzimuth	2524	$FFFF	0	1	FF	
+beamElevation	2526	$FFFF	0	1	FF	
+distancePeriod	2528	$FFFF	0	1	FF	
+velocityPeriod	2530	$FFFF	0	1	FF	
+threshold	2532	$FFFF	0	1	FF	
+distance	2534	$FFFF	0	1	FF	
+velocity	2536	$FFFF	0	1	FF	
+resolvedDistance	2538	$FFFF	0	1	FF	
+resolvedVelocity	2540	$FFFF	0	1	FF	
+creationTimeSeconds	2543	$FFFF	0	1	UU	s
+2542	$FFFF	0
+creationTimeNanoSeconds	2545	$FFFF	0	1	UU	ns
+2544	$FFFF	0
+; distanceResolutionSpot
+taskId	2547	$FFFF	0	1	UU	
+2546	$FFFF	0
+pulsePeriod	2548	$FFFF	0	1	FF	
+beamAzimuth	2550	$FFFF	0	1	FF	
+beamElevation	2552	$FFFF	0	1	FF	
+distancePeriod	2554	$FFFF	0	1	FF	
+velocityPeriod	2556	$FFFF	0	1	FF	
+threshold	2558	$FFFF	0	1	FF	
+distance	2560	$FFFF	0	1	FF	
+velocity	2562	$FFFF	0	1	FF	
+resolvedDistance	2564	$FFFF	0	1	FF	
+resolvedVelocity	2566	$FFFF	0	1	FF	
+creationTimeSeconds	2569	$FFFF	0	1	UU	s
+2568	$FFFF	0
+creationTimeNanoSeconds	2571	$FFFF	0	1	UU	ns
+2570	$FFFF	0
+; velocityResolutionSpot
+taskId	2573	$FFFF	0	1	UU	
+2572	$FFFF	0
+pulsePeriod	2574	$FFFF	0	1	FF	
+beamAzimuth	2576	$FFFF	0	1	FF	
+beamElevation	2578	$FFFF	0	1	FF	
+distancePeriod	2580	$FFFF	0	1	FF	
+velocityPeriod	2582	$FFFF	0	1	FF	
+threshold	2584	$FFFF	0	1	FF	
+distance	2586	$FFFF	0	1	FF	
+velocity	2588	$FFFF	0	1	FF	
+resolvedDistance	2590	$FFFF	0	1	FF	
+resolvedVelocity	2592	$FFFF	0	1	FF	
+creationTimeSeconds	2595	$FFFF	0	1	UU	s
+2594	$FFFF	0
+creationTimeNanoSeconds	2597	$FFFF	0	1	UU	ns
+2596	$FFFF	0
+nextUpdateTimeSeconds	2599	$FFFF	0	1	UU	s
+2598	$FFFF	0
+nextUpdateTimeNanoSeconds	2601	$FFFF	0	1	UU	ns
+2600	$FFFF	0
+; trackCandidate_16
+id	2603	$FFFF	0	1	UU	
+2602	$FFFF	0
+taskId	2605	$FFFF	0	1	UU	
+2604	$FFFF	0
+antennaId	2607	$FFFF	0	1	UU	
+2606	$FFFF	0
+beamAzimuth	2608	$FFFF	0	1	FF	
+beamElevation	2610	$FFFF	0	1	FF	
+azimuth	2612	$FFFF	0	1	FF	
+elevation	2614	$FFFF	0	1	FF	
+state	2617	$FFFF	0	1	UU	
+2616	$FFFF	0
+; viewSpot
+taskId	2619	$FFFF	0	1	UU	
+2618	$FFFF	0
+pulsePeriod	2620	$FFFF	0	1	FF	
+beamAzimuth	2622	$FFFF	0	1	FF	
+beamElevation	2624	$FFFF	0	1	FF	
+distancePeriod	2626	$FFFF	0	1	FF	
+velocityPeriod	2628	$FFFF	0	1	FF	
+threshold	2630	$FFFF	0	1	FF	
+distance	2632	$FFFF	0	1	FF	
+velocity	2634	$FFFF	0	1	FF	
+resolvedDistance	2636	$FFFF	0	1	FF	
+resolvedVelocity	2638	$FFFF	0	1	FF	
+creationTimeSeconds	2641	$FFFF	0	1	UU	s
+2640	$FFFF	0
+creationTimeNanoSeconds	2643	$FFFF	0	1	UU	ns
+2642	$FFFF	0
+; distanceResolutionSpot
+taskId	2645	$FFFF	0	1	UU	
+2644	$FFFF	0
+pulsePeriod	2646	$FFFF	0	1	FF	
+beamAzimuth	2648	$FFFF	0	1	FF	
+beamElevation	2650	$FFFF	0	1	FF	
+distancePeriod	2652	$FFFF	0	1	FF	
+velocityPeriod	2654	$FFFF	0	1	FF	
+threshold	2656	$FFFF	0	1	FF	
+distance	2658	$FFFF	0	1	FF	
+velocity	2660	$FFFF	0	1	FF	
+resolvedDistance	2662	$FFFF	0	1	FF	
+resolvedVelocity	2664	$FFFF	0	1	FF	
+creationTimeSeconds	2667	$FFFF	0	1	UU	s
+2666	$FFFF	0
+creationTimeNanoSeconds	2669	$FFFF	0	1	UU	ns
+2668	$FFFF	0
+; velocityResolutionSpot
+taskId	2671	$FFFF	0	1	UU	
+2670	$FFFF	0
+pulsePeriod	2672	$FFFF	0	1	FF	
+beamAzimuth	2674	$FFFF	0	1	FF	
+beamElevation	2676	$FFFF	0	1	FF	
+distancePeriod	2678	$FFFF	0	1	FF	
+velocityPeriod	2680	$FFFF	0	1	FF	
+threshold	2682	$FFFF	0	1	FF	
+distance	2684	$FFFF	0	1	FF	
+velocity	2686	$FFFF	0	1	FF	
+resolvedDistance	2688	$FFFF	0	1	FF	
+resolvedVelocity	2690	$FFFF	0	1	FF	
+creationTimeSeconds	2693	$FFFF	0	1	UU	s
+2692	$FFFF	0
+creationTimeNanoSeconds	2695	$FFFF	0	1	UU	ns
+2694	$FFFF	0
+nextUpdateTimeSeconds	2697	$FFFF	0	1	UU	s
+2696	$FFFF	0
+nextUpdateTimeNanoSeconds	2699	$FFFF	0	1	UU	ns
+2698	$FFFF	0
+; trackCandidate_17
+id	2701	$FFFF	0	1	UU	
+2700	$FFFF	0
+taskId	2703	$FFFF	0	1	UU	
+2702	$FFFF	0
+antennaId	2705	$FFFF	0	1	UU	
+2704	$FFFF	0
+beamAzimuth	2706	$FFFF	0	1	FF	
+beamElevation	2708	$FFFF	0	1	FF	
+azimuth	2710	$FFFF	0	1	FF	
+elevation	2712	$FFFF	0	1	FF	
+state	2715	$FFFF	0	1	UU	
+2714	$FFFF	0
+; viewSpot
+taskId	2717	$FFFF	0	1	UU	
+2716	$FFFF	0
+pulsePeriod	2718	$FFFF	0	1	FF	
+beamAzimuth	2720	$FFFF	0	1	FF	
+beamElevation	2722	$FFFF	0	1	FF	
+distancePeriod	2724	$FFFF	0	1	FF	
+velocityPeriod	2726	$FFFF	0	1	FF	
+threshold	2728	$FFFF	0	1	FF	
+distance	2730	$FFFF	0	1	FF	
+velocity	2732	$FFFF	0	1	FF	
+resolvedDistance	2734	$FFFF	0	1	FF	
+resolvedVelocity	2736	$FFFF	0	1	FF	
+creationTimeSeconds	2739	$FFFF	0	1	UU	s
+2738	$FFFF	0
+creationTimeNanoSeconds	2741	$FFFF	0	1	UU	ns
+2740	$FFFF	0
+; distanceResolutionSpot
+taskId	2743	$FFFF	0	1	UU	
+2742	$FFFF	0
+pulsePeriod	2744	$FFFF	0	1	FF	
+beamAzimuth	2746	$FFFF	0	1	FF	
+beamElevation	2748	$FFFF	0	1	FF	
+distancePeriod	2750	$FFFF	0	1	FF	
+velocityPeriod	2752	$FFFF	0	1	FF	
+threshold	2754	$FFFF	0	1	FF	
+distance	2756	$FFFF	0	1	FF	
+velocity	2758	$FFFF	0	1	FF	
+resolvedDistance	2760	$FFFF	0	1	FF	
+resolvedVelocity	2762	$FFFF	0	1	FF	
+creationTimeSeconds	2765	$FFFF	0	1	UU	s
+2764	$FFFF	0
+creationTimeNanoSeconds	2767	$FFFF	0	1	UU	ns
+2766	$FFFF	0
+; velocityResolutionSpot
+taskId	2769	$FFFF	0	1	UU	
+2768	$FFFF	0
+pulsePeriod	2770	$FFFF	0	1	FF	
+beamAzimuth	2772	$FFFF	0	1	FF	
+beamElevation	2774	$FFFF	0	1	FF	
+distancePeriod	2776	$FFFF	0	1	FF	
+velocityPeriod	2778	$FFFF	0	1	FF	
+threshold	2780	$FFFF	0	1	FF	
+distance	2782	$FFFF	0	1	FF	
+velocity	2784	$FFFF	0	1	FF	
+resolvedDistance	2786	$FFFF	0	1	FF	
+resolvedVelocity	2788	$FFFF	0	1	FF	
+creationTimeSeconds	2791	$FFFF	0	1	UU	s
+2790	$FFFF	0
+creationTimeNanoSeconds	2793	$FFFF	0	1	UU	ns
+2792	$FFFF	0
+nextUpdateTimeSeconds	2795	$FFFF	0	1	UU	s
+2794	$FFFF	0
+nextUpdateTimeNanoSeconds	2797	$FFFF	0	1	UU	ns
+2796	$FFFF	0
+; trackCandidate_18
+id	2799	$FFFF	0	1	UU	
+2798	$FFFF	0
+taskId	2801	$FFFF	0	1	UU	
+2800	$FFFF	0
+antennaId	2803	$FFFF	0	1	UU	
+2802	$FFFF	0
+beamAzimuth	2804	$FFFF	0	1	FF	
+beamElevation	2806	$FFFF	0	1	FF	
+azimuth	2808	$FFFF	0	1	FF	
+elevation	2810	$FFFF	0	1	FF	
+state	2813	$FFFF	0	1	UU	
+2812	$FFFF	0
+; viewSpot
+taskId	2815	$FFFF	0	1	UU	
+2814	$FFFF	0
+pulsePeriod	2816	$FFFF	0	1	FF	
+beamAzimuth	2818	$FFFF	0	1	FF	
+beamElevation	2820	$FFFF	0	1	FF	
+distancePeriod	2822	$FFFF	0	1	FF	
+velocityPeriod	2824	$FFFF	0	1	FF	
+threshold	2826	$FFFF	0	1	FF	
+distance	2828	$FFFF	0	1	FF	
+velocity	2830	$FFFF	0	1	FF	
+resolvedDistance	2832	$FFFF	0	1	FF	
+resolvedVelocity	2834	$FFFF	0	1	FF	
+creationTimeSeconds	2837	$FFFF	0	1	UU	s
+2836	$FFFF	0
+creationTimeNanoSeconds	2839	$FFFF	0	1	UU	ns
+2838	$FFFF	0
+; distanceResolutionSpot
+taskId	2841	$FFFF	0	1	UU	
+2840	$FFFF	0
+pulsePeriod	2842	$FFFF	0	1	FF	
+beamAzimuth	2844	$FFFF	0	1	FF	
+beamElevation	2846	$FFFF	0	1	FF	
+distancePeriod	2848	$FFFF	0	1	FF	
+velocityPeriod	2850	$FFFF	0	1	FF	
+threshold	2852	$FFFF	0	1	FF	
+distance	2854	$FFFF	0	1	FF	
+velocity	2856	$FFFF	0	1	FF	
+resolvedDistance	2858	$FFFF	0	1	FF	
+resolvedVelocity	2860	$FFFF	0	1	FF	
+creationTimeSeconds	2863	$FFFF	0	1	UU	s
+2862	$FFFF	0
+creationTimeNanoSeconds	2865	$FFFF	0	1	UU	ns
+2864	$FFFF	0
+; velocityResolutionSpot
+taskId	2867	$FFFF	0	1	UU	
+2866	$FFFF	0
+pulsePeriod	2868	$FFFF	0	1	FF	
+beamAzimuth	2870	$FFFF	0	1	FF	
+beamElevation	2872	$FFFF	0	1	FF	
+distancePeriod	2874	$FFFF	0	1	FF	
+velocityPeriod	2876	$FFFF	0	1	FF	
+threshold	2878	$FFFF	0	1	FF	
+distance	2880	$FFFF	0	1	FF	
+velocity	2882	$FFFF	0	1	FF	
+resolvedDistance	2884	$FFFF	0	1	FF	
+resolvedVelocity	2886	$FFFF	0	1	FF	
+creationTimeSeconds	2889	$FFFF	0	1	UU	s
+2888	$FFFF	0
+creationTimeNanoSeconds	2891	$FFFF	0	1	UU	ns
+2890	$FFFF	0
+nextUpdateTimeSeconds	2893	$FFFF	0	1	UU	s
+2892	$FFFF	0
+nextUpdateTimeNanoSeconds	2895	$FFFF	0	1	UU	ns
+2894	$FFFF	0
+; trackCandidate_19
+id	2897	$FFFF	0	1	UU	
+2896	$FFFF	0
+taskId	2899	$FFFF	0	1	UU	
+2898	$FFFF	0
+antennaId	2901	$FFFF	0	1	UU	
+2900	$FFFF	0
+beamAzimuth	2902	$FFFF	0	1	FF	
+beamElevation	2904	$FFFF	0	1	FF	
+azimuth	2906	$FFFF	0	1	FF	
+elevation	2908	$FFFF	0	1	FF	
+state	2911	$FFFF	0	1	UU	
+2910	$FFFF	0
+; viewSpot
+taskId	2913	$FFFF	0	1	UU	
+2912	$FFFF	0
+pulsePeriod	2914	$FFFF	0	1	FF	
+beamAzimuth	2916	$FFFF	0	1	FF	
+beamElevation	2918	$FFFF	0	1	FF	
+distancePeriod	2920	$FFFF	0	1	FF	
+velocityPeriod	2922	$FFFF	0	1	FF	
+threshold	2924	$FFFF	0	1	FF	
+distance	2926	$FFFF	0	1	FF	
+velocity	2928	$FFFF	0	1	FF	
+resolvedDistance	2930	$FFFF	0	1	FF	
+resolvedVelocity	2932	$FFFF	0	1	FF	
+creationTimeSeconds	2935	$FFFF	0	1	UU	s
+2934	$FFFF	0
+creationTimeNanoSeconds	2937	$FFFF	0	1	UU	ns
+2936	$FFFF	0
+; distanceResolutionSpot
+taskId	2939	$FFFF	0	1	UU	
+2938	$FFFF	0
+pulsePeriod	2940	$FFFF	0	1	FF	
+beamAzimuth	2942	$FFFF	0	1	FF	
+beamElevation	2944	$FFFF	0	1	FF	
+distancePeriod	2946	$FFFF	0	1	FF	
+velocityPeriod	2948	$FFFF	0	1	FF	
+threshold	2950	$FFFF	0	1	FF	
+distance	2952	$FFFF	0	1	FF	
+velocity	2954	$FFFF	0	1	FF	
+resolvedDistance	2956	$FFFF	0	1	FF	
+resolvedVelocity	2958	$FFFF	0	1	FF	
+creationTimeSeconds	2961	$FFFF	0	1	UU	s
+2960	$FFFF	0
+creationTimeNanoSeconds	2963	$FFFF	0	1	UU	ns
+2962	$FFFF	0
+; velocityResolutionSpot
+taskId	2965	$FFFF	0	1	UU	
+2964	$FFFF	0
+pulsePeriod	2966	$FFFF	0	1	FF	
+beamAzimuth	2968	$FFFF	0	1	FF	
+beamElevation	2970	$FFFF	0	1	FF	
+distancePeriod	2972	$FFFF	0	1	FF	
+velocityPeriod	2974	$FFFF	0	1	FF	
+threshold	2976	$FFFF	0	1	FF	
+distance	2978	$FFFF	0	1	FF	
+velocity	2980	$FFFF	0	1	FF	
+resolvedDistance	2982	$FFFF	0	1	FF	
+resolvedVelocity	2984	$FFFF	0	1	FF	
+creationTimeSeconds	2987	$FFFF	0	1	UU	s
+2986	$FFFF	0
+creationTimeNanoSeconds	2989	$FFFF	0	1	UU	ns
+2988	$FFFF	0
+nextUpdateTimeSeconds	2991	$FFFF	0	1	UU	s
+2990	$FFFF	0
+nextUpdateTimeNanoSeconds	2993	$FFFF	0	1	UU	ns
+2992	$FFFF	0
+; trackCandidate_20
+id	2995	$FFFF	0	1	UU	
+2994	$FFFF	0
+taskId	2997	$FFFF	0	1	UU	
+2996	$FFFF	0
+antennaId	2999	$FFFF	0	1	UU	
+2998	$FFFF	0
+beamAzimuth	3000	$FFFF	0	1	FF	
+beamElevation	3002	$FFFF	0	1	FF	
+azimuth	3004	$FFFF	0	1	FF	
+elevation	3006	$FFFF	0	1	FF	
+state	3009	$FFFF	0	1	UU	
+3008	$FFFF	0
+; viewSpot
+taskId	3011	$FFFF	0	1	UU	
+3010	$FFFF	0
+pulsePeriod	3012	$FFFF	0	1	FF	
+beamAzimuth	3014	$FFFF	0	1	FF	
+beamElevation	3016	$FFFF	0	1	FF	
+distancePeriod	3018	$FFFF	0	1	FF	
+velocityPeriod	3020	$FFFF	0	1	FF	
+threshold	3022	$FFFF	0	1	FF	
+distance	3024	$FFFF	0	1	FF	
+velocity	3026	$FFFF	0	1	FF	
+resolvedDistance	3028	$FFFF	0	1	FF	
+resolvedVelocity	3030	$FFFF	0	1	FF	
+creationTimeSeconds	3033	$FFFF	0	1	UU	s
+3032	$FFFF	0
+creationTimeNanoSeconds	3035	$FFFF	0	1	UU	ns
+3034	$FFFF	0
+; distanceResolutionSpot
+taskId	3037	$FFFF	0	1	UU	
+3036	$FFFF	0
+pulsePeriod	3038	$FFFF	0	1	FF	
+beamAzimuth	3040	$FFFF	0	1	FF	
+beamElevation	3042	$FFFF	0	1	FF	
+distancePeriod	3044	$FFFF	0	1	FF	
+velocityPeriod	3046	$FFFF	0	1	FF	
+threshold	3048	$FFFF	0	1	FF	
+distance	3050	$FFFF	0	1	FF	
+velocity	3052	$FFFF	0	1	FF	
+resolvedDistance	3054	$FFFF	0	1	FF	
+resolvedVelocity	3056	$FFFF	0	1	FF	
+creationTimeSeconds	3059	$FFFF	0	1	UU	s
+3058	$FFFF	0
+creationTimeNanoSeconds	3061	$FFFF	0	1	UU	ns
+3060	$FFFF	0
+; velocityResolutionSpot
+taskId	3063	$FFFF	0	1	UU	
+3062	$FFFF	0
+pulsePeriod	3064	$FFFF	0	1	FF	
+beamAzimuth	3066	$FFFF	0	1	FF	
+beamElevation	3068	$FFFF	0	1	FF	
+distancePeriod	3070	$FFFF	0	1	FF	
+velocityPeriod	3072	$FFFF	0	1	FF	
+threshold	3074	$FFFF	0	1	FF	
+distance	3076	$FFFF	0	1	FF	
+velocity	3078	$FFFF	0	1	FF	
+resolvedDistance	3080	$FFFF	0	1	FF	
+resolvedVelocity	3082	$FFFF	0	1	FF	
+creationTimeSeconds	3085	$FFFF	0	1	UU	s
+3084	$FFFF	0
+creationTimeNanoSeconds	3087	$FFFF	0	1	UU	ns
+3086	$FFFF	0
+nextUpdateTimeSeconds	3089	$FFFF	0	1	UU	s
+3088	$FFFF	0
+nextUpdateTimeNanoSeconds	3091	$FFFF	0	1	UU	ns
+3090	$FFFF	0
+; trackCandidate_21
+id	3093	$FFFF	0	1	UU	
+3092	$FFFF	0
+taskId	3095	$FFFF	0	1	UU	
+3094	$FFFF	0
+antennaId	3097	$FFFF	0	1	UU	
+3096	$FFFF	0
+beamAzimuth	3098	$FFFF	0	1	FF	
+beamElevation	3100	$FFFF	0	1	FF	
+azimuth	3102	$FFFF	0	1	FF	
+elevation	3104	$FFFF	0	1	FF	
+state	3107	$FFFF	0	1	UU	
+3106	$FFFF	0
+; viewSpot
+taskId	3109	$FFFF	0	1	UU	
+3108	$FFFF	0
+pulsePeriod	3110	$FFFF	0	1	FF	
+beamAzimuth	3112	$FFFF	0	1	FF	
+beamElevation	3114	$FFFF	0	1	FF	
+distancePeriod	3116	$FFFF	0	1	FF	
+velocityPeriod	3118	$FFFF	0	1	FF	
+threshold	3120	$FFFF	0	1	FF	
+distance	3122	$FFFF	0	1	FF	
+velocity	3124	$FFFF	0	1	FF	
+resolvedDistance	3126	$FFFF	0	1	FF	
+resolvedVelocity	3128	$FFFF	0	1	FF	
+creationTimeSeconds	3131	$FFFF	0	1	UU	s
+3130	$FFFF	0
+creationTimeNanoSeconds	3133	$FFFF	0	1	UU	ns
+3132	$FFFF	0
+; distanceResolutionSpot
+taskId	3135	$FFFF	0	1	UU	
+3134	$FFFF	0
+pulsePeriod	3136	$FFFF	0	1	FF	
+beamAzimuth	3138	$FFFF	0	1	FF	
+beamElevation	3140	$FFFF	0	1	FF	
+distancePeriod	3142	$FFFF	0	1	FF	
+velocityPeriod	3144	$FFFF	0	1	FF	
+threshold	3146	$FFFF	0	1	FF	
+distance	3148	$FFFF	0	1	FF	
+velocity	3150	$FFFF	0	1	FF	
+resolvedDistance	3152	$FFFF	0	1	FF	
+resolvedVelocity	3154	$FFFF	0	1	FF	
+creationTimeSeconds	3157	$FFFF	0	1	UU	s
+3156	$FFFF	0
+creationTimeNanoSeconds	3159	$FFFF	0	1	UU	ns
+3158	$FFFF	0
+; velocityResolutionSpot
+taskId	3161	$FFFF	0	1	UU	
+3160	$FFFF	0
+pulsePeriod	3162	$FFFF	0	1	FF	
+beamAzimuth	3164	$FFFF	0	1	FF	
+beamElevation	3166	$FFFF	0	1	FF	
+distancePeriod	3168	$FFFF	0	1	FF	
+velocityPeriod	3170	$FFFF	0	1	FF	
+threshold	3172	$FFFF	0	1	FF	
+distance	3174	$FFFF	0	1	FF	
+velocity	3176	$FFFF	0	1	FF	
+resolvedDistance	3178	$FFFF	0	1	FF	
+resolvedVelocity	3180	$FFFF	0	1	FF	
+creationTimeSeconds	3183	$FFFF	0	1	UU	s
+3182	$FFFF	0
+creationTimeNanoSeconds	3185	$FFFF	0	1	UU	ns
+3184	$FFFF	0
+nextUpdateTimeSeconds	3187	$FFFF	0	1	UU	s
+3186	$FFFF	0
+nextUpdateTimeNanoSeconds	3189	$FFFF	0	1	UU	ns
+3188	$FFFF	0
+; trackCandidate_22
+id	3191	$FFFF	0	1	UU	
+3190	$FFFF	0
+taskId	3193	$FFFF	0	1	UU	
+3192	$FFFF	0
+antennaId	3195	$FFFF	0	1	UU	
+3194	$FFFF	0
+beamAzimuth	3196	$FFFF	0	1	FF	
+beamElevation	3198	$FFFF	0	1	FF	
+azimuth	3200	$FFFF	0	1	FF	
+elevation	3202	$FFFF	0	1	FF	
+state	3205	$FFFF	0	1	UU	
+3204	$FFFF	0
+; viewSpot
+taskId	3207	$FFFF	0	1	UU	
+3206	$FFFF	0
+pulsePeriod	3208	$FFFF	0	1	FF	
+beamAzimuth	3210	$FFFF	0	1	FF	
+beamElevation	3212	$FFFF	0	1	FF	
+distancePeriod	3214	$FFFF	0	1	FF	
+velocityPeriod	3216	$FFFF	0	1	FF	
+threshold	3218	$FFFF	0	1	FF	
+distance	3220	$FFFF	0	1	FF	
+velocity	3222	$FFFF	0	1	FF	
+resolvedDistance	3224	$FFFF	0	1	FF	
+resolvedVelocity	3226	$FFFF	0	1	FF	
+creationTimeSeconds	3229	$FFFF	0	1	UU	s
+3228	$FFFF	0
+creationTimeNanoSeconds	3231	$FFFF	0	1	UU	ns
+3230	$FFFF	0
+; distanceResolutionSpot
+taskId	3233	$FFFF	0	1	UU	
+3232	$FFFF	0
+pulsePeriod	3234	$FFFF	0	1	FF	
+beamAzimuth	3236	$FFFF	0	1	FF	
+beamElevation	3238	$FFFF	0	1	FF	
+distancePeriod	3240	$FFFF	0	1	FF	
+velocityPeriod	3242	$FFFF	0	1	FF	
+threshold	3244	$FFFF	0	1	FF	
+distance	3246	$FFFF	0	1	FF	
+velocity	3248	$FFFF	0	1	FF	
+resolvedDistance	3250	$FFFF	0	1	FF	
+resolvedVelocity	3252	$FFFF	0	1	FF	
+creationTimeSeconds	3255	$FFFF	0	1	UU	s
+3254	$FFFF	0
+creationTimeNanoSeconds	3257	$FFFF	0	1	UU	ns
+3256	$FFFF	0
+; velocityResolutionSpot
+taskId	3259	$FFFF	0	1	UU	
+3258	$FFFF	0
+pulsePeriod	3260	$FFFF	0	1	FF	
+beamAzimuth	3262	$FFFF	0	1	FF	
+beamElevation	3264	$FFFF	0	1	FF	
+distancePeriod	3266	$FFFF	0	1	FF	
+velocityPeriod	3268	$FFFF	0	1	FF	
+threshold	3270	$FFFF	0	1	FF	
+distance	3272	$FFFF	0	1	FF	
+velocity	3274	$FFFF	0	1	FF	
+resolvedDistance	3276	$FFFF	0	1	FF	
+resolvedVelocity	3278	$FFFF	0	1	FF	
+creationTimeSeconds	3281	$FFFF	0	1	UU	s
+3280	$FFFF	0
+creationTimeNanoSeconds	3283	$FFFF	0	1	UU	ns
+3282	$FFFF	0
+nextUpdateTimeSeconds	3285	$FFFF	0	1	UU	s
+3284	$FFFF	0
+nextUpdateTimeNanoSeconds	3287	$FFFF	0	1	UU	ns
+3286	$FFFF	0
+; trackCandidate_23
+id	3289	$FFFF	0	1	UU	
+3288	$FFFF	0
+taskId	3291	$FFFF	0	1	UU	
+3290	$FFFF	0
+antennaId	3293	$FFFF	0	1	UU	
+3292	$FFFF	0
+beamAzimuth	3294	$FFFF	0	1	FF	
+beamElevation	3296	$FFFF	0	1	FF	
+azimuth	3298	$FFFF	0	1	FF	
+elevation	3300	$FFFF	0	1	FF	
+state	3303	$FFFF	0	1	UU	
+3302	$FFFF	0
+; viewSpot
+taskId	3305	$FFFF	0	1	UU	
+3304	$FFFF	0
+pulsePeriod	3306	$FFFF	0	1	FF	
+beamAzimuth	3308	$FFFF	0	1	FF	
+beamElevation	3310	$FFFF	0	1	FF	
+distancePeriod	3312	$FFFF	0	1	FF	
+velocityPeriod	3314	$FFFF	0	1	FF	
+threshold	3316	$FFFF	0	1	FF	
+distance	3318	$FFFF	0	1	FF	
+velocity	3320	$FFFF	0	1	FF	
+resolvedDistance	3322	$FFFF	0	1	FF	
+resolvedVelocity	3324	$FFFF	0	1	FF	
+creationTimeSeconds	3327	$FFFF	0	1	UU	s
+3326	$FFFF	0
+creationTimeNanoSeconds	3329	$FFFF	0	1	UU	ns
+3328	$FFFF	0
+; distanceResolutionSpot
+taskId	3331	$FFFF	0	1	UU	
+3330	$FFFF	0
+pulsePeriod	3332	$FFFF	0	1	FF	
+beamAzimuth	3334	$FFFF	0	1	FF	
+beamElevation	3336	$FFFF	0	1	FF	
+distancePeriod	3338	$FFFF	0	1	FF	
+velocityPeriod	3340	$FFFF	0	1	FF	
+threshold	3342	$FFFF	0	1	FF	
+distance	3344	$FFFF	0	1	FF	
+velocity	3346	$FFFF	0	1	FF	
+resolvedDistance	3348	$FFFF	0	1	FF	
+resolvedVelocity	3350	$FFFF	0	1	FF	
+creationTimeSeconds	3353	$FFFF	0	1	UU	s
+3352	$FFFF	0
+creationTimeNanoSeconds	3355	$FFFF	0	1	UU	ns
+3354	$FFFF	0
+; velocityResolutionSpot
+taskId	3357	$FFFF	0	1	UU	
+3356	$FFFF	0
+pulsePeriod	3358	$FFFF	0	1	FF	
+beamAzimuth	3360	$FFFF	0	1	FF	
+beamElevation	3362	$FFFF	0	1	FF	
+distancePeriod	3364	$FFFF	0	1	FF	
+velocityPeriod	3366	$FFFF	0	1	FF	
+threshold	3368	$FFFF	0	1	FF	
+distance	3370	$FFFF	0	1	FF	
+velocity	3372	$FFFF	0	1	FF	
+resolvedDistance	3374	$FFFF	0	1	FF	
+resolvedVelocity	3376	$FFFF	0	1	FF	
+creationTimeSeconds	3379	$FFFF	0	1	UU	s
+3378	$FFFF	0
+creationTimeNanoSeconds	3381	$FFFF	0	1	UU	ns
+3380	$FFFF	0
+nextUpdateTimeSeconds	3383	$FFFF	0	1	UU	s
+3382	$FFFF	0
+nextUpdateTimeNanoSeconds	3385	$FFFF	0	1	UU	ns
+3384	$FFFF	0
+; trackCandidate_24
+id	3387	$FFFF	0	1	UU	
+3386	$FFFF	0
+taskId	3389	$FFFF	0	1	UU	
+3388	$FFFF	0
+antennaId	3391	$FFFF	0	1	UU	
+3390	$FFFF	0
+beamAzimuth	3392	$FFFF	0	1	FF	
+beamElevation	3394	$FFFF	0	1	FF	
+azimuth	3396	$FFFF	0	1	FF	
+elevation	3398	$FFFF	0	1	FF	
+state	3401	$FFFF	0	1	UU	
+3400	$FFFF	0
+; viewSpot
+taskId	3403	$FFFF	0	1	UU	
+3402	$FFFF	0
+pulsePeriod	3404	$FFFF	0	1	FF	
+beamAzimuth	3406	$FFFF	0	1	FF	
+beamElevation	3408	$FFFF	0	1	FF	
+distancePeriod	3410	$FFFF	0	1	FF	
+velocityPeriod	3412	$FFFF	0	1	FF	
+threshold	3414	$FFFF	0	1	FF	
+distance	3416	$FFFF	0	1	FF	
+velocity	3418	$FFFF	0	1	FF	
+resolvedDistance	3420	$FFFF	0	1	FF	
+resolvedVelocity	3422	$FFFF	0	1	FF	
+creationTimeSeconds	3425	$FFFF	0	1	UU	s
+3424	$FFFF	0
+creationTimeNanoSeconds	3427	$FFFF	0	1	UU	ns
+3426	$FFFF	0
+; distanceResolutionSpot
+taskId	3429	$FFFF	0	1	UU	
+3428	$FFFF	0
+pulsePeriod	3430	$FFFF	0	1	FF	
+beamAzimuth	3432	$FFFF	0	1	FF	
+beamElevation	3434	$FFFF	0	1	FF	
+distancePeriod	3436	$FFFF	0	1	FF	
+velocityPeriod	3438	$FFFF	0	1	FF	
+threshold	3440	$FFFF	0	1	FF	
+distance	3442	$FFFF	0	1	FF	
+velocity	3444	$FFFF	0	1	FF	
+resolvedDistance	3446	$FFFF	0	1	FF	
+resolvedVelocity	3448	$FFFF	0	1	FF	
+creationTimeSeconds	3451	$FFFF	0	1	UU	s
+3450	$FFFF	0
+creationTimeNanoSeconds	3453	$FFFF	0	1	UU	ns
+3452	$FFFF	0
+; velocityResolutionSpot
+taskId	3455	$FFFF	0	1	UU	
+3454	$FFFF	0
+pulsePeriod	3456	$FFFF	0	1	FF	
+beamAzimuth	3458	$FFFF	0	1	FF	
+beamElevation	3460	$FFFF	0	1	FF	
+distancePeriod	3462	$FFFF	0	1	FF	
+velocityPeriod	3464	$FFFF	0	1	FF	
+threshold	3466	$FFFF	0	1	FF	
+distance	3468	$FFFF	0	1	FF	
+velocity	3470	$FFFF	0	1	FF	
+resolvedDistance	3472	$FFFF	0	1	FF	
+resolvedVelocity	3474	$FFFF	0	1	FF	
+creationTimeSeconds	3477	$FFFF	0	1	UU	s
+3476	$FFFF	0
+creationTimeNanoSeconds	3479	$FFFF	0	1	UU	ns
+3478	$FFFF	0
+nextUpdateTimeSeconds	3481	$FFFF	0	1	UU	s
+3480	$FFFF	0
+nextUpdateTimeNanoSeconds	3483	$FFFF	0	1	UU	ns
+3482	$FFFF	0
+; trackCandidate_25
+id	3485	$FFFF	0	1	UU	
+3484	$FFFF	0
+taskId	3487	$FFFF	0	1	UU	
+3486	$FFFF	0
+antennaId	3489	$FFFF	0	1	UU	
+3488	$FFFF	0
+beamAzimuth	3490	$FFFF	0	1	FF	
+beamElevation	3492	$FFFF	0	1	FF	
+azimuth	3494	$FFFF	0	1	FF	
+elevation	3496	$FFFF	0	1	FF	
+state	3499	$FFFF	0	1	UU	
+3498	$FFFF	0
+; viewSpot
+taskId	3501	$FFFF	0	1	UU	
+3500	$FFFF	0
+pulsePeriod	3502	$FFFF	0	1	FF	
+beamAzimuth	3504	$FFFF	0	1	FF	
+beamElevation	3506	$FFFF	0	1	FF	
+distancePeriod	3508	$FFFF	0	1	FF	
+velocityPeriod	3510	$FFFF	0	1	FF	
+threshold	3512	$FFFF	0	1	FF	
+distance	3514	$FFFF	0	1	FF	
+velocity	3516	$FFFF	0	1	FF	
+resolvedDistance	3518	$FFFF	0	1	FF	
+resolvedVelocity	3520	$FFFF	0	1	FF	
+creationTimeSeconds	3523	$FFFF	0	1	UU	s
+3522	$FFFF	0
+creationTimeNanoSeconds	3525	$FFFF	0	1	UU	ns
+3524	$FFFF	0
+; distanceResolutionSpot
+taskId	3527	$FFFF	0	1	UU	
+3526	$FFFF	0
+pulsePeriod	3528	$FFFF	0	1	FF	
+beamAzimuth	3530	$FFFF	0	1	FF	
+beamElevation	3532	$FFFF	0	1	FF	
+distancePeriod	3534	$FFFF	0	1	FF	
+velocityPeriod	3536	$FFFF	0	1	FF	
+threshold	3538	$FFFF	0	1	FF	
+distance	3540	$FFFF	0	1	FF	
+velocity	3542	$FFFF	0	1	FF	
+resolvedDistance	3544	$FFFF	0	1	FF	
+resolvedVelocity	3546	$FFFF	0	1	FF	
+creationTimeSeconds	3549	$FFFF	0	1	UU	s
+3548	$FFFF	0
+creationTimeNanoSeconds	3551	$FFFF	0	1	UU	ns
+3550	$FFFF	0
+; velocityResolutionSpot
+taskId	3553	$FFFF	0	1	UU	
+3552	$FFFF	0
+pulsePeriod	3554	$FFFF	0	1	FF	
+beamAzimuth	3556	$FFFF	0	1	FF	
+beamElevation	3558	$FFFF	0	1	FF	
+distancePeriod	3560	$FFFF	0	1	FF	
+velocityPeriod	3562	$FFFF	0	1	FF	
+threshold	3564	$FFFF	0	1	FF	
+distance	3566	$FFFF	0	1	FF	
+velocity	3568	$FFFF	0	1	FF	
+resolvedDistance	3570	$FFFF	0	1	FF	
+resolvedVelocity	3572	$FFFF	0	1	FF	
+creationTimeSeconds	3575	$FFFF	0	1	UU	s
+3574	$FFFF	0
+creationTimeNanoSeconds	3577	$FFFF	0	1	UU	ns
+3576	$FFFF	0
+nextUpdateTimeSeconds	3579	$FFFF	0	1	UU	s
+3578	$FFFF	0
+nextUpdateTimeNanoSeconds	3581	$FFFF	0	1	UU	ns
+3580	$FFFF	0
+; trackCandidate_26
+id	3583	$FFFF	0	1	UU	
+3582	$FFFF	0
+taskId	3585	$FFFF	0	1	UU	
+3584	$FFFF	0
+antennaId	3587	$FFFF	0	1	UU	
+3586	$FFFF	0
+beamAzimuth	3588	$FFFF	0	1	FF	
+beamElevation	3590	$FFFF	0	1	FF	
+azimuth	3592	$FFFF	0	1	FF	
+elevation	3594	$FFFF	0	1	FF	
+state	3597	$FFFF	0	1	UU	
+3596	$FFFF	0
+; viewSpot
+taskId	3599	$FFFF	0	1	UU	
+3598	$FFFF	0
+pulsePeriod	3600	$FFFF	0	1	FF	
+beamAzimuth	3602	$FFFF	0	1	FF	
+beamElevation	3604	$FFFF	0	1	FF	
+distancePeriod	3606	$FFFF	0	1	FF	
+velocityPeriod	3608	$FFFF	0	1	FF	
+threshold	3610	$FFFF	0	1	FF	
+distance	3612	$FFFF	0	1	FF	
+velocity	3614	$FFFF	0	1	FF	
+resolvedDistance	3616	$FFFF	0	1	FF	
+resolvedVelocity	3618	$FFFF	0	1	FF	
+creationTimeSeconds	3621	$FFFF	0	1	UU	s
+3620	$FFFF	0
+creationTimeNanoSeconds	3623	$FFFF	0	1	UU	ns
+3622	$FFFF	0
+; distanceResolutionSpot
+taskId	3625	$FFFF	0	1	UU	
+3624	$FFFF	0
+pulsePeriod	3626	$FFFF	0	1	FF	
+beamAzimuth	3628	$FFFF	0	1	FF	
+beamElevation	3630	$FFFF	0	1	FF	
+distancePeriod	3632	$FFFF	0	1	FF	
+velocityPeriod	3634	$FFFF	0	1	FF	
+threshold	3636	$FFFF	0	1	FF	
+distance	3638	$FFFF	0	1	FF	
+velocity	3640	$FFFF	0	1	FF	
+resolvedDistance	3642	$FFFF	0	1	FF	
+resolvedVelocity	3644	$FFFF	0	1	FF	
+creationTimeSeconds	3647	$FFFF	0	1	UU	s
+3646	$FFFF	0
+creationTimeNanoSeconds	3649	$FFFF	0	1	UU	ns
+3648	$FFFF	0
+; velocityResolutionSpot
+taskId	3651	$FFFF	0	1	UU	
+3650	$FFFF	0
+pulsePeriod	3652	$FFFF	0	1	FF	
+beamAzimuth	3654	$FFFF	0	1	FF	
+beamElevation	3656	$FFFF	0	1	FF	
+distancePeriod	3658	$FFFF	0	1	FF	
+velocityPeriod	3660	$FFFF	0	1	FF	
+threshold	3662	$FFFF	0	1	FF	
+distance	3664	$FFFF	0	1	FF	
+velocity	3666	$FFFF	0	1	FF	
+resolvedDistance	3668	$FFFF	0	1	FF	
+resolvedVelocity	3670	$FFFF	0	1	FF	
+creationTimeSeconds	3673	$FFFF	0	1	UU	s
+3672	$FFFF	0
+creationTimeNanoSeconds	3675	$FFFF	0	1	UU	ns
+3674	$FFFF	0
+nextUpdateTimeSeconds	3677	$FFFF	0	1	UU	s
+3676	$FFFF	0
+nextUpdateTimeNanoSeconds	3679	$FFFF	0	1	UU	ns
+3678	$FFFF	0
+; trackCandidate_27
+id	3681	$FFFF	0	1	UU	
+3680	$FFFF	0
+taskId	3683	$FFFF	0	1	UU	
+3682	$FFFF	0
+antennaId	3685	$FFFF	0	1	UU	
+3684	$FFFF	0
+beamAzimuth	3686	$FFFF	0	1	FF	
+beamElevation	3688	$FFFF	0	1	FF	
+azimuth	3690	$FFFF	0	1	FF	
+elevation	3692	$FFFF	0	1	FF	
+state	3695	$FFFF	0	1	UU	
+3694	$FFFF	0
+; viewSpot
+taskId	3697	$FFFF	0	1	UU	
+3696	$FFFF	0
+pulsePeriod	3698	$FFFF	0	1	FF	
+beamAzimuth	3700	$FFFF	0	1	FF	
+beamElevation	3702	$FFFF	0	1	FF	
+distancePeriod	3704	$FFFF	0	1	FF	
+velocityPeriod	3706	$FFFF	0	1	FF	
+threshold	3708	$FFFF	0	1	FF	
+distance	3710	$FFFF	0	1	FF	
+velocity	3712	$FFFF	0	1	FF	
+resolvedDistance	3714	$FFFF	0	1	FF	
+resolvedVelocity	3716	$FFFF	0	1	FF	
+creationTimeSeconds	3719	$FFFF	0	1	UU	s
+3718	$FFFF	0
+creationTimeNanoSeconds	3721	$FFFF	0	1	UU	ns
+3720	$FFFF	0
+; distanceResolutionSpot
+taskId	3723	$FFFF	0	1	UU	
+3722	$FFFF	0
+pulsePeriod	3724	$FFFF	0	1	FF	
+beamAzimuth	3726	$FFFF	0	1	FF	
+beamElevation	3728	$FFFF	0	1	FF	
+distancePeriod	3730	$FFFF	0	1	FF	
+velocityPeriod	3732	$FFFF	0	1	FF	
+threshold	3734	$FFFF	0	1	FF	
+distance	3736	$FFFF	0	1	FF	
+velocity	3738	$FFFF	0	1	FF	
+resolvedDistance	3740	$FFFF	0	1	FF	
+resolvedVelocity	3742	$FFFF	0	1	FF	
+creationTimeSeconds	3745	$FFFF	0	1	UU	s
+3744	$FFFF	0
+creationTimeNanoSeconds	3747	$FFFF	0	1	UU	ns
+3746	$FFFF	0
+; velocityResolutionSpot
+taskId	3749	$FFFF	0	1	UU	
+3748	$FFFF	0
+pulsePeriod	3750	$FFFF	0	1	FF	
+beamAzimuth	3752	$FFFF	0	1	FF	
+beamElevation	3754	$FFFF	0	1	FF	
+distancePeriod	3756	$FFFF	0	1	FF	
+velocityPeriod	3758	$FFFF	0	1	FF	
+threshold	3760	$FFFF	0	1	FF	
+distance	3762	$FFFF	0	1	FF	
+velocity	3764	$FFFF	0	1	FF	
+resolvedDistance	3766	$FFFF	0	1	FF	
+resolvedVelocity	3768	$FFFF	0	1	FF	
+creationTimeSeconds	3771	$FFFF	0	1	UU	s
+3770	$FFFF	0
+creationTimeNanoSeconds	3773	$FFFF	0	1	UU	ns
+3772	$FFFF	0
+nextUpdateTimeSeconds	3775	$FFFF	0	1	UU	s
+3774	$FFFF	0
+nextUpdateTimeNanoSeconds	3777	$FFFF	0	1	UU	ns
+3776	$FFFF	0
+; trackCandidate_28
+id	3779	$FFFF	0	1	UU	
+3778	$FFFF	0
+taskId	3781	$FFFF	0	1	UU	
+3780	$FFFF	0
+antennaId	3783	$FFFF	0	1	UU	
+3782	$FFFF	0
+beamAzimuth	3784	$FFFF	0	1	FF	
+beamElevation	3786	$FFFF	0	1	FF	
+azimuth	3788	$FFFF	0	1	FF	
+elevation	3790	$FFFF	0	1	FF	
+state	3793	$FFFF	0	1	UU	
+3792	$FFFF	0
+; viewSpot
+taskId	3795	$FFFF	0	1	UU	
+3794	$FFFF	0
+pulsePeriod	3796	$FFFF	0	1	FF	
+beamAzimuth	3798	$FFFF	0	1	FF	
+beamElevation	3800	$FFFF	0	1	FF	
+distancePeriod	3802	$FFFF	0	1	FF	
+velocityPeriod	3804	$FFFF	0	1	FF	
+threshold	3806	$FFFF	0	1	FF	
+distance	3808	$FFFF	0	1	FF	
+velocity	3810	$FFFF	0	1	FF	
+resolvedDistance	3812	$FFFF	0	1	FF	
+resolvedVelocity	3814	$FFFF	0	1	FF	
+creationTimeSeconds	3817	$FFFF	0	1	UU	s
+3816	$FFFF	0
+creationTimeNanoSeconds	3819	$FFFF	0	1	UU	ns
+3818	$FFFF	0
+; distanceResolutionSpot
+taskId	3821	$FFFF	0	1	UU	
+3820	$FFFF	0
+pulsePeriod	3822	$FFFF	0	1	FF	
+beamAzimuth	3824	$FFFF	0	1	FF	
+beamElevation	3826	$FFFF	0	1	FF	
+distancePeriod	3828	$FFFF	0	1	FF	
+velocityPeriod	3830	$FFFF	0	1	FF	
+threshold	3832	$FFFF	0	1	FF	
+distance	3834	$FFFF	0	1	FF	
+velocity	3836	$FFFF	0	1	FF	
+resolvedDistance	3838	$FFFF	0	1	FF	
+resolvedVelocity	3840	$FFFF	0	1	FF	
+creationTimeSeconds	3843	$FFFF	0	1	UU	s
+3842	$FFFF	0
+creationTimeNanoSeconds	3845	$FFFF	0	1	UU	ns
+3844	$FFFF	0
+; velocityResolutionSpot
+taskId	3847	$FFFF	0	1	UU	
+3846	$FFFF	0
+pulsePeriod	3848	$FFFF	0	1	FF	
+beamAzimuth	3850	$FFFF	0	1	FF	
+beamElevation	3852	$FFFF	0	1	FF	
+distancePeriod	3854	$FFFF	0	1	FF	
+velocityPeriod	3856	$FFFF	0	1	FF	
+threshold	3858	$FFFF	0	1	FF	
+distance	3860	$FFFF	0	1	FF	
+velocity	3862	$FFFF	0	1	FF	
+resolvedDistance	3864	$FFFF	0	1	FF	
+resolvedVelocity	3866	$FFFF	0	1	FF	
+creationTimeSeconds	3869	$FFFF	0	1	UU	s
+3868	$FFFF	0
+creationTimeNanoSeconds	3871	$FFFF	0	1	UU	ns
+3870	$FFFF	0
+nextUpdateTimeSeconds	3873	$FFFF	0	1	UU	s
+3872	$FFFF	0
+nextUpdateTimeNanoSeconds	3875	$FFFF	0	1	UU	ns
+3874	$FFFF	0
+; trackCandidate_29
+id	3877	$FFFF	0	1	UU	
+3876	$FFFF	0
+taskId	3879	$FFFF	0	1	UU	
+3878	$FFFF	0
+antennaId	3881	$FFFF	0	1	UU	
+3880	$FFFF	0
+beamAzimuth	3882	$FFFF	0	1	FF	
+beamElevation	3884	$FFFF	0	1	FF	
+azimuth	3886	$FFFF	0	1	FF	
+elevation	3888	$FFFF	0	1	FF	
+state	3891	$FFFF	0	1	UU	
+3890	$FFFF	0
+; viewSpot
+taskId	3893	$FFFF	0	1	UU	
+3892	$FFFF	0
+pulsePeriod	3894	$FFFF	0	1	FF	
+beamAzimuth	3896	$FFFF	0	1	FF	
+beamElevation	3898	$FFFF	0	1	FF	
+distancePeriod	3900	$FFFF	0	1	FF	
+velocityPeriod	3902	$FFFF	0	1	FF	
+threshold	3904	$FFFF	0	1	FF	
+distance	3906	$FFFF	0	1	FF	
+velocity	3908	$FFFF	0	1	FF	
+resolvedDistance	3910	$FFFF	0	1	FF	
+resolvedVelocity	3912	$FFFF	0	1	FF	
+creationTimeSeconds	3915	$FFFF	0	1	UU	s
+3914	$FFFF	0
+creationTimeNanoSeconds	3917	$FFFF	0	1	UU	ns
+3916	$FFFF	0
+; distanceResolutionSpot
+taskId	3919	$FFFF	0	1	UU	
+3918	$FFFF	0
+pulsePeriod	3920	$FFFF	0	1	FF	
+beamAzimuth	3922	$FFFF	0	1	FF	
+beamElevation	3924	$FFFF	0	1	FF	
+distancePeriod	3926	$FFFF	0	1	FF	
+velocityPeriod	3928	$FFFF	0	1	FF	
+threshold	3930	$FFFF	0	1	FF	
+distance	3932	$FFFF	0	1	FF	
+velocity	3934	$FFFF	0	1	FF	
+resolvedDistance	3936	$FFFF	0	1	FF	
+resolvedVelocity	3938	$FFFF	0	1	FF	
+creationTimeSeconds	3941	$FFFF	0	1	UU	s
+3940	$FFFF	0
+creationTimeNanoSeconds	3943	$FFFF	0	1	UU	ns
+3942	$FFFF	0
+; velocityResolutionSpot
+taskId	3945	$FFFF	0	1	UU	
+3944	$FFFF	0
+pulsePeriod	3946	$FFFF	0	1	FF	
+beamAzimuth	3948	$FFFF	0	1	FF	
+beamElevation	3950	$FFFF	0	1	FF	
+distancePeriod	3952	$FFFF	0	1	FF	
+velocityPeriod	3954	$FFFF	0	1	FF	
+threshold	3956	$FFFF	0	1	FF	
+distance	3958	$FFFF	0	1	FF	
+velocity	3960	$FFFF	0	1	FF	
+resolvedDistance	3962	$FFFF	0	1	FF	
+resolvedVelocity	3964	$FFFF	0	1	FF	
+creationTimeSeconds	3967	$FFFF	0	1	UU	s
+3966	$FFFF	0
+creationTimeNanoSeconds	3969	$FFFF	0	1	UU	ns
+3968	$FFFF	0
+nextUpdateTimeSeconds	3971	$FFFF	0	1	UU	s
+3970	$FFFF	0
+nextUpdateTimeNanoSeconds	3973	$FFFF	0	1	UU	ns
+3972	$FFFF	0
+; trackCandidate_30
+id	3975	$FFFF	0	1	UU	
+3974	$FFFF	0
+taskId	3977	$FFFF	0	1	UU	
+3976	$FFFF	0
+antennaId	3979	$FFFF	0	1	UU	
+3978	$FFFF	0
+beamAzimuth	3980	$FFFF	0	1	FF	
+beamElevation	3982	$FFFF	0	1	FF	
+azimuth	3984	$FFFF	0	1	FF	
+elevation	3986	$FFFF	0	1	FF	
+state	3989	$FFFF	0	1	UU	
+3988	$FFFF	0
+; viewSpot
+taskId	3991	$FFFF	0	1	UU	
+3990	$FFFF	0
+pulsePeriod	3992	$FFFF	0	1	FF	
+beamAzimuth	3994	$FFFF	0	1	FF	
+beamElevation	3996	$FFFF	0	1	FF	
+distancePeriod	3998	$FFFF	0	1	FF	
+velocityPeriod	4000	$FFFF	0	1	FF	
+threshold	4002	$FFFF	0	1	FF	
+distance	4004	$FFFF	0	1	FF	
+velocity	4006	$FFFF	0	1	FF	
+resolvedDistance	4008	$FFFF	0	1	FF	
+resolvedVelocity	4010	$FFFF	0	1	FF	
+creationTimeSeconds	4013	$FFFF	0	1	UU	s
+4012	$FFFF	0
+creationTimeNanoSeconds	4015	$FFFF	0	1	UU	ns
+4014	$FFFF	0
+; distanceResolutionSpot
+taskId	4017	$FFFF	0	1	UU	
+4016	$FFFF	0
+pulsePeriod	4018	$FFFF	0	1	FF	
+beamAzimuth	4020	$FFFF	0	1	FF	
+beamElevation	4022	$FFFF	0	1	FF	
+distancePeriod	4024	$FFFF	0	1	FF	
+velocityPeriod	4026	$FFFF	0	1	FF	
+threshold	4028	$FFFF	0	1	FF	
+distance	4030	$FFFF	0	1	FF	
+velocity	4032	$FFFF	0	1	FF	
+resolvedDistance	4034	$FFFF	0	1	FF	
+resolvedVelocity	4036	$FFFF	0	1	FF	
+creationTimeSeconds	4039	$FFFF	0	1	UU	s
+4038	$FFFF	0
+creationTimeNanoSeconds	4041	$FFFF	0	1	UU	ns
+4040	$FFFF	0
+; velocityResolutionSpot
+taskId	4043	$FFFF	0	1	UU	
+4042	$FFFF	0
+pulsePeriod	4044	$FFFF	0	1	FF	
+beamAzimuth	4046	$FFFF	0	1	FF	
+beamElevation	4048	$FFFF	0	1	FF	
+distancePeriod	4050	$FFFF	0	1	FF	
+velocityPeriod	4052	$FFFF	0	1	FF	
+threshold	4054	$FFFF	0	1	FF	
+distance	4056	$FFFF	0	1	FF	
+velocity	4058	$FFFF	0	1	FF	
+resolvedDistance	4060	$FFFF	0	1	FF	
+resolvedVelocity	4062	$FFFF	0	1	FF	
+creationTimeSeconds	4065	$FFFF	0	1	UU	s
+4064	$FFFF	0
+creationTimeNanoSeconds	4067	$FFFF	0	1	UU	ns
+4066	$FFFF	0
+nextUpdateTimeSeconds	4069	$FFFF	0	1	UU	s
+4068	$FFFF	0
+nextUpdateTimeNanoSeconds	4071	$FFFF	0	1	UU	ns
+4070	$FFFF	0
+; trackCandidate_31
+id	4073	$FFFF	0	1	UU	
+4072	$FFFF	0
+taskId	4075	$FFFF	0	1	UU	
+4074	$FFFF	0
+antennaId	4077	$FFFF	0	1	UU	
+4076	$FFFF	0
+beamAzimuth	4078	$FFFF	0	1	FF	
+beamElevation	4080	$FFFF	0	1	FF	
+azimuth	4082	$FFFF	0	1	FF	
+elevation	4084	$FFFF	0	1	FF	
+state	4087	$FFFF	0	1	UU	
+4086	$FFFF	0
+; viewSpot
+taskId	4089	$FFFF	0	1	UU	
+4088	$FFFF	0
+pulsePeriod	4090	$FFFF	0	1	FF	
+beamAzimuth	4092	$FFFF	0	1	FF	
+beamElevation	4094	$FFFF	0	1	FF	
+distancePeriod	4096	$FFFF	0	1	FF	
+velocityPeriod	4098	$FFFF	0	1	FF	
+threshold	4100	$FFFF	0	1	FF	
+distance	4102	$FFFF	0	1	FF	
+velocity	4104	$FFFF	0	1	FF	
+resolvedDistance	4106	$FFFF	0	1	FF	
+resolvedVelocity	4108	$FFFF	0	1	FF	
+creationTimeSeconds	4111	$FFFF	0	1	UU	s
+4110	$FFFF	0
+creationTimeNanoSeconds	4113	$FFFF	0	1	UU	ns
+4112	$FFFF	0
+; distanceResolutionSpot
+taskId	4115	$FFFF	0	1	UU	
+4114	$FFFF	0
+pulsePeriod	4116	$FFFF	0	1	FF	
+beamAzimuth	4118	$FFFF	0	1	FF	
+beamElevation	4120	$FFFF	0	1	FF	
+distancePeriod	4122	$FFFF	0	1	FF	
+velocityPeriod	4124	$FFFF	0	1	FF	
+threshold	4126	$FFFF	0	1	FF	
+distance	4128	$FFFF	0	1	FF	
+velocity	4130	$FFFF	0	1	FF	
+resolvedDistance	4132	$FFFF	0	1	FF	
+resolvedVelocity	4134	$FFFF	0	1	FF	
+creationTimeSeconds	4137	$FFFF	0	1	UU	s
+4136	$FFFF	0
+creationTimeNanoSeconds	4139	$FFFF	0	1	UU	ns
+4138	$FFFF	0
+; velocityResolutionSpot
+taskId	4141	$FFFF	0	1	UU	
+4140	$FFFF	0
+pulsePeriod	4142	$FFFF	0	1	FF	
+beamAzimuth	4144	$FFFF	0	1	FF	
+beamElevation	4146	$FFFF	0	1	FF	
+distancePeriod	4148	$FFFF	0	1	FF	
+velocityPeriod	4150	$FFFF	0	1	FF	
+threshold	4152	$FFFF	0	1	FF	
+distance	4154	$FFFF	0	1	FF	
+velocity	4156	$FFFF	0	1	FF	
+resolvedDistance	4158	$FFFF	0	1	FF	
+resolvedVelocity	4160	$FFFF	0	1	FF	
+creationTimeSeconds	4163	$FFFF	0	1	UU	s
+4162	$FFFF	0
+creationTimeNanoSeconds	4165	$FFFF	0	1	UU	ns
+4164	$FFFF	0
+nextUpdateTimeSeconds	4167	$FFFF	0	1	UU	s
+4166	$FFFF	0
+nextUpdateTimeNanoSeconds	4169	$FFFF	0	1	UU	ns
+4168	$FFFF	0
+; trackCandidate_32
+id	4171	$FFFF	0	1	UU	
+4170	$FFFF	0
+taskId	4173	$FFFF	0	1	UU	
+4172	$FFFF	0
+antennaId	4175	$FFFF	0	1	UU	
+4174	$FFFF	0
+beamAzimuth	4176	$FFFF	0	1	FF	
+beamElevation	4178	$FFFF	0	1	FF	
+azimuth	4180	$FFFF	0	1	FF	
+elevation	4182	$FFFF	0	1	FF	
+state	4185	$FFFF	0	1	UU	
+4184	$FFFF	0
+; viewSpot
+taskId	4187	$FFFF	0	1	UU	
+4186	$FFFF	0
+pulsePeriod	4188	$FFFF	0	1	FF	
+beamAzimuth	4190	$FFFF	0	1	FF	
+beamElevation	4192	$FFFF	0	1	FF	
+distancePeriod	4194	$FFFF	0	1	FF	
+velocityPeriod	4196	$FFFF	0	1	FF	
+threshold	4198	$FFFF	0	1	FF	
+distance	4200	$FFFF	0	1	FF	
+velocity	4202	$FFFF	0	1	FF	
+resolvedDistance	4204	$FFFF	0	1	FF	
+resolvedVelocity	4206	$FFFF	0	1	FF	
+creationTimeSeconds	4209	$FFFF	0	1	UU	s
+4208	$FFFF	0
+creationTimeNanoSeconds	4211	$FFFF	0	1	UU	ns
+4210	$FFFF	0
+; distanceResolutionSpot
+taskId	4213	$FFFF	0	1	UU	
+4212	$FFFF	0
+pulsePeriod	4214	$FFFF	0	1	FF	
+beamAzimuth	4216	$FFFF	0	1	FF	
+beamElevation	4218	$FFFF	0	1	FF	
+distancePeriod	4220	$FFFF	0	1	FF	
+velocityPeriod	4222	$FFFF	0	1	FF	
+threshold	4224	$FFFF	0	1	FF	
+distance	4226	$FFFF	0	1	FF	
+velocity	4228	$FFFF	0	1	FF	
+resolvedDistance	4230	$FFFF	0	1	FF	
+resolvedVelocity	4232	$FFFF	0	1	FF	
+creationTimeSeconds	4235	$FFFF	0	1	UU	s
+4234	$FFFF	0
+creationTimeNanoSeconds	4237	$FFFF	0	1	UU	ns
+4236	$FFFF	0
+; velocityResolutionSpot
+taskId	4239	$FFFF	0	1	UU	
+4238	$FFFF	0
+pulsePeriod	4240	$FFFF	0	1	FF	
+beamAzimuth	4242	$FFFF	0	1	FF	
+beamElevation	4244	$FFFF	0	1	FF	
+distancePeriod	4246	$FFFF	0	1	FF	
+velocityPeriod	4248	$FFFF	0	1	FF	
+threshold	4250	$FFFF	0	1	FF	
+distance	4252	$FFFF	0	1	FF	
+velocity	4254	$FFFF	0	1	FF	
+resolvedDistance	4256	$FFFF	0	1	FF	
+resolvedVelocity	4258	$FFFF	0	1	FF	
+creationTimeSeconds	4261	$FFFF	0	1	UU	s
+4260	$FFFF	0
+creationTimeNanoSeconds	4263	$FFFF	0	1	UU	ns
+4262	$FFFF	0
+nextUpdateTimeSeconds	4265	$FFFF	0	1	UU	s
+4264	$FFFF	0
+nextUpdateTimeNanoSeconds	4267	$FFFF	0	1	UU	ns
+4266	$FFFF	0
+; trackCandidate_33
+id	4269	$FFFF	0	1	UU	
+4268	$FFFF	0
+taskId	4271	$FFFF	0	1	UU	
+4270	$FFFF	0
+antennaId	4273	$FFFF	0	1	UU	
+4272	$FFFF	0
+beamAzimuth	4274	$FFFF	0	1	FF	
+beamElevation	4276	$FFFF	0	1	FF	
+azimuth	4278	$FFFF	0	1	FF	
+elevation	4280	$FFFF	0	1	FF	
+state	4283	$FFFF	0	1	UU	
+4282	$FFFF	0
+; viewSpot
+taskId	4285	$FFFF	0	1	UU	
+4284	$FFFF	0
+pulsePeriod	4286	$FFFF	0	1	FF	
+beamAzimuth	4288	$FFFF	0	1	FF	
+beamElevation	4290	$FFFF	0	1	FF	
+distancePeriod	4292	$FFFF	0	1	FF	
+velocityPeriod	4294	$FFFF	0	1	FF	
+threshold	4296	$FFFF	0	1	FF	
+distance	4298	$FFFF	0	1	FF	
+velocity	4300	$FFFF	0	1	FF	
+resolvedDistance	4302	$FFFF	0	1	FF	
+resolvedVelocity	4304	$FFFF	0	1	FF	
+creationTimeSeconds	4307	$FFFF	0	1	UU	s
+4306	$FFFF	0
+creationTimeNanoSeconds	4309	$FFFF	0	1	UU	ns
+4308	$FFFF	0
+; distanceResolutionSpot
+taskId	4311	$FFFF	0	1	UU	
+4310	$FFFF	0
+pulsePeriod	4312	$FFFF	0	1	FF	
+beamAzimuth	4314	$FFFF	0	1	FF	
+beamElevation	4316	$FFFF	0	1	FF	
+distancePeriod	4318	$FFFF	0	1	FF	
+velocityPeriod	4320	$FFFF	0	1	FF	
+threshold	4322	$FFFF	0	1	FF	
+distance	4324	$FFFF	0	1	FF	
+velocity	4326	$FFFF	0	1	FF	
+resolvedDistance	4328	$FFFF	0	1	FF	
+resolvedVelocity	4330	$FFFF	0	1	FF	
+creationTimeSeconds	4333	$FFFF	0	1	UU	s
+4332	$FFFF	0
+creationTimeNanoSeconds	4335	$FFFF	0	1	UU	ns
+4334	$FFFF	0
+; velocityResolutionSpot
+taskId	4337	$FFFF	0	1	UU	
+4336	$FFFF	0
+pulsePeriod	4338	$FFFF	0	1	FF	
+beamAzimuth	4340	$FFFF	0	1	FF	
+beamElevation	4342	$FFFF	0	1	FF	
+distancePeriod	4344	$FFFF	0	1	FF	
+velocityPeriod	4346	$FFFF	0	1	FF	
+threshold	4348	$FFFF	0	1	FF	
+distance	4350	$FFFF	0	1	FF	
+velocity	4352	$FFFF	0	1	FF	
+resolvedDistance	4354	$FFFF	0	1	FF	
+resolvedVelocity	4356	$FFFF	0	1	FF	
+creationTimeSeconds	4359	$FFFF	0	1	UU	s
+4358	$FFFF	0
+creationTimeNanoSeconds	4361	$FFFF	0	1	UU	ns
+4360	$FFFF	0
+nextUpdateTimeSeconds	4363	$FFFF	0	1	UU	s
+4362	$FFFF	0
+nextUpdateTimeNanoSeconds	4365	$FFFF	0	1	UU	ns
+4364	$FFFF	0
+; trackCandidate_34
+id	4367	$FFFF	0	1	UU	
+4366	$FFFF	0
+taskId	4369	$FFFF	0	1	UU	
+4368	$FFFF	0
+antennaId	4371	$FFFF	0	1	UU	
+4370	$FFFF	0
+beamAzimuth	4372	$FFFF	0	1	FF	
+beamElevation	4374	$FFFF	0	1	FF	
+azimuth	4376	$FFFF	0	1	FF	
+elevation	4378	$FFFF	0	1	FF	
+state	4381	$FFFF	0	1	UU	
+4380	$FFFF	0
+; viewSpot
+taskId	4383	$FFFF	0	1	UU	
+4382	$FFFF	0
+pulsePeriod	4384	$FFFF	0	1	FF	
+beamAzimuth	4386	$FFFF	0	1	FF	
+beamElevation	4388	$FFFF	0	1	FF	
+distancePeriod	4390	$FFFF	0	1	FF	
+velocityPeriod	4392	$FFFF	0	1	FF	
+threshold	4394	$FFFF	0	1	FF	
+distance	4396	$FFFF	0	1	FF	
+velocity	4398	$FFFF	0	1	FF	
+resolvedDistance	4400	$FFFF	0	1	FF	
+resolvedVelocity	4402	$FFFF	0	1	FF	
+creationTimeSeconds	4405	$FFFF	0	1	UU	s
+4404	$FFFF	0
+creationTimeNanoSeconds	4407	$FFFF	0	1	UU	ns
+4406	$FFFF	0
+; distanceResolutionSpot
+taskId	4409	$FFFF	0	1	UU	
+4408	$FFFF	0
+pulsePeriod	4410	$FFFF	0	1	FF	
+beamAzimuth	4412	$FFFF	0	1	FF	
+beamElevation	4414	$FFFF	0	1	FF	
+distancePeriod	4416	$FFFF	0	1	FF	
+velocityPeriod	4418	$FFFF	0	1	FF	
+threshold	4420	$FFFF	0	1	FF	
+distance	4422	$FFFF	0	1	FF	
+velocity	4424	$FFFF	0	1	FF	
+resolvedDistance	4426	$FFFF	0	1	FF	
+resolvedVelocity	4428	$FFFF	0	1	FF	
+creationTimeSeconds	4431	$FFFF	0	1	UU	s
+4430	$FFFF	0
+creationTimeNanoSeconds	4433	$FFFF	0	1	UU	ns
+4432	$FFFF	0
+; velocityResolutionSpot
+taskId	4435	$FFFF	0	1	UU	
+4434	$FFFF	0
+pulsePeriod	4436	$FFFF	0	1	FF	
+beamAzimuth	4438	$FFFF	0	1	FF	
+beamElevation	4440	$FFFF	0	1	FF	
+distancePeriod	4442	$FFFF	0	1	FF	
+velocityPeriod	4444	$FFFF	0	1	FF	
+threshold	4446	$FFFF	0	1	FF	
+distance	4448	$FFFF	0	1	FF	
+velocity	4450	$FFFF	0	1	FF	
+resolvedDistance	4452	$FFFF	0	1	FF	
+resolvedVelocity	4454	$FFFF	0	1	FF	
+creationTimeSeconds	4457	$FFFF	0	1	UU	s
+4456	$FFFF	0
+creationTimeNanoSeconds	4459	$FFFF	0	1	UU	ns
+4458	$FFFF	0
+nextUpdateTimeSeconds	4461	$FFFF	0	1	UU	s
+4460	$FFFF	0
+nextUpdateTimeNanoSeconds	4463	$FFFF	0	1	UU	ns
+4462	$FFFF	0
+; trackCandidate_35
+id	4465	$FFFF	0	1	UU	
+4464	$FFFF	0
+taskId	4467	$FFFF	0	1	UU	
+4466	$FFFF	0
+antennaId	4469	$FFFF	0	1	UU	
+4468	$FFFF	0
+beamAzimuth	4470	$FFFF	0	1	FF	
+beamElevation	4472	$FFFF	0	1	FF	
+azimuth	4474	$FFFF	0	1	FF	
+elevation	4476	$FFFF	0	1	FF	
+state	4479	$FFFF	0	1	UU	
+4478	$FFFF	0
+; viewSpot
+taskId	4481	$FFFF	0	1	UU	
+4480	$FFFF	0
+pulsePeriod	4482	$FFFF	0	1	FF	
+beamAzimuth	4484	$FFFF	0	1	FF	
+beamElevation	4486	$FFFF	0	1	FF	
+distancePeriod	4488	$FFFF	0	1	FF	
+velocityPeriod	4490	$FFFF	0	1	FF	
+threshold	4492	$FFFF	0	1	FF	
+distance	4494	$FFFF	0	1	FF	
+velocity	4496	$FFFF	0	1	FF	
+resolvedDistance	4498	$FFFF	0	1	FF	
+resolvedVelocity	4500	$FFFF	0	1	FF	
+creationTimeSeconds	4503	$FFFF	0	1	UU	s
+4502	$FFFF	0
+creationTimeNanoSeconds	4505	$FFFF	0	1	UU	ns
+4504	$FFFF	0
+; distanceResolutionSpot
+taskId	4507	$FFFF	0	1	UU	
+4506	$FFFF	0
+pulsePeriod	4508	$FFFF	0	1	FF	
+beamAzimuth	4510	$FFFF	0	1	FF	
+beamElevation	4512	$FFFF	0	1	FF	
+distancePeriod	4514	$FFFF	0	1	FF	
+velocityPeriod	4516	$FFFF	0	1	FF	
+threshold	4518	$FFFF	0	1	FF	
+distance	4520	$FFFF	0	1	FF	
+velocity	4522	$FFFF	0	1	FF	
+resolvedDistance	4524	$FFFF	0	1	FF	
+resolvedVelocity	4526	$FFFF	0	1	FF	
+creationTimeSeconds	4529	$FFFF	0	1	UU	s
+4528	$FFFF	0
+creationTimeNanoSeconds	4531	$FFFF	0	1	UU	ns
+4530	$FFFF	0
+; velocityResolutionSpot
+taskId	4533	$FFFF	0	1	UU	
+4532	$FFFF	0
+pulsePeriod	4534	$FFFF	0	1	FF	
+beamAzimuth	4536	$FFFF	0	1	FF	
+beamElevation	4538	$FFFF	0	1	FF	
+distancePeriod	4540	$FFFF	0	1	FF	
+velocityPeriod	4542	$FFFF	0	1	FF	
+threshold	4544	$FFFF	0	1	FF	
+distance	4546	$FFFF	0	1	FF	
+velocity	4548	$FFFF	0	1	FF	
+resolvedDistance	4550	$FFFF	0	1	FF	
+resolvedVelocity	4552	$FFFF	0	1	FF	
+creationTimeSeconds	4555	$FFFF	0	1	UU	s
+4554	$FFFF	0
+creationTimeNanoSeconds	4557	$FFFF	0	1	UU	ns
+4556	$FFFF	0
+nextUpdateTimeSeconds	4559	$FFFF	0	1	UU	s
+4558	$FFFF	0
+nextUpdateTimeNanoSeconds	4561	$FFFF	0	1	UU	ns
+4560	$FFFF	0
+; trackCandidate_36
+id	4563	$FFFF	0	1	UU	
+4562	$FFFF	0
+taskId	4565	$FFFF	0	1	UU	
+4564	$FFFF	0
+antennaId	4567	$FFFF	0	1	UU	
+4566	$FFFF	0
+beamAzimuth	4568	$FFFF	0	1	FF	
+beamElevation	4570	$FFFF	0	1	FF	
+azimuth	4572	$FFFF	0	1	FF	
+elevation	4574	$FFFF	0	1	FF	
+state	4577	$FFFF	0	1	UU	
+4576	$FFFF	0
+; viewSpot
+taskId	4579	$FFFF	0	1	UU	
+4578	$FFFF	0
+pulsePeriod	4580	$FFFF	0	1	FF	
+beamAzimuth	4582	$FFFF	0	1	FF	
+beamElevation	4584	$FFFF	0	1	FF	
+distancePeriod	4586	$FFFF	0	1	FF	
+velocityPeriod	4588	$FFFF	0	1	FF	
+threshold	4590	$FFFF	0	1	FF	
+distance	4592	$FFFF	0	1	FF	
+velocity	4594	$FFFF	0	1	FF	
+resolvedDistance	4596	$FFFF	0	1	FF	
+resolvedVelocity	4598	$FFFF	0	1	FF	
+creationTimeSeconds	4601	$FFFF	0	1	UU	s
+4600	$FFFF	0
+creationTimeNanoSeconds	4603	$FFFF	0	1	UU	ns
+4602	$FFFF	0
+; distanceResolutionSpot
+taskId	4605	$FFFF	0	1	UU	
+4604	$FFFF	0
+pulsePeriod	4606	$FFFF	0	1	FF	
+beamAzimuth	4608	$FFFF	0	1	FF	
+beamElevation	4610	$FFFF	0	1	FF	
+distancePeriod	4612	$FFFF	0	1	FF	
+velocityPeriod	4614	$FFFF	0	1	FF	
+threshold	4616	$FFFF	0	1	FF	
+distance	4618	$FFFF	0	1	FF	
+velocity	4620	$FFFF	0	1	FF	
+resolvedDistance	4622	$FFFF	0	1	FF	
+resolvedVelocity	4624	$FFFF	0	1	FF	
+creationTimeSeconds	4627	$FFFF	0	1	UU	s
+4626	$FFFF	0
+creationTimeNanoSeconds	4629	$FFFF	0	1	UU	ns
+4628	$FFFF	0
+; velocityResolutionSpot
+taskId	4631	$FFFF	0	1	UU	
+4630	$FFFF	0
+pulsePeriod	4632	$FFFF	0	1	FF	
+beamAzimuth	4634	$FFFF	0	1	FF	
+beamElevation	4636	$FFFF	0	1	FF	
+distancePeriod	4638	$FFFF	0	1	FF	
+velocityPeriod	4640	$FFFF	0	1	FF	
+threshold	4642	$FFFF	0	1	FF	
+distance	4644	$FFFF	0	1	FF	
+velocity	4646	$FFFF	0	1	FF	
+resolvedDistance	4648	$FFFF	0	1	FF	
+resolvedVelocity	4650	$FFFF	0	1	FF	
+creationTimeSeconds	4653	$FFFF	0	1	UU	s
+4652	$FFFF	0
+creationTimeNanoSeconds	4655	$FFFF	0	1	UU	ns
+4654	$FFFF	0
+nextUpdateTimeSeconds	4657	$FFFF	0	1	UU	s
+4656	$FFFF	0
+nextUpdateTimeNanoSeconds	4659	$FFFF	0	1	UU	ns
+4658	$FFFF	0
+; trackCandidate_37
+id	4661	$FFFF	0	1	UU	
+4660	$FFFF	0
+taskId	4663	$FFFF	0	1	UU	
+4662	$FFFF	0
+antennaId	4665	$FFFF	0	1	UU	
+4664	$FFFF	0
+beamAzimuth	4666	$FFFF	0	1	FF	
+beamElevation	4668	$FFFF	0	1	FF	
+azimuth	4670	$FFFF	0	1	FF	
+elevation	4672	$FFFF	0	1	FF	
+state	4675	$FFFF	0	1	UU	
+4674	$FFFF	0
+; viewSpot
+taskId	4677	$FFFF	0	1	UU	
+4676	$FFFF	0
+pulsePeriod	4678	$FFFF	0	1	FF	
+beamAzimuth	4680	$FFFF	0	1	FF	
+beamElevation	4682	$FFFF	0	1	FF	
+distancePeriod	4684	$FFFF	0	1	FF	
+velocityPeriod	4686	$FFFF	0	1	FF	
+threshold	4688	$FFFF	0	1	FF	
+distance	4690	$FFFF	0	1	FF	
+velocity	4692	$FFFF	0	1	FF	
+resolvedDistance	4694	$FFFF	0	1	FF	
+resolvedVelocity	4696	$FFFF	0	1	FF	
+creationTimeSeconds	4699	$FFFF	0	1	UU	s
+4698	$FFFF	0
+creationTimeNanoSeconds	4701	$FFFF	0	1	UU	ns
+4700	$FFFF	0
+; distanceResolutionSpot
+taskId	4703	$FFFF	0	1	UU	
+4702	$FFFF	0
+pulsePeriod	4704	$FFFF	0	1	FF	
+beamAzimuth	4706	$FFFF	0	1	FF	
+beamElevation	4708	$FFFF	0	1	FF	
+distancePeriod	4710	$FFFF	0	1	FF	
+velocityPeriod	4712	$FFFF	0	1	FF	
+threshold	4714	$FFFF	0	1	FF	
+distance	4716	$FFFF	0	1	FF	
+velocity	4718	$FFFF	0	1	FF	
+resolvedDistance	4720	$FFFF	0	1	FF	
+resolvedVelocity	4722	$FFFF	0	1	FF	
+creationTimeSeconds	4725	$FFFF	0	1	UU	s
+4724	$FFFF	0
+creationTimeNanoSeconds	4727	$FFFF	0	1	UU	ns
+4726	$FFFF	0
+; velocityResolutionSpot
+taskId	4729	$FFFF	0	1	UU	
+4728	$FFFF	0
+pulsePeriod	4730	$FFFF	0	1	FF	
+beamAzimuth	4732	$FFFF	0	1	FF	
+beamElevation	4734	$FFFF	0	1	FF	
+distancePeriod	4736	$FFFF	0	1	FF	
+velocityPeriod	4738	$FFFF	0	1	FF	
+threshold	4740	$FFFF	0	1	FF	
+distance	4742	$FFFF	0	1	FF	
+velocity	4744	$FFFF	0	1	FF	
+resolvedDistance	4746	$FFFF	0	1	FF	
+resolvedVelocity	4748	$FFFF	0	1	FF	
+creationTimeSeconds	4751	$FFFF	0	1	UU	s
+4750	$FFFF	0
+creationTimeNanoSeconds	4753	$FFFF	0	1	UU	ns
+4752	$FFFF	0
+nextUpdateTimeSeconds	4755	$FFFF	0	1	UU	s
+4754	$FFFF	0
+nextUpdateTimeNanoSeconds	4757	$FFFF	0	1	UU	ns
+4756	$FFFF	0
+; trackCandidate_38
+id	4759	$FFFF	0	1	UU	
+4758	$FFFF	0
+taskId	4761	$FFFF	0	1	UU	
+4760	$FFFF	0
+antennaId	4763	$FFFF	0	1	UU	
+4762	$FFFF	0
+beamAzimuth	4764	$FFFF	0	1	FF	
+beamElevation	4766	$FFFF	0	1	FF	
+azimuth	4768	$FFFF	0	1	FF	
+elevation	4770	$FFFF	0	1	FF	
+state	4773	$FFFF	0	1	UU	
+4772	$FFFF	0
+; viewSpot
+taskId	4775	$FFFF	0	1	UU	
+4774	$FFFF	0
+pulsePeriod	4776	$FFFF	0	1	FF	
+beamAzimuth	4778	$FFFF	0	1	FF	
+beamElevation	4780	$FFFF	0	1	FF	
+distancePeriod	4782	$FFFF	0	1	FF	
+velocityPeriod	4784	$FFFF	0	1	FF	
+threshold	4786	$FFFF	0	1	FF	
+distance	4788	$FFFF	0	1	FF	
+velocity	4790	$FFFF	0	1	FF	
+resolvedDistance	4792	$FFFF	0	1	FF	
+resolvedVelocity	4794	$FFFF	0	1	FF	
+creationTimeSeconds	4797	$FFFF	0	1	UU	s
+4796	$FFFF	0
+creationTimeNanoSeconds	4799	$FFFF	0	1	UU	ns
+4798	$FFFF	0
+; distanceResolutionSpot
+taskId	4801	$FFFF	0	1	UU	
+4800	$FFFF	0
+pulsePeriod	4802	$FFFF	0	1	FF	
+beamAzimuth	4804	$FFFF	0	1	FF	
+beamElevation	4806	$FFFF	0	1	FF	
+distancePeriod	4808	$FFFF	0	1	FF	
+velocityPeriod	4810	$FFFF	0	1	FF	
+threshold	4812	$FFFF	0	1	FF	
+distance	4814	$FFFF	0	1	FF	
+velocity	4816	$FFFF	0	1	FF	
+resolvedDistance	4818	$FFFF	0	1	FF	
+resolvedVelocity	4820	$FFFF	0	1	FF	
+creationTimeSeconds	4823	$FFFF	0	1	UU	s
+4822	$FFFF	0
+creationTimeNanoSeconds	4825	$FFFF	0	1	UU	ns
+4824	$FFFF	0
+; velocityResolutionSpot
+taskId	4827	$FFFF	0	1	UU	
+4826	$FFFF	0
+pulsePeriod	4828	$FFFF	0	1	FF	
+beamAzimuth	4830	$FFFF	0	1	FF	
+beamElevation	4832	$FFFF	0	1	FF	
+distancePeriod	4834	$FFFF	0	1	FF	
+velocityPeriod	4836	$FFFF	0	1	FF	
+threshold	4838	$FFFF	0	1	FF	
+distance	4840	$FFFF	0	1	FF	
+velocity	4842	$FFFF	0	1	FF	
+resolvedDistance	4844	$FFFF	0	1	FF	
+resolvedVelocity	4846	$FFFF	0	1	FF	
+creationTimeSeconds	4849	$FFFF	0	1	UU	s
+4848	$FFFF	0
+creationTimeNanoSeconds	4851	$FFFF	0	1	UU	ns
+4850	$FFFF	0
+nextUpdateTimeSeconds	4853	$FFFF	0	1	UU	s
+4852	$FFFF	0
+nextUpdateTimeNanoSeconds	4855	$FFFF	0	1	UU	ns
+4854	$FFFF	0
+; trackCandidate_39
+id	4857	$FFFF	0	1	UU	
+4856	$FFFF	0
+taskId	4859	$FFFF	0	1	UU	
+4858	$FFFF	0
+antennaId	4861	$FFFF	0	1	UU	
+4860	$FFFF	0
+beamAzimuth	4862	$FFFF	0	1	FF	
+beamElevation	4864	$FFFF	0	1	FF	
+azimuth	4866	$FFFF	0	1	FF	
+elevation	4868	$FFFF	0	1	FF	
+state	4871	$FFFF	0	1	UU	
+4870	$FFFF	0
+; viewSpot
+taskId	4873	$FFFF	0	1	UU	
+4872	$FFFF	0
+pulsePeriod	4874	$FFFF	0	1	FF	
+beamAzimuth	4876	$FFFF	0	1	FF	
+beamElevation	4878	$FFFF	0	1	FF	
+distancePeriod	4880	$FFFF	0	1	FF	
+velocityPeriod	4882	$FFFF	0	1	FF	
+threshold	4884	$FFFF	0	1	FF	
+distance	4886	$FFFF	0	1	FF	
+velocity	4888	$FFFF	0	1	FF	
+resolvedDistance	4890	$FFFF	0	1	FF	
+resolvedVelocity	4892	$FFFF	0	1	FF	
+creationTimeSeconds	4895	$FFFF	0	1	UU	s
+4894	$FFFF	0
+creationTimeNanoSeconds	4897	$FFFF	0	1	UU	ns
+4896	$FFFF	0
+; distanceResolutionSpot
+taskId	4899	$FFFF	0	1	UU	
+4898	$FFFF	0
+pulsePeriod	4900	$FFFF	0	1	FF	
+beamAzimuth	4902	$FFFF	0	1	FF	
+beamElevation	4904	$FFFF	0	1	FF	
+distancePeriod	4906	$FFFF	0	1	FF	
+velocityPeriod	4908	$FFFF	0	1	FF	
+threshold	4910	$FFFF	0	1	FF	
+distance	4912	$FFFF	0	1	FF	
+velocity	4914	$FFFF	0	1	FF	
+resolvedDistance	4916	$FFFF	0	1	FF	
+resolvedVelocity	4918	$FFFF	0	1	FF	
+creationTimeSeconds	4921	$FFFF	0	1	UU	s
+4920	$FFFF	0
+creationTimeNanoSeconds	4923	$FFFF	0	1	UU	ns
+4922	$FFFF	0
+; velocityResolutionSpot
+taskId	4925	$FFFF	0	1	UU	
+4924	$FFFF	0
+pulsePeriod	4926	$FFFF	0	1	FF	
+beamAzimuth	4928	$FFFF	0	1	FF	
+beamElevation	4930	$FFFF	0	1	FF	
+distancePeriod	4932	$FFFF	0	1	FF	
+velocityPeriod	4934	$FFFF	0	1	FF	
+threshold	4936	$FFFF	0	1	FF	
+distance	4938	$FFFF	0	1	FF	
+velocity	4940	$FFFF	0	1	FF	
+resolvedDistance	4942	$FFFF	0	1	FF	
+resolvedVelocity	4944	$FFFF	0	1	FF	
+creationTimeSeconds	4947	$FFFF	0	1	UU	s
+4946	$FFFF	0
+creationTimeNanoSeconds	4949	$FFFF	0	1	UU	ns
+4948	$FFFF	0
+nextUpdateTimeSeconds	4951	$FFFF	0	1	UU	s
+4950	$FFFF	0
+nextUpdateTimeNanoSeconds	4953	$FFFF	0	1	UU	ns
+4952	$FFFF	0
+; Tracks
+tracksQueuesSize	4955	$FFFF	0	1	UU	
+4954	$FFFF	0
+; track
+id	4957	$FFFF	0	1	UU	
+4956	$FFFF	0
+type	4959	$FFFF	0	1	UU	
+4958	$FFFF	0
+priority	4961	$FFFF	0	1	UU	
+4960	$FFFF	0
+antennaId	4963	$FFFF	0	1	UU	
+4962	$FFFF	0
+azimuth	4964	$FFFF	0	1	FF	
+elevation	4966	$FFFF	0	1	FF	
+distance	4968	$FFFF	0	1	FF	
+radialVelocity	4970	$FFFF	0	1	FF	
+sigmaAzimuth	4972	$FFFF	0	1	FF	
+sigmaElevation	4974	$FFFF	0	1	FF	
+sigmaDistance	4976	$FFFF	0	1	FF	
+sigmaRadialVelocity	4978	$FFFF	0	1	FF	
+minAzimuth	4980	$FFFF	0	1	FF	
+maxAzimuth	4982	$FFFF	0	1	FF	
+minElevation	4984	$FFFF	0	1	FF	
+maxElevation	4986	$FFFF	0	1	FF	
+minDistance	4988	$FFFF	0	1	FF	
+maxDistance	4990	$FFFF	0	1	FF	
+minRadialVelocity	4992	$FFFF	0	1	FF	
+maxRadialVelocity	4994	$FFFF	0	1	FF	
+possiblePeriod[0]	4996	$FFFF	0	1	FF	
+possiblePeriod[1]	4998	$FFFF	0	1	FF	
+possiblePeriod[2]	5000	$FFFF	0	1	FF	
+possiblePeriod[3]	5002	$FFFF	0	1	FF	
+possiblePeriod[4]	5004	$FFFF	0	1	FF	
+possiblePeriod[5]	5006	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5009	$FFFF	0	1	UU	s
+5008	$FFFF	0
+nextUpdateTimeNanoSeconds	5011	$FFFF	0	1	UU	ns
+5010	$FFFF	0
+scanPeriodSeconds	5013	$FFFF	0	1	UU	s
+5012	$FFFF	0
+scanPeriodNanoSeconds	5015	$FFFF	0	1	UU	ns
+5014	$FFFF	0
+; track_1
+id	5017	$FFFF	0	1	UU	
+5016	$FFFF	0
+type	5019	$FFFF	0	1	UU	
+5018	$FFFF	0
+priority	5021	$FFFF	0	1	UU	
+5020	$FFFF	0
+antennaId	5023	$FFFF	0	1	UU	
+5022	$FFFF	0
+azimuth	5024	$FFFF	0	1	FF	
+elevation	5026	$FFFF	0	1	FF	
+distance	5028	$FFFF	0	1	FF	
+radialVelocity	5030	$FFFF	0	1	FF	
+sigmaAzimuth	5032	$FFFF	0	1	FF	
+sigmaElevation	5034	$FFFF	0	1	FF	
+sigmaDistance	5036	$FFFF	0	1	FF	
+sigmaRadialVelocity	5038	$FFFF	0	1	FF	
+minAzimuth	5040	$FFFF	0	1	FF	
+maxAzimuth	5042	$FFFF	0	1	FF	
+minElevation	5044	$FFFF	0	1	FF	
+maxElevation	5046	$FFFF	0	1	FF	
+minDistance	5048	$FFFF	0	1	FF	
+maxDistance	5050	$FFFF	0	1	FF	
+minRadialVelocity	5052	$FFFF	0	1	FF	
+maxRadialVelocity	5054	$FFFF	0	1	FF	
+possiblePeriod[0]	5056	$FFFF	0	1	FF	
+possiblePeriod[1]	5058	$FFFF	0	1	FF	
+possiblePeriod[2]	5060	$FFFF	0	1	FF	
+possiblePeriod[3]	5062	$FFFF	0	1	FF	
+possiblePeriod[4]	5064	$FFFF	0	1	FF	
+possiblePeriod[5]	5066	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5069	$FFFF	0	1	UU	s
+5068	$FFFF	0
+nextUpdateTimeNanoSeconds	5071	$FFFF	0	1	UU	ns
+5070	$FFFF	0
+scanPeriodSeconds	5073	$FFFF	0	1	UU	s
+5072	$FFFF	0
+scanPeriodNanoSeconds	5075	$FFFF	0	1	UU	ns
+5074	$FFFF	0
+; track_2
+id	5077	$FFFF	0	1	UU	
+5076	$FFFF	0
+type	5079	$FFFF	0	1	UU	
+5078	$FFFF	0
+priority	5081	$FFFF	0	1	UU	
+5080	$FFFF	0
+antennaId	5083	$FFFF	0	1	UU	
+5082	$FFFF	0
+azimuth	5084	$FFFF	0	1	FF	
+elevation	5086	$FFFF	0	1	FF	
+distance	5088	$FFFF	0	1	FF	
+radialVelocity	5090	$FFFF	0	1	FF	
+sigmaAzimuth	5092	$FFFF	0	1	FF	
+sigmaElevation	5094	$FFFF	0	1	FF	
+sigmaDistance	5096	$FFFF	0	1	FF	
+sigmaRadialVelocity	5098	$FFFF	0	1	FF	
+minAzimuth	5100	$FFFF	0	1	FF	
+maxAzimuth	5102	$FFFF	0	1	FF	
+minElevation	5104	$FFFF	0	1	FF	
+maxElevation	5106	$FFFF	0	1	FF	
+minDistance	5108	$FFFF	0	1	FF	
+maxDistance	5110	$FFFF	0	1	FF	
+minRadialVelocity	5112	$FFFF	0	1	FF	
+maxRadialVelocity	5114	$FFFF	0	1	FF	
+possiblePeriod[0]	5116	$FFFF	0	1	FF	
+possiblePeriod[1]	5118	$FFFF	0	1	FF	
+possiblePeriod[2]	5120	$FFFF	0	1	FF	
+possiblePeriod[3]	5122	$FFFF	0	1	FF	
+possiblePeriod[4]	5124	$FFFF	0	1	FF	
+possiblePeriod[5]	5126	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5129	$FFFF	0	1	UU	s
+5128	$FFFF	0
+nextUpdateTimeNanoSeconds	5131	$FFFF	0	1	UU	ns
+5130	$FFFF	0
+scanPeriodSeconds	5133	$FFFF	0	1	UU	s
+5132	$FFFF	0
+scanPeriodNanoSeconds	5135	$FFFF	0	1	UU	ns
+5134	$FFFF	0
+; track_3
+id	5137	$FFFF	0	1	UU	
+5136	$FFFF	0
+type	5139	$FFFF	0	1	UU	
+5138	$FFFF	0
+priority	5141	$FFFF	0	1	UU	
+5140	$FFFF	0
+antennaId	5143	$FFFF	0	1	UU	
+5142	$FFFF	0
+azimuth	5144	$FFFF	0	1	FF	
+elevation	5146	$FFFF	0	1	FF	
+distance	5148	$FFFF	0	1	FF	
+radialVelocity	5150	$FFFF	0	1	FF	
+sigmaAzimuth	5152	$FFFF	0	1	FF	
+sigmaElevation	5154	$FFFF	0	1	FF	
+sigmaDistance	5156	$FFFF	0	1	FF	
+sigmaRadialVelocity	5158	$FFFF	0	1	FF	
+minAzimuth	5160	$FFFF	0	1	FF	
+maxAzimuth	5162	$FFFF	0	1	FF	
+minElevation	5164	$FFFF	0	1	FF	
+maxElevation	5166	$FFFF	0	1	FF	
+minDistance	5168	$FFFF	0	1	FF	
+maxDistance	5170	$FFFF	0	1	FF	
+minRadialVelocity	5172	$FFFF	0	1	FF	
+maxRadialVelocity	5174	$FFFF	0	1	FF	
+possiblePeriod[0]	5176	$FFFF	0	1	FF	
+possiblePeriod[1]	5178	$FFFF	0	1	FF	
+possiblePeriod[2]	5180	$FFFF	0	1	FF	
+possiblePeriod[3]	5182	$FFFF	0	1	FF	
+possiblePeriod[4]	5184	$FFFF	0	1	FF	
+possiblePeriod[5]	5186	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5189	$FFFF	0	1	UU	s
+5188	$FFFF	0
+nextUpdateTimeNanoSeconds	5191	$FFFF	0	1	UU	ns
+5190	$FFFF	0
+scanPeriodSeconds	5193	$FFFF	0	1	UU	s
+5192	$FFFF	0
+scanPeriodNanoSeconds	5195	$FFFF	0	1	UU	ns
+5194	$FFFF	0
+; track_4
+id	5197	$FFFF	0	1	UU	
+5196	$FFFF	0
+type	5199	$FFFF	0	1	UU	
+5198	$FFFF	0
+priority	5201	$FFFF	0	1	UU	
+5200	$FFFF	0
+antennaId	5203	$FFFF	0	1	UU	
+5202	$FFFF	0
+azimuth	5204	$FFFF	0	1	FF	
+elevation	5206	$FFFF	0	1	FF	
+distance	5208	$FFFF	0	1	FF	
+radialVelocity	5210	$FFFF	0	1	FF	
+sigmaAzimuth	5212	$FFFF	0	1	FF	
+sigmaElevation	5214	$FFFF	0	1	FF	
+sigmaDistance	5216	$FFFF	0	1	FF	
+sigmaRadialVelocity	5218	$FFFF	0	1	FF	
+minAzimuth	5220	$FFFF	0	1	FF	
+maxAzimuth	5222	$FFFF	0	1	FF	
+minElevation	5224	$FFFF	0	1	FF	
+maxElevation	5226	$FFFF	0	1	FF	
+minDistance	5228	$FFFF	0	1	FF	
+maxDistance	5230	$FFFF	0	1	FF	
+minRadialVelocity	5232	$FFFF	0	1	FF	
+maxRadialVelocity	5234	$FFFF	0	1	FF	
+possiblePeriod[0]	5236	$FFFF	0	1	FF	
+possiblePeriod[1]	5238	$FFFF	0	1	FF	
+possiblePeriod[2]	5240	$FFFF	0	1	FF	
+possiblePeriod[3]	5242	$FFFF	0	1	FF	
+possiblePeriod[4]	5244	$FFFF	0	1	FF	
+possiblePeriod[5]	5246	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5249	$FFFF	0	1	UU	s
+5248	$FFFF	0
+nextUpdateTimeNanoSeconds	5251	$FFFF	0	1	UU	ns
+5250	$FFFF	0
+scanPeriodSeconds	5253	$FFFF	0	1	UU	s
+5252	$FFFF	0
+scanPeriodNanoSeconds	5255	$FFFF	0	1	UU	ns
+5254	$FFFF	0
+; track_5
+id	5257	$FFFF	0	1	UU	
+5256	$FFFF	0
+type	5259	$FFFF	0	1	UU	
+5258	$FFFF	0
+priority	5261	$FFFF	0	1	UU	
+5260	$FFFF	0
+antennaId	5263	$FFFF	0	1	UU	
+5262	$FFFF	0
+azimuth	5264	$FFFF	0	1	FF	
+elevation	5266	$FFFF	0	1	FF	
+distance	5268	$FFFF	0	1	FF	
+radialVelocity	5270	$FFFF	0	1	FF	
+sigmaAzimuth	5272	$FFFF	0	1	FF	
+sigmaElevation	5274	$FFFF	0	1	FF	
+sigmaDistance	5276	$FFFF	0	1	FF	
+sigmaRadialVelocity	5278	$FFFF	0	1	FF	
+minAzimuth	5280	$FFFF	0	1	FF	
+maxAzimuth	5282	$FFFF	0	1	FF	
+minElevation	5284	$FFFF	0	1	FF	
+maxElevation	5286	$FFFF	0	1	FF	
+minDistance	5288	$FFFF	0	1	FF	
+maxDistance	5290	$FFFF	0	1	FF	
+minRadialVelocity	5292	$FFFF	0	1	FF	
+maxRadialVelocity	5294	$FFFF	0	1	FF	
+possiblePeriod[0]	5296	$FFFF	0	1	FF	
+possiblePeriod[1]	5298	$FFFF	0	1	FF	
+possiblePeriod[2]	5300	$FFFF	0	1	FF	
+possiblePeriod[3]	5302	$FFFF	0	1	FF	
+possiblePeriod[4]	5304	$FFFF	0	1	FF	
+possiblePeriod[5]	5306	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5309	$FFFF	0	1	UU	s
+5308	$FFFF	0
+nextUpdateTimeNanoSeconds	5311	$FFFF	0	1	UU	ns
+5310	$FFFF	0
+scanPeriodSeconds	5313	$FFFF	0	1	UU	s
+5312	$FFFF	0
+scanPeriodNanoSeconds	5315	$FFFF	0	1	UU	ns
+5314	$FFFF	0
+; track_6
+id	5317	$FFFF	0	1	UU	
+5316	$FFFF	0
+type	5319	$FFFF	0	1	UU	
+5318	$FFFF	0
+priority	5321	$FFFF	0	1	UU	
+5320	$FFFF	0
+antennaId	5323	$FFFF	0	1	UU	
+5322	$FFFF	0
+azimuth	5324	$FFFF	0	1	FF	
+elevation	5326	$FFFF	0	1	FF	
+distance	5328	$FFFF	0	1	FF	
+radialVelocity	5330	$FFFF	0	1	FF	
+sigmaAzimuth	5332	$FFFF	0	1	FF	
+sigmaElevation	5334	$FFFF	0	1	FF	
+sigmaDistance	5336	$FFFF	0	1	FF	
+sigmaRadialVelocity	5338	$FFFF	0	1	FF	
+minAzimuth	5340	$FFFF	0	1	FF	
+maxAzimuth	5342	$FFFF	0	1	FF	
+minElevation	5344	$FFFF	0	1	FF	
+maxElevation	5346	$FFFF	0	1	FF	
+minDistance	5348	$FFFF	0	1	FF	
+maxDistance	5350	$FFFF	0	1	FF	
+minRadialVelocity	5352	$FFFF	0	1	FF	
+maxRadialVelocity	5354	$FFFF	0	1	FF	
+possiblePeriod[0]	5356	$FFFF	0	1	FF	
+possiblePeriod[1]	5358	$FFFF	0	1	FF	
+possiblePeriod[2]	5360	$FFFF	0	1	FF	
+possiblePeriod[3]	5362	$FFFF	0	1	FF	
+possiblePeriod[4]	5364	$FFFF	0	1	FF	
+possiblePeriod[5]	5366	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5369	$FFFF	0	1	UU	s
+5368	$FFFF	0
+nextUpdateTimeNanoSeconds	5371	$FFFF	0	1	UU	ns
+5370	$FFFF	0
+scanPeriodSeconds	5373	$FFFF	0	1	UU	s
+5372	$FFFF	0
+scanPeriodNanoSeconds	5375	$FFFF	0	1	UU	ns
+5374	$FFFF	0
+; track_7
+id	5377	$FFFF	0	1	UU	
+5376	$FFFF	0
+type	5379	$FFFF	0	1	UU	
+5378	$FFFF	0
+priority	5381	$FFFF	0	1	UU	
+5380	$FFFF	0
+antennaId	5383	$FFFF	0	1	UU	
+5382	$FFFF	0
+azimuth	5384	$FFFF	0	1	FF	
+elevation	5386	$FFFF	0	1	FF	
+distance	5388	$FFFF	0	1	FF	
+radialVelocity	5390	$FFFF	0	1	FF	
+sigmaAzimuth	5392	$FFFF	0	1	FF	
+sigmaElevation	5394	$FFFF	0	1	FF	
+sigmaDistance	5396	$FFFF	0	1	FF	
+sigmaRadialVelocity	5398	$FFFF	0	1	FF	
+minAzimuth	5400	$FFFF	0	1	FF	
+maxAzimuth	5402	$FFFF	0	1	FF	
+minElevation	5404	$FFFF	0	1	FF	
+maxElevation	5406	$FFFF	0	1	FF	
+minDistance	5408	$FFFF	0	1	FF	
+maxDistance	5410	$FFFF	0	1	FF	
+minRadialVelocity	5412	$FFFF	0	1	FF	
+maxRadialVelocity	5414	$FFFF	0	1	FF	
+possiblePeriod[0]	5416	$FFFF	0	1	FF	
+possiblePeriod[1]	5418	$FFFF	0	1	FF	
+possiblePeriod[2]	5420	$FFFF	0	1	FF	
+possiblePeriod[3]	5422	$FFFF	0	1	FF	
+possiblePeriod[4]	5424	$FFFF	0	1	FF	
+possiblePeriod[5]	5426	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5429	$FFFF	0	1	UU	s
+5428	$FFFF	0
+nextUpdateTimeNanoSeconds	5431	$FFFF	0	1	UU	ns
+5430	$FFFF	0
+scanPeriodSeconds	5433	$FFFF	0	1	UU	s
+5432	$FFFF	0
+scanPeriodNanoSeconds	5435	$FFFF	0	1	UU	ns
+5434	$FFFF	0
+; track_8
+id	5437	$FFFF	0	1	UU	
+5436	$FFFF	0
+type	5439	$FFFF	0	1	UU	
+5438	$FFFF	0
+priority	5441	$FFFF	0	1	UU	
+5440	$FFFF	0
+antennaId	5443	$FFFF	0	1	UU	
+5442	$FFFF	0
+azimuth	5444	$FFFF	0	1	FF	
+elevation	5446	$FFFF	0	1	FF	
+distance	5448	$FFFF	0	1	FF	
+radialVelocity	5450	$FFFF	0	1	FF	
+sigmaAzimuth	5452	$FFFF	0	1	FF	
+sigmaElevation	5454	$FFFF	0	1	FF	
+sigmaDistance	5456	$FFFF	0	1	FF	
+sigmaRadialVelocity	5458	$FFFF	0	1	FF	
+minAzimuth	5460	$FFFF	0	1	FF	
+maxAzimuth	5462	$FFFF	0	1	FF	
+minElevation	5464	$FFFF	0	1	FF	
+maxElevation	5466	$FFFF	0	1	FF	
+minDistance	5468	$FFFF	0	1	FF	
+maxDistance	5470	$FFFF	0	1	FF	
+minRadialVelocity	5472	$FFFF	0	1	FF	
+maxRadialVelocity	5474	$FFFF	0	1	FF	
+possiblePeriod[0]	5476	$FFFF	0	1	FF	
+possiblePeriod[1]	5478	$FFFF	0	1	FF	
+possiblePeriod[2]	5480	$FFFF	0	1	FF	
+possiblePeriod[3]	5482	$FFFF	0	1	FF	
+possiblePeriod[4]	5484	$FFFF	0	1	FF	
+possiblePeriod[5]	5486	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5489	$FFFF	0	1	UU	s
+5488	$FFFF	0
+nextUpdateTimeNanoSeconds	5491	$FFFF	0	1	UU	ns
+5490	$FFFF	0
+scanPeriodSeconds	5493	$FFFF	0	1	UU	s
+5492	$FFFF	0
+scanPeriodNanoSeconds	5495	$FFFF	0	1	UU	ns
+5494	$FFFF	0
+; track_9
+id	5497	$FFFF	0	1	UU	
+5496	$FFFF	0
+type	5499	$FFFF	0	1	UU	
+5498	$FFFF	0
+priority	5501	$FFFF	0	1	UU	
+5500	$FFFF	0
+antennaId	5503	$FFFF	0	1	UU	
+5502	$FFFF	0
+azimuth	5504	$FFFF	0	1	FF	
+elevation	5506	$FFFF	0	1	FF	
+distance	5508	$FFFF	0	1	FF	
+radialVelocity	5510	$FFFF	0	1	FF	
+sigmaAzimuth	5512	$FFFF	0	1	FF	
+sigmaElevation	5514	$FFFF	0	1	FF	
+sigmaDistance	5516	$FFFF	0	1	FF	
+sigmaRadialVelocity	5518	$FFFF	0	1	FF	
+minAzimuth	5520	$FFFF	0	1	FF	
+maxAzimuth	5522	$FFFF	0	1	FF	
+minElevation	5524	$FFFF	0	1	FF	
+maxElevation	5526	$FFFF	0	1	FF	
+minDistance	5528	$FFFF	0	1	FF	
+maxDistance	5530	$FFFF	0	1	FF	
+minRadialVelocity	5532	$FFFF	0	1	FF	
+maxRadialVelocity	5534	$FFFF	0	1	FF	
+possiblePeriod[0]	5536	$FFFF	0	1	FF	
+possiblePeriod[1]	5538	$FFFF	0	1	FF	
+possiblePeriod[2]	5540	$FFFF	0	1	FF	
+possiblePeriod[3]	5542	$FFFF	0	1	FF	
+possiblePeriod[4]	5544	$FFFF	0	1	FF	
+possiblePeriod[5]	5546	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5549	$FFFF	0	1	UU	s
+5548	$FFFF	0
+nextUpdateTimeNanoSeconds	5551	$FFFF	0	1	UU	ns
+5550	$FFFF	0
+scanPeriodSeconds	5553	$FFFF	0	1	UU	s
+5552	$FFFF	0
+scanPeriodNanoSeconds	5555	$FFFF	0	1	UU	ns
+5554	$FFFF	0
+; track_10
+id	5557	$FFFF	0	1	UU	
+5556	$FFFF	0
+type	5559	$FFFF	0	1	UU	
+5558	$FFFF	0
+priority	5561	$FFFF	0	1	UU	
+5560	$FFFF	0
+antennaId	5563	$FFFF	0	1	UU	
+5562	$FFFF	0
+azimuth	5564	$FFFF	0	1	FF	
+elevation	5566	$FFFF	0	1	FF	
+distance	5568	$FFFF	0	1	FF	
+radialVelocity	5570	$FFFF	0	1	FF	
+sigmaAzimuth	5572	$FFFF	0	1	FF	
+sigmaElevation	5574	$FFFF	0	1	FF	
+sigmaDistance	5576	$FFFF	0	1	FF	
+sigmaRadialVelocity	5578	$FFFF	0	1	FF	
+minAzimuth	5580	$FFFF	0	1	FF	
+maxAzimuth	5582	$FFFF	0	1	FF	
+minElevation	5584	$FFFF	0	1	FF	
+maxElevation	5586	$FFFF	0	1	FF	
+minDistance	5588	$FFFF	0	1	FF	
+maxDistance	5590	$FFFF	0	1	FF	
+minRadialVelocity	5592	$FFFF	0	1	FF	
+maxRadialVelocity	5594	$FFFF	0	1	FF	
+possiblePeriod[0]	5596	$FFFF	0	1	FF	
+possiblePeriod[1]	5598	$FFFF	0	1	FF	
+possiblePeriod[2]	5600	$FFFF	0	1	FF	
+possiblePeriod[3]	5602	$FFFF	0	1	FF	
+possiblePeriod[4]	5604	$FFFF	0	1	FF	
+possiblePeriod[5]	5606	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5609	$FFFF	0	1	UU	s
+5608	$FFFF	0
+nextUpdateTimeNanoSeconds	5611	$FFFF	0	1	UU	ns
+5610	$FFFF	0
+scanPeriodSeconds	5613	$FFFF	0	1	UU	s
+5612	$FFFF	0
+scanPeriodNanoSeconds	5615	$FFFF	0	1	UU	ns
+5614	$FFFF	0
+; track_11
+id	5617	$FFFF	0	1	UU	
+5616	$FFFF	0
+type	5619	$FFFF	0	1	UU	
+5618	$FFFF	0
+priority	5621	$FFFF	0	1	UU	
+5620	$FFFF	0
+antennaId	5623	$FFFF	0	1	UU	
+5622	$FFFF	0
+azimuth	5624	$FFFF	0	1	FF	
+elevation	5626	$FFFF	0	1	FF	
+distance	5628	$FFFF	0	1	FF	
+radialVelocity	5630	$FFFF	0	1	FF	
+sigmaAzimuth	5632	$FFFF	0	1	FF	
+sigmaElevation	5634	$FFFF	0	1	FF	
+sigmaDistance	5636	$FFFF	0	1	FF	
+sigmaRadialVelocity	5638	$FFFF	0	1	FF	
+minAzimuth	5640	$FFFF	0	1	FF	
+maxAzimuth	5642	$FFFF	0	1	FF	
+minElevation	5644	$FFFF	0	1	FF	
+maxElevation	5646	$FFFF	0	1	FF	
+minDistance	5648	$FFFF	0	1	FF	
+maxDistance	5650	$FFFF	0	1	FF	
+minRadialVelocity	5652	$FFFF	0	1	FF	
+maxRadialVelocity	5654	$FFFF	0	1	FF	
+possiblePeriod[0]	5656	$FFFF	0	1	FF	
+possiblePeriod[1]	5658	$FFFF	0	1	FF	
+possiblePeriod[2]	5660	$FFFF	0	1	FF	
+possiblePeriod[3]	5662	$FFFF	0	1	FF	
+possiblePeriod[4]	5664	$FFFF	0	1	FF	
+possiblePeriod[5]	5666	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5669	$FFFF	0	1	UU	s
+5668	$FFFF	0
+nextUpdateTimeNanoSeconds	5671	$FFFF	0	1	UU	ns
+5670	$FFFF	0
+scanPeriodSeconds	5673	$FFFF	0	1	UU	s
+5672	$FFFF	0
+scanPeriodNanoSeconds	5675	$FFFF	0	1	UU	ns
+5674	$FFFF	0
+; track_12
+id	5677	$FFFF	0	1	UU	
+5676	$FFFF	0
+type	5679	$FFFF	0	1	UU	
+5678	$FFFF	0
+priority	5681	$FFFF	0	1	UU	
+5680	$FFFF	0
+antennaId	5683	$FFFF	0	1	UU	
+5682	$FFFF	0
+azimuth	5684	$FFFF	0	1	FF	
+elevation	5686	$FFFF	0	1	FF	
+distance	5688	$FFFF	0	1	FF	
+radialVelocity	5690	$FFFF	0	1	FF	
+sigmaAzimuth	5692	$FFFF	0	1	FF	
+sigmaElevation	5694	$FFFF	0	1	FF	
+sigmaDistance	5696	$FFFF	0	1	FF	
+sigmaRadialVelocity	5698	$FFFF	0	1	FF	
+minAzimuth	5700	$FFFF	0	1	FF	
+maxAzimuth	5702	$FFFF	0	1	FF	
+minElevation	5704	$FFFF	0	1	FF	
+maxElevation	5706	$FFFF	0	1	FF	
+minDistance	5708	$FFFF	0	1	FF	
+maxDistance	5710	$FFFF	0	1	FF	
+minRadialVelocity	5712	$FFFF	0	1	FF	
+maxRadialVelocity	5714	$FFFF	0	1	FF	
+possiblePeriod[0]	5716	$FFFF	0	1	FF	
+possiblePeriod[1]	5718	$FFFF	0	1	FF	
+possiblePeriod[2]	5720	$FFFF	0	1	FF	
+possiblePeriod[3]	5722	$FFFF	0	1	FF	
+possiblePeriod[4]	5724	$FFFF	0	1	FF	
+possiblePeriod[5]	5726	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5729	$FFFF	0	1	UU	s
+5728	$FFFF	0
+nextUpdateTimeNanoSeconds	5731	$FFFF	0	1	UU	ns
+5730	$FFFF	0
+scanPeriodSeconds	5733	$FFFF	0	1	UU	s
+5732	$FFFF	0
+scanPeriodNanoSeconds	5735	$FFFF	0	1	UU	ns
+5734	$FFFF	0
+; track_13
+id	5737	$FFFF	0	1	UU	
+5736	$FFFF	0
+type	5739	$FFFF	0	1	UU	
+5738	$FFFF	0
+priority	5741	$FFFF	0	1	UU	
+5740	$FFFF	0
+antennaId	5743	$FFFF	0	1	UU	
+5742	$FFFF	0
+azimuth	5744	$FFFF	0	1	FF	
+elevation	5746	$FFFF	0	1	FF	
+distance	5748	$FFFF	0	1	FF	
+radialVelocity	5750	$FFFF	0	1	FF	
+sigmaAzimuth	5752	$FFFF	0	1	FF	
+sigmaElevation	5754	$FFFF	0	1	FF	
+sigmaDistance	5756	$FFFF	0	1	FF	
+sigmaRadialVelocity	5758	$FFFF	0	1	FF	
+minAzimuth	5760	$FFFF	0	1	FF	
+maxAzimuth	5762	$FFFF	0	1	FF	
+minElevation	5764	$FFFF	0	1	FF	
+maxElevation	5766	$FFFF	0	1	FF	
+minDistance	5768	$FFFF	0	1	FF	
+maxDistance	5770	$FFFF	0	1	FF	
+minRadialVelocity	5772	$FFFF	0	1	FF	
+maxRadialVelocity	5774	$FFFF	0	1	FF	
+possiblePeriod[0]	5776	$FFFF	0	1	FF	
+possiblePeriod[1]	5778	$FFFF	0	1	FF	
+possiblePeriod[2]	5780	$FFFF	0	1	FF	
+possiblePeriod[3]	5782	$FFFF	0	1	FF	
+possiblePeriod[4]	5784	$FFFF	0	1	FF	
+possiblePeriod[5]	5786	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5789	$FFFF	0	1	UU	s
+5788	$FFFF	0
+nextUpdateTimeNanoSeconds	5791	$FFFF	0	1	UU	ns
+5790	$FFFF	0
+scanPeriodSeconds	5793	$FFFF	0	1	UU	s
+5792	$FFFF	0
+scanPeriodNanoSeconds	5795	$FFFF	0	1	UU	ns
+5794	$FFFF	0
+; track_14
+id	5797	$FFFF	0	1	UU	
+5796	$FFFF	0
+type	5799	$FFFF	0	1	UU	
+5798	$FFFF	0
+priority	5801	$FFFF	0	1	UU	
+5800	$FFFF	0
+antennaId	5803	$FFFF	0	1	UU	
+5802	$FFFF	0
+azimuth	5804	$FFFF	0	1	FF	
+elevation	5806	$FFFF	0	1	FF	
+distance	5808	$FFFF	0	1	FF	
+radialVelocity	5810	$FFFF	0	1	FF	
+sigmaAzimuth	5812	$FFFF	0	1	FF	
+sigmaElevation	5814	$FFFF	0	1	FF	
+sigmaDistance	5816	$FFFF	0	1	FF	
+sigmaRadialVelocity	5818	$FFFF	0	1	FF	
+minAzimuth	5820	$FFFF	0	1	FF	
+maxAzimuth	5822	$FFFF	0	1	FF	
+minElevation	5824	$FFFF	0	1	FF	
+maxElevation	5826	$FFFF	0	1	FF	
+minDistance	5828	$FFFF	0	1	FF	
+maxDistance	5830	$FFFF	0	1	FF	
+minRadialVelocity	5832	$FFFF	0	1	FF	
+maxRadialVelocity	5834	$FFFF	0	1	FF	
+possiblePeriod[0]	5836	$FFFF	0	1	FF	
+possiblePeriod[1]	5838	$FFFF	0	1	FF	
+possiblePeriod[2]	5840	$FFFF	0	1	FF	
+possiblePeriod[3]	5842	$FFFF	0	1	FF	
+possiblePeriod[4]	5844	$FFFF	0	1	FF	
+possiblePeriod[5]	5846	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5849	$FFFF	0	1	UU	s
+5848	$FFFF	0
+nextUpdateTimeNanoSeconds	5851	$FFFF	0	1	UU	ns
+5850	$FFFF	0
+scanPeriodSeconds	5853	$FFFF	0	1	UU	s
+5852	$FFFF	0
+scanPeriodNanoSeconds	5855	$FFFF	0	1	UU	ns
+5854	$FFFF	0
+; track_15
+id	5857	$FFFF	0	1	UU	
+5856	$FFFF	0
+type	5859	$FFFF	0	1	UU	
+5858	$FFFF	0
+priority	5861	$FFFF	0	1	UU	
+5860	$FFFF	0
+antennaId	5863	$FFFF	0	1	UU	
+5862	$FFFF	0
+azimuth	5864	$FFFF	0	1	FF	
+elevation	5866	$FFFF	0	1	FF	
+distance	5868	$FFFF	0	1	FF	
+radialVelocity	5870	$FFFF	0	1	FF	
+sigmaAzimuth	5872	$FFFF	0	1	FF	
+sigmaElevation	5874	$FFFF	0	1	FF	
+sigmaDistance	5876	$FFFF	0	1	FF	
+sigmaRadialVelocity	5878	$FFFF	0	1	FF	
+minAzimuth	5880	$FFFF	0	1	FF	
+maxAzimuth	5882	$FFFF	0	1	FF	
+minElevation	5884	$FFFF	0	1	FF	
+maxElevation	5886	$FFFF	0	1	FF	
+minDistance	5888	$FFFF	0	1	FF	
+maxDistance	5890	$FFFF	0	1	FF	
+minRadialVelocity	5892	$FFFF	0	1	FF	
+maxRadialVelocity	5894	$FFFF	0	1	FF	
+possiblePeriod[0]	5896	$FFFF	0	1	FF	
+possiblePeriod[1]	5898	$FFFF	0	1	FF	
+possiblePeriod[2]	5900	$FFFF	0	1	FF	
+possiblePeriod[3]	5902	$FFFF	0	1	FF	
+possiblePeriod[4]	5904	$FFFF	0	1	FF	
+possiblePeriod[5]	5906	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5909	$FFFF	0	1	UU	s
+5908	$FFFF	0
+nextUpdateTimeNanoSeconds	5911	$FFFF	0	1	UU	ns
+5910	$FFFF	0
+scanPeriodSeconds	5913	$FFFF	0	1	UU	s
+5912	$FFFF	0
+scanPeriodNanoSeconds	5915	$FFFF	0	1	UU	ns
+5914	$FFFF	0
+; track_16
+id	5917	$FFFF	0	1	UU	
+5916	$FFFF	0
+type	5919	$FFFF	0	1	UU	
+5918	$FFFF	0
+priority	5921	$FFFF	0	1	UU	
+5920	$FFFF	0
+antennaId	5923	$FFFF	0	1	UU	
+5922	$FFFF	0
+azimuth	5924	$FFFF	0	1	FF	
+elevation	5926	$FFFF	0	1	FF	
+distance	5928	$FFFF	0	1	FF	
+radialVelocity	5930	$FFFF	0	1	FF	
+sigmaAzimuth	5932	$FFFF	0	1	FF	
+sigmaElevation	5934	$FFFF	0	1	FF	
+sigmaDistance	5936	$FFFF	0	1	FF	
+sigmaRadialVelocity	5938	$FFFF	0	1	FF	
+minAzimuth	5940	$FFFF	0	1	FF	
+maxAzimuth	5942	$FFFF	0	1	FF	
+minElevation	5944	$FFFF	0	1	FF	
+maxElevation	5946	$FFFF	0	1	FF	
+minDistance	5948	$FFFF	0	1	FF	
+maxDistance	5950	$FFFF	0	1	FF	
+minRadialVelocity	5952	$FFFF	0	1	FF	
+maxRadialVelocity	5954	$FFFF	0	1	FF	
+possiblePeriod[0]	5956	$FFFF	0	1	FF	
+possiblePeriod[1]	5958	$FFFF	0	1	FF	
+possiblePeriod[2]	5960	$FFFF	0	1	FF	
+possiblePeriod[3]	5962	$FFFF	0	1	FF	
+possiblePeriod[4]	5964	$FFFF	0	1	FF	
+possiblePeriod[5]	5966	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	5969	$FFFF	0	1	UU	s
+5968	$FFFF	0
+nextUpdateTimeNanoSeconds	5971	$FFFF	0	1	UU	ns
+5970	$FFFF	0
+scanPeriodSeconds	5973	$FFFF	0	1	UU	s
+5972	$FFFF	0
+scanPeriodNanoSeconds	5975	$FFFF	0	1	UU	ns
+5974	$FFFF	0
+; track_17
+id	5977	$FFFF	0	1	UU	
+5976	$FFFF	0
+type	5979	$FFFF	0	1	UU	
+5978	$FFFF	0
+priority	5981	$FFFF	0	1	UU	
+5980	$FFFF	0
+antennaId	5983	$FFFF	0	1	UU	
+5982	$FFFF	0
+azimuth	5984	$FFFF	0	1	FF	
+elevation	5986	$FFFF	0	1	FF	
+distance	5988	$FFFF	0	1	FF	
+radialVelocity	5990	$FFFF	0	1	FF	
+sigmaAzimuth	5992	$FFFF	0	1	FF	
+sigmaElevation	5994	$FFFF	0	1	FF	
+sigmaDistance	5996	$FFFF	0	1	FF	
+sigmaRadialVelocity	5998	$FFFF	0	1	FF	
+minAzimuth	6000	$FFFF	0	1	FF	
+maxAzimuth	6002	$FFFF	0	1	FF	
+minElevation	6004	$FFFF	0	1	FF	
+maxElevation	6006	$FFFF	0	1	FF	
+minDistance	6008	$FFFF	0	1	FF	
+maxDistance	6010	$FFFF	0	1	FF	
+minRadialVelocity	6012	$FFFF	0	1	FF	
+maxRadialVelocity	6014	$FFFF	0	1	FF	
+possiblePeriod[0]	6016	$FFFF	0	1	FF	
+possiblePeriod[1]	6018	$FFFF	0	1	FF	
+possiblePeriod[2]	6020	$FFFF	0	1	FF	
+possiblePeriod[3]	6022	$FFFF	0	1	FF	
+possiblePeriod[4]	6024	$FFFF	0	1	FF	
+possiblePeriod[5]	6026	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6029	$FFFF	0	1	UU	s
+6028	$FFFF	0
+nextUpdateTimeNanoSeconds	6031	$FFFF	0	1	UU	ns
+6030	$FFFF	0
+scanPeriodSeconds	6033	$FFFF	0	1	UU	s
+6032	$FFFF	0
+scanPeriodNanoSeconds	6035	$FFFF	0	1	UU	ns
+6034	$FFFF	0
+; track_18
+id	6037	$FFFF	0	1	UU	
+6036	$FFFF	0
+type	6039	$FFFF	0	1	UU	
+6038	$FFFF	0
+priority	6041	$FFFF	0	1	UU	
+6040	$FFFF	0
+antennaId	6043	$FFFF	0	1	UU	
+6042	$FFFF	0
+azimuth	6044	$FFFF	0	1	FF	
+elevation	6046	$FFFF	0	1	FF	
+distance	6048	$FFFF	0	1	FF	
+radialVelocity	6050	$FFFF	0	1	FF	
+sigmaAzimuth	6052	$FFFF	0	1	FF	
+sigmaElevation	6054	$FFFF	0	1	FF	
+sigmaDistance	6056	$FFFF	0	1	FF	
+sigmaRadialVelocity	6058	$FFFF	0	1	FF	
+minAzimuth	6060	$FFFF	0	1	FF	
+maxAzimuth	6062	$FFFF	0	1	FF	
+minElevation	6064	$FFFF	0	1	FF	
+maxElevation	6066	$FFFF	0	1	FF	
+minDistance	6068	$FFFF	0	1	FF	
+maxDistance	6070	$FFFF	0	1	FF	
+minRadialVelocity	6072	$FFFF	0	1	FF	
+maxRadialVelocity	6074	$FFFF	0	1	FF	
+possiblePeriod[0]	6076	$FFFF	0	1	FF	
+possiblePeriod[1]	6078	$FFFF	0	1	FF	
+possiblePeriod[2]	6080	$FFFF	0	1	FF	
+possiblePeriod[3]	6082	$FFFF	0	1	FF	
+possiblePeriod[4]	6084	$FFFF	0	1	FF	
+possiblePeriod[5]	6086	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6089	$FFFF	0	1	UU	s
+6088	$FFFF	0
+nextUpdateTimeNanoSeconds	6091	$FFFF	0	1	UU	ns
+6090	$FFFF	0
+scanPeriodSeconds	6093	$FFFF	0	1	UU	s
+6092	$FFFF	0
+scanPeriodNanoSeconds	6095	$FFFF	0	1	UU	ns
+6094	$FFFF	0
+; track_19
+id	6097	$FFFF	0	1	UU	
+6096	$FFFF	0
+type	6099	$FFFF	0	1	UU	
+6098	$FFFF	0
+priority	6101	$FFFF	0	1	UU	
+6100	$FFFF	0
+antennaId	6103	$FFFF	0	1	UU	
+6102	$FFFF	0
+azimuth	6104	$FFFF	0	1	FF	
+elevation	6106	$FFFF	0	1	FF	
+distance	6108	$FFFF	0	1	FF	
+radialVelocity	6110	$FFFF	0	1	FF	
+sigmaAzimuth	6112	$FFFF	0	1	FF	
+sigmaElevation	6114	$FFFF	0	1	FF	
+sigmaDistance	6116	$FFFF	0	1	FF	
+sigmaRadialVelocity	6118	$FFFF	0	1	FF	
+minAzimuth	6120	$FFFF	0	1	FF	
+maxAzimuth	6122	$FFFF	0	1	FF	
+minElevation	6124	$FFFF	0	1	FF	
+maxElevation	6126	$FFFF	0	1	FF	
+minDistance	6128	$FFFF	0	1	FF	
+maxDistance	6130	$FFFF	0	1	FF	
+minRadialVelocity	6132	$FFFF	0	1	FF	
+maxRadialVelocity	6134	$FFFF	0	1	FF	
+possiblePeriod[0]	6136	$FFFF	0	1	FF	
+possiblePeriod[1]	6138	$FFFF	0	1	FF	
+possiblePeriod[2]	6140	$FFFF	0	1	FF	
+possiblePeriod[3]	6142	$FFFF	0	1	FF	
+possiblePeriod[4]	6144	$FFFF	0	1	FF	
+possiblePeriod[5]	6146	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6149	$FFFF	0	1	UU	s
+6148	$FFFF	0
+nextUpdateTimeNanoSeconds	6151	$FFFF	0	1	UU	ns
+6150	$FFFF	0
+scanPeriodSeconds	6153	$FFFF	0	1	UU	s
+6152	$FFFF	0
+scanPeriodNanoSeconds	6155	$FFFF	0	1	UU	ns
+6154	$FFFF	0
+; track_20
+id	6157	$FFFF	0	1	UU	
+6156	$FFFF	0
+type	6159	$FFFF	0	1	UU	
+6158	$FFFF	0
+priority	6161	$FFFF	0	1	UU	
+6160	$FFFF	0
+antennaId	6163	$FFFF	0	1	UU	
+6162	$FFFF	0
+azimuth	6164	$FFFF	0	1	FF	
+elevation	6166	$FFFF	0	1	FF	
+distance	6168	$FFFF	0	1	FF	
+radialVelocity	6170	$FFFF	0	1	FF	
+sigmaAzimuth	6172	$FFFF	0	1	FF	
+sigmaElevation	6174	$FFFF	0	1	FF	
+sigmaDistance	6176	$FFFF	0	1	FF	
+sigmaRadialVelocity	6178	$FFFF	0	1	FF	
+minAzimuth	6180	$FFFF	0	1	FF	
+maxAzimuth	6182	$FFFF	0	1	FF	
+minElevation	6184	$FFFF	0	1	FF	
+maxElevation	6186	$FFFF	0	1	FF	
+minDistance	6188	$FFFF	0	1	FF	
+maxDistance	6190	$FFFF	0	1	FF	
+minRadialVelocity	6192	$FFFF	0	1	FF	
+maxRadialVelocity	6194	$FFFF	0	1	FF	
+possiblePeriod[0]	6196	$FFFF	0	1	FF	
+possiblePeriod[1]	6198	$FFFF	0	1	FF	
+possiblePeriod[2]	6200	$FFFF	0	1	FF	
+possiblePeriod[3]	6202	$FFFF	0	1	FF	
+possiblePeriod[4]	6204	$FFFF	0	1	FF	
+possiblePeriod[5]	6206	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6209	$FFFF	0	1	UU	s
+6208	$FFFF	0
+nextUpdateTimeNanoSeconds	6211	$FFFF	0	1	UU	ns
+6210	$FFFF	0
+scanPeriodSeconds	6213	$FFFF	0	1	UU	s
+6212	$FFFF	0
+scanPeriodNanoSeconds	6215	$FFFF	0	1	UU	ns
+6214	$FFFF	0
+; track_21
+id	6217	$FFFF	0	1	UU	
+6216	$FFFF	0
+type	6219	$FFFF	0	1	UU	
+6218	$FFFF	0
+priority	6221	$FFFF	0	1	UU	
+6220	$FFFF	0
+antennaId	6223	$FFFF	0	1	UU	
+6222	$FFFF	0
+azimuth	6224	$FFFF	0	1	FF	
+elevation	6226	$FFFF	0	1	FF	
+distance	6228	$FFFF	0	1	FF	
+radialVelocity	6230	$FFFF	0	1	FF	
+sigmaAzimuth	6232	$FFFF	0	1	FF	
+sigmaElevation	6234	$FFFF	0	1	FF	
+sigmaDistance	6236	$FFFF	0	1	FF	
+sigmaRadialVelocity	6238	$FFFF	0	1	FF	
+minAzimuth	6240	$FFFF	0	1	FF	
+maxAzimuth	6242	$FFFF	0	1	FF	
+minElevation	6244	$FFFF	0	1	FF	
+maxElevation	6246	$FFFF	0	1	FF	
+minDistance	6248	$FFFF	0	1	FF	
+maxDistance	6250	$FFFF	0	1	FF	
+minRadialVelocity	6252	$FFFF	0	1	FF	
+maxRadialVelocity	6254	$FFFF	0	1	FF	
+possiblePeriod[0]	6256	$FFFF	0	1	FF	
+possiblePeriod[1]	6258	$FFFF	0	1	FF	
+possiblePeriod[2]	6260	$FFFF	0	1	FF	
+possiblePeriod[3]	6262	$FFFF	0	1	FF	
+possiblePeriod[4]	6264	$FFFF	0	1	FF	
+possiblePeriod[5]	6266	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6269	$FFFF	0	1	UU	s
+6268	$FFFF	0
+nextUpdateTimeNanoSeconds	6271	$FFFF	0	1	UU	ns
+6270	$FFFF	0
+scanPeriodSeconds	6273	$FFFF	0	1	UU	s
+6272	$FFFF	0
+scanPeriodNanoSeconds	6275	$FFFF	0	1	UU	ns
+6274	$FFFF	0
+; track_22
+id	6277	$FFFF	0	1	UU	
+6276	$FFFF	0
+type	6279	$FFFF	0	1	UU	
+6278	$FFFF	0
+priority	6281	$FFFF	0	1	UU	
+6280	$FFFF	0
+antennaId	6283	$FFFF	0	1	UU	
+6282	$FFFF	0
+azimuth	6284	$FFFF	0	1	FF	
+elevation	6286	$FFFF	0	1	FF	
+distance	6288	$FFFF	0	1	FF	
+radialVelocity	6290	$FFFF	0	1	FF	
+sigmaAzimuth	6292	$FFFF	0	1	FF	
+sigmaElevation	6294	$FFFF	0	1	FF	
+sigmaDistance	6296	$FFFF	0	1	FF	
+sigmaRadialVelocity	6298	$FFFF	0	1	FF	
+minAzimuth	6300	$FFFF	0	1	FF	
+maxAzimuth	6302	$FFFF	0	1	FF	
+minElevation	6304	$FFFF	0	1	FF	
+maxElevation	6306	$FFFF	0	1	FF	
+minDistance	6308	$FFFF	0	1	FF	
+maxDistance	6310	$FFFF	0	1	FF	
+minRadialVelocity	6312	$FFFF	0	1	FF	
+maxRadialVelocity	6314	$FFFF	0	1	FF	
+possiblePeriod[0]	6316	$FFFF	0	1	FF	
+possiblePeriod[1]	6318	$FFFF	0	1	FF	
+possiblePeriod[2]	6320	$FFFF	0	1	FF	
+possiblePeriod[3]	6322	$FFFF	0	1	FF	
+possiblePeriod[4]	6324	$FFFF	0	1	FF	
+possiblePeriod[5]	6326	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6329	$FFFF	0	1	UU	s
+6328	$FFFF	0
+nextUpdateTimeNanoSeconds	6331	$FFFF	0	1	UU	ns
+6330	$FFFF	0
+scanPeriodSeconds	6333	$FFFF	0	1	UU	s
+6332	$FFFF	0
+scanPeriodNanoSeconds	6335	$FFFF	0	1	UU	ns
+6334	$FFFF	0
+; track_23
+id	6337	$FFFF	0	1	UU	
+6336	$FFFF	0
+type	6339	$FFFF	0	1	UU	
+6338	$FFFF	0
+priority	6341	$FFFF	0	1	UU	
+6340	$FFFF	0
+antennaId	6343	$FFFF	0	1	UU	
+6342	$FFFF	0
+azimuth	6344	$FFFF	0	1	FF	
+elevation	6346	$FFFF	0	1	FF	
+distance	6348	$FFFF	0	1	FF	
+radialVelocity	6350	$FFFF	0	1	FF	
+sigmaAzimuth	6352	$FFFF	0	1	FF	
+sigmaElevation	6354	$FFFF	0	1	FF	
+sigmaDistance	6356	$FFFF	0	1	FF	
+sigmaRadialVelocity	6358	$FFFF	0	1	FF	
+minAzimuth	6360	$FFFF	0	1	FF	
+maxAzimuth	6362	$FFFF	0	1	FF	
+minElevation	6364	$FFFF	0	1	FF	
+maxElevation	6366	$FFFF	0	1	FF	
+minDistance	6368	$FFFF	0	1	FF	
+maxDistance	6370	$FFFF	0	1	FF	
+minRadialVelocity	6372	$FFFF	0	1	FF	
+maxRadialVelocity	6374	$FFFF	0	1	FF	
+possiblePeriod[0]	6376	$FFFF	0	1	FF	
+possiblePeriod[1]	6378	$FFFF	0	1	FF	
+possiblePeriod[2]	6380	$FFFF	0	1	FF	
+possiblePeriod[3]	6382	$FFFF	0	1	FF	
+possiblePeriod[4]	6384	$FFFF	0	1	FF	
+possiblePeriod[5]	6386	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6389	$FFFF	0	1	UU	s
+6388	$FFFF	0
+nextUpdateTimeNanoSeconds	6391	$FFFF	0	1	UU	ns
+6390	$FFFF	0
+scanPeriodSeconds	6393	$FFFF	0	1	UU	s
+6392	$FFFF	0
+scanPeriodNanoSeconds	6395	$FFFF	0	1	UU	ns
+6394	$FFFF	0
+; track_24
+id	6397	$FFFF	0	1	UU	
+6396	$FFFF	0
+type	6399	$FFFF	0	1	UU	
+6398	$FFFF	0
+priority	6401	$FFFF	0	1	UU	
+6400	$FFFF	0
+antennaId	6403	$FFFF	0	1	UU	
+6402	$FFFF	0
+azimuth	6404	$FFFF	0	1	FF	
+elevation	6406	$FFFF	0	1	FF	
+distance	6408	$FFFF	0	1	FF	
+radialVelocity	6410	$FFFF	0	1	FF	
+sigmaAzimuth	6412	$FFFF	0	1	FF	
+sigmaElevation	6414	$FFFF	0	1	FF	
+sigmaDistance	6416	$FFFF	0	1	FF	
+sigmaRadialVelocity	6418	$FFFF	0	1	FF	
+minAzimuth	6420	$FFFF	0	1	FF	
+maxAzimuth	6422	$FFFF	0	1	FF	
+minElevation	6424	$FFFF	0	1	FF	
+maxElevation	6426	$FFFF	0	1	FF	
+minDistance	6428	$FFFF	0	1	FF	
+maxDistance	6430	$FFFF	0	1	FF	
+minRadialVelocity	6432	$FFFF	0	1	FF	
+maxRadialVelocity	6434	$FFFF	0	1	FF	
+possiblePeriod[0]	6436	$FFFF	0	1	FF	
+possiblePeriod[1]	6438	$FFFF	0	1	FF	
+possiblePeriod[2]	6440	$FFFF	0	1	FF	
+possiblePeriod[3]	6442	$FFFF	0	1	FF	
+possiblePeriod[4]	6444	$FFFF	0	1	FF	
+possiblePeriod[5]	6446	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6449	$FFFF	0	1	UU	s
+6448	$FFFF	0
+nextUpdateTimeNanoSeconds	6451	$FFFF	0	1	UU	ns
+6450	$FFFF	0
+scanPeriodSeconds	6453	$FFFF	0	1	UU	s
+6452	$FFFF	0
+scanPeriodNanoSeconds	6455	$FFFF	0	1	UU	ns
+6454	$FFFF	0
+; track_25
+id	6457	$FFFF	0	1	UU	
+6456	$FFFF	0
+type	6459	$FFFF	0	1	UU	
+6458	$FFFF	0
+priority	6461	$FFFF	0	1	UU	
+6460	$FFFF	0
+antennaId	6463	$FFFF	0	1	UU	
+6462	$FFFF	0
+azimuth	6464	$FFFF	0	1	FF	
+elevation	6466	$FFFF	0	1	FF	
+distance	6468	$FFFF	0	1	FF	
+radialVelocity	6470	$FFFF	0	1	FF	
+sigmaAzimuth	6472	$FFFF	0	1	FF	
+sigmaElevation	6474	$FFFF	0	1	FF	
+sigmaDistance	6476	$FFFF	0	1	FF	
+sigmaRadialVelocity	6478	$FFFF	0	1	FF	
+minAzimuth	6480	$FFFF	0	1	FF	
+maxAzimuth	6482	$FFFF	0	1	FF	
+minElevation	6484	$FFFF	0	1	FF	
+maxElevation	6486	$FFFF	0	1	FF	
+minDistance	6488	$FFFF	0	1	FF	
+maxDistance	6490	$FFFF	0	1	FF	
+minRadialVelocity	6492	$FFFF	0	1	FF	
+maxRadialVelocity	6494	$FFFF	0	1	FF	
+possiblePeriod[0]	6496	$FFFF	0	1	FF	
+possiblePeriod[1]	6498	$FFFF	0	1	FF	
+possiblePeriod[2]	6500	$FFFF	0	1	FF	
+possiblePeriod[3]	6502	$FFFF	0	1	FF	
+possiblePeriod[4]	6504	$FFFF	0	1	FF	
+possiblePeriod[5]	6506	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6509	$FFFF	0	1	UU	s
+6508	$FFFF	0
+nextUpdateTimeNanoSeconds	6511	$FFFF	0	1	UU	ns
+6510	$FFFF	0
+scanPeriodSeconds	6513	$FFFF	0	1	UU	s
+6512	$FFFF	0
+scanPeriodNanoSeconds	6515	$FFFF	0	1	UU	ns
+6514	$FFFF	0
+; track_26
+id	6517	$FFFF	0	1	UU	
+6516	$FFFF	0
+type	6519	$FFFF	0	1	UU	
+6518	$FFFF	0
+priority	6521	$FFFF	0	1	UU	
+6520	$FFFF	0
+antennaId	6523	$FFFF	0	1	UU	
+6522	$FFFF	0
+azimuth	6524	$FFFF	0	1	FF	
+elevation	6526	$FFFF	0	1	FF	
+distance	6528	$FFFF	0	1	FF	
+radialVelocity	6530	$FFFF	0	1	FF	
+sigmaAzimuth	6532	$FFFF	0	1	FF	
+sigmaElevation	6534	$FFFF	0	1	FF	
+sigmaDistance	6536	$FFFF	0	1	FF	
+sigmaRadialVelocity	6538	$FFFF	0	1	FF	
+minAzimuth	6540	$FFFF	0	1	FF	
+maxAzimuth	6542	$FFFF	0	1	FF	
+minElevation	6544	$FFFF	0	1	FF	
+maxElevation	6546	$FFFF	0	1	FF	
+minDistance	6548	$FFFF	0	1	FF	
+maxDistance	6550	$FFFF	0	1	FF	
+minRadialVelocity	6552	$FFFF	0	1	FF	
+maxRadialVelocity	6554	$FFFF	0	1	FF	
+possiblePeriod[0]	6556	$FFFF	0	1	FF	
+possiblePeriod[1]	6558	$FFFF	0	1	FF	
+possiblePeriod[2]	6560	$FFFF	0	1	FF	
+possiblePeriod[3]	6562	$FFFF	0	1	FF	
+possiblePeriod[4]	6564	$FFFF	0	1	FF	
+possiblePeriod[5]	6566	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6569	$FFFF	0	1	UU	s
+6568	$FFFF	0
+nextUpdateTimeNanoSeconds	6571	$FFFF	0	1	UU	ns
+6570	$FFFF	0
+scanPeriodSeconds	6573	$FFFF	0	1	UU	s
+6572	$FFFF	0
+scanPeriodNanoSeconds	6575	$FFFF	0	1	UU	ns
+6574	$FFFF	0
+; track_27
+id	6577	$FFFF	0	1	UU	
+6576	$FFFF	0
+type	6579	$FFFF	0	1	UU	
+6578	$FFFF	0
+priority	6581	$FFFF	0	1	UU	
+6580	$FFFF	0
+antennaId	6583	$FFFF	0	1	UU	
+6582	$FFFF	0
+azimuth	6584	$FFFF	0	1	FF	
+elevation	6586	$FFFF	0	1	FF	
+distance	6588	$FFFF	0	1	FF	
+radialVelocity	6590	$FFFF	0	1	FF	
+sigmaAzimuth	6592	$FFFF	0	1	FF	
+sigmaElevation	6594	$FFFF	0	1	FF	
+sigmaDistance	6596	$FFFF	0	1	FF	
+sigmaRadialVelocity	6598	$FFFF	0	1	FF	
+minAzimuth	6600	$FFFF	0	1	FF	
+maxAzimuth	6602	$FFFF	0	1	FF	
+minElevation	6604	$FFFF	0	1	FF	
+maxElevation	6606	$FFFF	0	1	FF	
+minDistance	6608	$FFFF	0	1	FF	
+maxDistance	6610	$FFFF	0	1	FF	
+minRadialVelocity	6612	$FFFF	0	1	FF	
+maxRadialVelocity	6614	$FFFF	0	1	FF	
+possiblePeriod[0]	6616	$FFFF	0	1	FF	
+possiblePeriod[1]	6618	$FFFF	0	1	FF	
+possiblePeriod[2]	6620	$FFFF	0	1	FF	
+possiblePeriod[3]	6622	$FFFF	0	1	FF	
+possiblePeriod[4]	6624	$FFFF	0	1	FF	
+possiblePeriod[5]	6626	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6629	$FFFF	0	1	UU	s
+6628	$FFFF	0
+nextUpdateTimeNanoSeconds	6631	$FFFF	0	1	UU	ns
+6630	$FFFF	0
+scanPeriodSeconds	6633	$FFFF	0	1	UU	s
+6632	$FFFF	0
+scanPeriodNanoSeconds	6635	$FFFF	0	1	UU	ns
+6634	$FFFF	0
+; track_28
+id	6637	$FFFF	0	1	UU	
+6636	$FFFF	0
+type	6639	$FFFF	0	1	UU	
+6638	$FFFF	0
+priority	6641	$FFFF	0	1	UU	
+6640	$FFFF	0
+antennaId	6643	$FFFF	0	1	UU	
+6642	$FFFF	0
+azimuth	6644	$FFFF	0	1	FF	
+elevation	6646	$FFFF	0	1	FF	
+distance	6648	$FFFF	0	1	FF	
+radialVelocity	6650	$FFFF	0	1	FF	
+sigmaAzimuth	6652	$FFFF	0	1	FF	
+sigmaElevation	6654	$FFFF	0	1	FF	
+sigmaDistance	6656	$FFFF	0	1	FF	
+sigmaRadialVelocity	6658	$FFFF	0	1	FF	
+minAzimuth	6660	$FFFF	0	1	FF	
+maxAzimuth	6662	$FFFF	0	1	FF	
+minElevation	6664	$FFFF	0	1	FF	
+maxElevation	6666	$FFFF	0	1	FF	
+minDistance	6668	$FFFF	0	1	FF	
+maxDistance	6670	$FFFF	0	1	FF	
+minRadialVelocity	6672	$FFFF	0	1	FF	
+maxRadialVelocity	6674	$FFFF	0	1	FF	
+possiblePeriod[0]	6676	$FFFF	0	1	FF	
+possiblePeriod[1]	6678	$FFFF	0	1	FF	
+possiblePeriod[2]	6680	$FFFF	0	1	FF	
+possiblePeriod[3]	6682	$FFFF	0	1	FF	
+possiblePeriod[4]	6684	$FFFF	0	1	FF	
+possiblePeriod[5]	6686	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6689	$FFFF	0	1	UU	s
+6688	$FFFF	0
+nextUpdateTimeNanoSeconds	6691	$FFFF	0	1	UU	ns
+6690	$FFFF	0
+scanPeriodSeconds	6693	$FFFF	0	1	UU	s
+6692	$FFFF	0
+scanPeriodNanoSeconds	6695	$FFFF	0	1	UU	ns
+6694	$FFFF	0
+; track_29
+id	6697	$FFFF	0	1	UU	
+6696	$FFFF	0
+type	6699	$FFFF	0	1	UU	
+6698	$FFFF	0
+priority	6701	$FFFF	0	1	UU	
+6700	$FFFF	0
+antennaId	6703	$FFFF	0	1	UU	
+6702	$FFFF	0
+azimuth	6704	$FFFF	0	1	FF	
+elevation	6706	$FFFF	0	1	FF	
+distance	6708	$FFFF	0	1	FF	
+radialVelocity	6710	$FFFF	0	1	FF	
+sigmaAzimuth	6712	$FFFF	0	1	FF	
+sigmaElevation	6714	$FFFF	0	1	FF	
+sigmaDistance	6716	$FFFF	0	1	FF	
+sigmaRadialVelocity	6718	$FFFF	0	1	FF	
+minAzimuth	6720	$FFFF	0	1	FF	
+maxAzimuth	6722	$FFFF	0	1	FF	
+minElevation	6724	$FFFF	0	1	FF	
+maxElevation	6726	$FFFF	0	1	FF	
+minDistance	6728	$FFFF	0	1	FF	
+maxDistance	6730	$FFFF	0	1	FF	
+minRadialVelocity	6732	$FFFF	0	1	FF	
+maxRadialVelocity	6734	$FFFF	0	1	FF	
+possiblePeriod[0]	6736	$FFFF	0	1	FF	
+possiblePeriod[1]	6738	$FFFF	0	1	FF	
+possiblePeriod[2]	6740	$FFFF	0	1	FF	
+possiblePeriod[3]	6742	$FFFF	0	1	FF	
+possiblePeriod[4]	6744	$FFFF	0	1	FF	
+possiblePeriod[5]	6746	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6749	$FFFF	0	1	UU	s
+6748	$FFFF	0
+nextUpdateTimeNanoSeconds	6751	$FFFF	0	1	UU	ns
+6750	$FFFF	0
+scanPeriodSeconds	6753	$FFFF	0	1	UU	s
+6752	$FFFF	0
+scanPeriodNanoSeconds	6755	$FFFF	0	1	UU	ns
+6754	$FFFF	0
+; track_30
+id	6757	$FFFF	0	1	UU	
+6756	$FFFF	0
+type	6759	$FFFF	0	1	UU	
+6758	$FFFF	0
+priority	6761	$FFFF	0	1	UU	
+6760	$FFFF	0
+antennaId	6763	$FFFF	0	1	UU	
+6762	$FFFF	0
+azimuth	6764	$FFFF	0	1	FF	
+elevation	6766	$FFFF	0	1	FF	
+distance	6768	$FFFF	0	1	FF	
+radialVelocity	6770	$FFFF	0	1	FF	
+sigmaAzimuth	6772	$FFFF	0	1	FF	
+sigmaElevation	6774	$FFFF	0	1	FF	
+sigmaDistance	6776	$FFFF	0	1	FF	
+sigmaRadialVelocity	6778	$FFFF	0	1	FF	
+minAzimuth	6780	$FFFF	0	1	FF	
+maxAzimuth	6782	$FFFF	0	1	FF	
+minElevation	6784	$FFFF	0	1	FF	
+maxElevation	6786	$FFFF	0	1	FF	
+minDistance	6788	$FFFF	0	1	FF	
+maxDistance	6790	$FFFF	0	1	FF	
+minRadialVelocity	6792	$FFFF	0	1	FF	
+maxRadialVelocity	6794	$FFFF	0	1	FF	
+possiblePeriod[0]	6796	$FFFF	0	1	FF	
+possiblePeriod[1]	6798	$FFFF	0	1	FF	
+possiblePeriod[2]	6800	$FFFF	0	1	FF	
+possiblePeriod[3]	6802	$FFFF	0	1	FF	
+possiblePeriod[4]	6804	$FFFF	0	1	FF	
+possiblePeriod[5]	6806	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6809	$FFFF	0	1	UU	s
+6808	$FFFF	0
+nextUpdateTimeNanoSeconds	6811	$FFFF	0	1	UU	ns
+6810	$FFFF	0
+scanPeriodSeconds	6813	$FFFF	0	1	UU	s
+6812	$FFFF	0
+scanPeriodNanoSeconds	6815	$FFFF	0	1	UU	ns
+6814	$FFFF	0
+; track_31
+id	6817	$FFFF	0	1	UU	
+6816	$FFFF	0
+type	6819	$FFFF	0	1	UU	
+6818	$FFFF	0
+priority	6821	$FFFF	0	1	UU	
+6820	$FFFF	0
+antennaId	6823	$FFFF	0	1	UU	
+6822	$FFFF	0
+azimuth	6824	$FFFF	0	1	FF	
+elevation	6826	$FFFF	0	1	FF	
+distance	6828	$FFFF	0	1	FF	
+radialVelocity	6830	$FFFF	0	1	FF	
+sigmaAzimuth	6832	$FFFF	0	1	FF	
+sigmaElevation	6834	$FFFF	0	1	FF	
+sigmaDistance	6836	$FFFF	0	1	FF	
+sigmaRadialVelocity	6838	$FFFF	0	1	FF	
+minAzimuth	6840	$FFFF	0	1	FF	
+maxAzimuth	6842	$FFFF	0	1	FF	
+minElevation	6844	$FFFF	0	1	FF	
+maxElevation	6846	$FFFF	0	1	FF	
+minDistance	6848	$FFFF	0	1	FF	
+maxDistance	6850	$FFFF	0	1	FF	
+minRadialVelocity	6852	$FFFF	0	1	FF	
+maxRadialVelocity	6854	$FFFF	0	1	FF	
+possiblePeriod[0]	6856	$FFFF	0	1	FF	
+possiblePeriod[1]	6858	$FFFF	0	1	FF	
+possiblePeriod[2]	6860	$FFFF	0	1	FF	
+possiblePeriod[3]	6862	$FFFF	0	1	FF	
+possiblePeriod[4]	6864	$FFFF	0	1	FF	
+possiblePeriod[5]	6866	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6869	$FFFF	0	1	UU	s
+6868	$FFFF	0
+nextUpdateTimeNanoSeconds	6871	$FFFF	0	1	UU	ns
+6870	$FFFF	0
+scanPeriodSeconds	6873	$FFFF	0	1	UU	s
+6872	$FFFF	0
+scanPeriodNanoSeconds	6875	$FFFF	0	1	UU	ns
+6874	$FFFF	0
+; track_32
+id	6877	$FFFF	0	1	UU	
+6876	$FFFF	0
+type	6879	$FFFF	0	1	UU	
+6878	$FFFF	0
+priority	6881	$FFFF	0	1	UU	
+6880	$FFFF	0
+antennaId	6883	$FFFF	0	1	UU	
+6882	$FFFF	0
+azimuth	6884	$FFFF	0	1	FF	
+elevation	6886	$FFFF	0	1	FF	
+distance	6888	$FFFF	0	1	FF	
+radialVelocity	6890	$FFFF	0	1	FF	
+sigmaAzimuth	6892	$FFFF	0	1	FF	
+sigmaElevation	6894	$FFFF	0	1	FF	
+sigmaDistance	6896	$FFFF	0	1	FF	
+sigmaRadialVelocity	6898	$FFFF	0	1	FF	
+minAzimuth	6900	$FFFF	0	1	FF	
+maxAzimuth	6902	$FFFF	0	1	FF	
+minElevation	6904	$FFFF	0	1	FF	
+maxElevation	6906	$FFFF	0	1	FF	
+minDistance	6908	$FFFF	0	1	FF	
+maxDistance	6910	$FFFF	0	1	FF	
+minRadialVelocity	6912	$FFFF	0	1	FF	
+maxRadialVelocity	6914	$FFFF	0	1	FF	
+possiblePeriod[0]	6916	$FFFF	0	1	FF	
+possiblePeriod[1]	6918	$FFFF	0	1	FF	
+possiblePeriod[2]	6920	$FFFF	0	1	FF	
+possiblePeriod[3]	6922	$FFFF	0	1	FF	
+possiblePeriod[4]	6924	$FFFF	0	1	FF	
+possiblePeriod[5]	6926	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6929	$FFFF	0	1	UU	s
+6928	$FFFF	0
+nextUpdateTimeNanoSeconds	6931	$FFFF	0	1	UU	ns
+6930	$FFFF	0
+scanPeriodSeconds	6933	$FFFF	0	1	UU	s
+6932	$FFFF	0
+scanPeriodNanoSeconds	6935	$FFFF	0	1	UU	ns
+6934	$FFFF	0
+; track_33
+id	6937	$FFFF	0	1	UU	
+6936	$FFFF	0
+type	6939	$FFFF	0	1	UU	
+6938	$FFFF	0
+priority	6941	$FFFF	0	1	UU	
+6940	$FFFF	0
+antennaId	6943	$FFFF	0	1	UU	
+6942	$FFFF	0
+azimuth	6944	$FFFF	0	1	FF	
+elevation	6946	$FFFF	0	1	FF	
+distance	6948	$FFFF	0	1	FF	
+radialVelocity	6950	$FFFF	0	1	FF	
+sigmaAzimuth	6952	$FFFF	0	1	FF	
+sigmaElevation	6954	$FFFF	0	1	FF	
+sigmaDistance	6956	$FFFF	0	1	FF	
+sigmaRadialVelocity	6958	$FFFF	0	1	FF	
+minAzimuth	6960	$FFFF	0	1	FF	
+maxAzimuth	6962	$FFFF	0	1	FF	
+minElevation	6964	$FFFF	0	1	FF	
+maxElevation	6966	$FFFF	0	1	FF	
+minDistance	6968	$FFFF	0	1	FF	
+maxDistance	6970	$FFFF	0	1	FF	
+minRadialVelocity	6972	$FFFF	0	1	FF	
+maxRadialVelocity	6974	$FFFF	0	1	FF	
+possiblePeriod[0]	6976	$FFFF	0	1	FF	
+possiblePeriod[1]	6978	$FFFF	0	1	FF	
+possiblePeriod[2]	6980	$FFFF	0	1	FF	
+possiblePeriod[3]	6982	$FFFF	0	1	FF	
+possiblePeriod[4]	6984	$FFFF	0	1	FF	
+possiblePeriod[5]	6986	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	6989	$FFFF	0	1	UU	s
+6988	$FFFF	0
+nextUpdateTimeNanoSeconds	6991	$FFFF	0	1	UU	ns
+6990	$FFFF	0
+scanPeriodSeconds	6993	$FFFF	0	1	UU	s
+6992	$FFFF	0
+scanPeriodNanoSeconds	6995	$FFFF	0	1	UU	ns
+6994	$FFFF	0
+; track_34
+id	6997	$FFFF	0	1	UU	
+6996	$FFFF	0
+type	6999	$FFFF	0	1	UU	
+6998	$FFFF	0
+priority	7001	$FFFF	0	1	UU	
+7000	$FFFF	0
+antennaId	7003	$FFFF	0	1	UU	
+7002	$FFFF	0
+azimuth	7004	$FFFF	0	1	FF	
+elevation	7006	$FFFF	0	1	FF	
+distance	7008	$FFFF	0	1	FF	
+radialVelocity	7010	$FFFF	0	1	FF	
+sigmaAzimuth	7012	$FFFF	0	1	FF	
+sigmaElevation	7014	$FFFF	0	1	FF	
+sigmaDistance	7016	$FFFF	0	1	FF	
+sigmaRadialVelocity	7018	$FFFF	0	1	FF	
+minAzimuth	7020	$FFFF	0	1	FF	
+maxAzimuth	7022	$FFFF	0	1	FF	
+minElevation	7024	$FFFF	0	1	FF	
+maxElevation	7026	$FFFF	0	1	FF	
+minDistance	7028	$FFFF	0	1	FF	
+maxDistance	7030	$FFFF	0	1	FF	
+minRadialVelocity	7032	$FFFF	0	1	FF	
+maxRadialVelocity	7034	$FFFF	0	1	FF	
+possiblePeriod[0]	7036	$FFFF	0	1	FF	
+possiblePeriod[1]	7038	$FFFF	0	1	FF	
+possiblePeriod[2]	7040	$FFFF	0	1	FF	
+possiblePeriod[3]	7042	$FFFF	0	1	FF	
+possiblePeriod[4]	7044	$FFFF	0	1	FF	
+possiblePeriod[5]	7046	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	7049	$FFFF	0	1	UU	s
+7048	$FFFF	0
+nextUpdateTimeNanoSeconds	7051	$FFFF	0	1	UU	ns
+7050	$FFFF	0
+scanPeriodSeconds	7053	$FFFF	0	1	UU	s
+7052	$FFFF	0
+scanPeriodNanoSeconds	7055	$FFFF	0	1	UU	ns
+7054	$FFFF	0
+; track_35
+id	7057	$FFFF	0	1	UU	
+7056	$FFFF	0
+type	7059	$FFFF	0	1	UU	
+7058	$FFFF	0
+priority	7061	$FFFF	0	1	UU	
+7060	$FFFF	0
+antennaId	7063	$FFFF	0	1	UU	
+7062	$FFFF	0
+azimuth	7064	$FFFF	0	1	FF	
+elevation	7066	$FFFF	0	1	FF	
+distance	7068	$FFFF	0	1	FF	
+radialVelocity	7070	$FFFF	0	1	FF	
+sigmaAzimuth	7072	$FFFF	0	1	FF	
+sigmaElevation	7074	$FFFF	0	1	FF	
+sigmaDistance	7076	$FFFF	0	1	FF	
+sigmaRadialVelocity	7078	$FFFF	0	1	FF	
+minAzimuth	7080	$FFFF	0	1	FF	
+maxAzimuth	7082	$FFFF	0	1	FF	
+minElevation	7084	$FFFF	0	1	FF	
+maxElevation	7086	$FFFF	0	1	FF	
+minDistance	7088	$FFFF	0	1	FF	
+maxDistance	7090	$FFFF	0	1	FF	
+minRadialVelocity	7092	$FFFF	0	1	FF	
+maxRadialVelocity	7094	$FFFF	0	1	FF	
+possiblePeriod[0]	7096	$FFFF	0	1	FF	
+possiblePeriod[1]	7098	$FFFF	0	1	FF	
+possiblePeriod[2]	7100	$FFFF	0	1	FF	
+possiblePeriod[3]	7102	$FFFF	0	1	FF	
+possiblePeriod[4]	7104	$FFFF	0	1	FF	
+possiblePeriod[5]	7106	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	7109	$FFFF	0	1	UU	s
+7108	$FFFF	0
+nextUpdateTimeNanoSeconds	7111	$FFFF	0	1	UU	ns
+7110	$FFFF	0
+scanPeriodSeconds	7113	$FFFF	0	1	UU	s
+7112	$FFFF	0
+scanPeriodNanoSeconds	7115	$FFFF	0	1	UU	ns
+7114	$FFFF	0
+; track_36
+id	7117	$FFFF	0	1	UU	
+7116	$FFFF	0
+type	7119	$FFFF	0	1	UU	
+7118	$FFFF	0
+priority	7121	$FFFF	0	1	UU	
+7120	$FFFF	0
+antennaId	7123	$FFFF	0	1	UU	
+7122	$FFFF	0
+azimuth	7124	$FFFF	0	1	FF	
+elevation	7126	$FFFF	0	1	FF	
+distance	7128	$FFFF	0	1	FF	
+radialVelocity	7130	$FFFF	0	1	FF	
+sigmaAzimuth	7132	$FFFF	0	1	FF	
+sigmaElevation	7134	$FFFF	0	1	FF	
+sigmaDistance	7136	$FFFF	0	1	FF	
+sigmaRadialVelocity	7138	$FFFF	0	1	FF	
+minAzimuth	7140	$FFFF	0	1	FF	
+maxAzimuth	7142	$FFFF	0	1	FF	
+minElevation	7144	$FFFF	0	1	FF	
+maxElevation	7146	$FFFF	0	1	FF	
+minDistance	7148	$FFFF	0	1	FF	
+maxDistance	7150	$FFFF	0	1	FF	
+minRadialVelocity	7152	$FFFF	0	1	FF	
+maxRadialVelocity	7154	$FFFF	0	1	FF	
+possiblePeriod[0]	7156	$FFFF	0	1	FF	
+possiblePeriod[1]	7158	$FFFF	0	1	FF	
+possiblePeriod[2]	7160	$FFFF	0	1	FF	
+possiblePeriod[3]	7162	$FFFF	0	1	FF	
+possiblePeriod[4]	7164	$FFFF	0	1	FF	
+possiblePeriod[5]	7166	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	7169	$FFFF	0	1	UU	s
+7168	$FFFF	0
+nextUpdateTimeNanoSeconds	7171	$FFFF	0	1	UU	ns
+7170	$FFFF	0
+scanPeriodSeconds	7173	$FFFF	0	1	UU	s
+7172	$FFFF	0
+scanPeriodNanoSeconds	7175	$FFFF	0	1	UU	ns
+7174	$FFFF	0
+; track_37
+id	7177	$FFFF	0	1	UU	
+7176	$FFFF	0
+type	7179	$FFFF	0	1	UU	
+7178	$FFFF	0
+priority	7181	$FFFF	0	1	UU	
+7180	$FFFF	0
+antennaId	7183	$FFFF	0	1	UU	
+7182	$FFFF	0
+azimuth	7184	$FFFF	0	1	FF	
+elevation	7186	$FFFF	0	1	FF	
+distance	7188	$FFFF	0	1	FF	
+radialVelocity	7190	$FFFF	0	1	FF	
+sigmaAzimuth	7192	$FFFF	0	1	FF	
+sigmaElevation	7194	$FFFF	0	1	FF	
+sigmaDistance	7196	$FFFF	0	1	FF	
+sigmaRadialVelocity	7198	$FFFF	0	1	FF	
+minAzimuth	7200	$FFFF	0	1	FF	
+maxAzimuth	7202	$FFFF	0	1	FF	
+minElevation	7204	$FFFF	0	1	FF	
+maxElevation	7206	$FFFF	0	1	FF	
+minDistance	7208	$FFFF	0	1	FF	
+maxDistance	7210	$FFFF	0	1	FF	
+minRadialVelocity	7212	$FFFF	0	1	FF	
+maxRadialVelocity	7214	$FFFF	0	1	FF	
+possiblePeriod[0]	7216	$FFFF	0	1	FF	
+possiblePeriod[1]	7218	$FFFF	0	1	FF	
+possiblePeriod[2]	7220	$FFFF	0	1	FF	
+possiblePeriod[3]	7222	$FFFF	0	1	FF	
+possiblePeriod[4]	7224	$FFFF	0	1	FF	
+possiblePeriod[5]	7226	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	7229	$FFFF	0	1	UU	s
+7228	$FFFF	0
+nextUpdateTimeNanoSeconds	7231	$FFFF	0	1	UU	ns
+7230	$FFFF	0
+scanPeriodSeconds	7233	$FFFF	0	1	UU	s
+7232	$FFFF	0
+scanPeriodNanoSeconds	7235	$FFFF	0	1	UU	ns
+7234	$FFFF	0
+; track_38
+id	7237	$FFFF	0	1	UU	
+7236	$FFFF	0
+type	7239	$FFFF	0	1	UU	
+7238	$FFFF	0
+priority	7241	$FFFF	0	1	UU	
+7240	$FFFF	0
+antennaId	7243	$FFFF	0	1	UU	
+7242	$FFFF	0
+azimuth	7244	$FFFF	0	1	FF	
+elevation	7246	$FFFF	0	1	FF	
+distance	7248	$FFFF	0	1	FF	
+radialVelocity	7250	$FFFF	0	1	FF	
+sigmaAzimuth	7252	$FFFF	0	1	FF	
+sigmaElevation	7254	$FFFF	0	1	FF	
+sigmaDistance	7256	$FFFF	0	1	FF	
+sigmaRadialVelocity	7258	$FFFF	0	1	FF	
+minAzimuth	7260	$FFFF	0	1	FF	
+maxAzimuth	7262	$FFFF	0	1	FF	
+minElevation	7264	$FFFF	0	1	FF	
+maxElevation	7266	$FFFF	0	1	FF	
+minDistance	7268	$FFFF	0	1	FF	
+maxDistance	7270	$FFFF	0	1	FF	
+minRadialVelocity	7272	$FFFF	0	1	FF	
+maxRadialVelocity	7274	$FFFF	0	1	FF	
+possiblePeriod[0]	7276	$FFFF	0	1	FF	
+possiblePeriod[1]	7278	$FFFF	0	1	FF	
+possiblePeriod[2]	7280	$FFFF	0	1	FF	
+possiblePeriod[3]	7282	$FFFF	0	1	FF	
+possiblePeriod[4]	7284	$FFFF	0	1	FF	
+possiblePeriod[5]	7286	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	7289	$FFFF	0	1	UU	s
+7288	$FFFF	0
+nextUpdateTimeNanoSeconds	7291	$FFFF	0	1	UU	ns
+7290	$FFFF	0
+scanPeriodSeconds	7293	$FFFF	0	1	UU	s
+7292	$FFFF	0
+scanPeriodNanoSeconds	7295	$FFFF	0	1	UU	ns
+7294	$FFFF	0
+; track_39
+id	7297	$FFFF	0	1	UU	
+7296	$FFFF	0
+type	7299	$FFFF	0	1	UU	
+7298	$FFFF	0
+priority	7301	$FFFF	0	1	UU	
+7300	$FFFF	0
+antennaId	7303	$FFFF	0	1	UU	
+7302	$FFFF	0
+azimuth	7304	$FFFF	0	1	FF	
+elevation	7306	$FFFF	0	1	FF	
+distance	7308	$FFFF	0	1	FF	
+radialVelocity	7310	$FFFF	0	1	FF	
+sigmaAzimuth	7312	$FFFF	0	1	FF	
+sigmaElevation	7314	$FFFF	0	1	FF	
+sigmaDistance	7316	$FFFF	0	1	FF	
+sigmaRadialVelocity	7318	$FFFF	0	1	FF	
+minAzimuth	7320	$FFFF	0	1	FF	
+maxAzimuth	7322	$FFFF	0	1	FF	
+minElevation	7324	$FFFF	0	1	FF	
+maxElevation	7326	$FFFF	0	1	FF	
+minDistance	7328	$FFFF	0	1	FF	
+maxDistance	7330	$FFFF	0	1	FF	
+minRadialVelocity	7332	$FFFF	0	1	FF	
+maxRadialVelocity	7334	$FFFF	0	1	FF	
+possiblePeriod[0]	7336	$FFFF	0	1	FF	
+possiblePeriod[1]	7338	$FFFF	0	1	FF	
+possiblePeriod[2]	7340	$FFFF	0	1	FF	
+possiblePeriod[3]	7342	$FFFF	0	1	FF	
+possiblePeriod[4]	7344	$FFFF	0	1	FF	
+possiblePeriod[5]	7346	$FFFF	0	1	FF	
+nextUpdateTimeSeconds	7349	$FFFF	0	1	UU	s
+7348	$FFFF	0
+nextUpdateTimeNanoSeconds	7351	$FFFF	0	1	UU	ns
+7350	$FFFF	0
+scanPeriodSeconds	7353	$FFFF	0	1	UU	s
+7352	$FFFF	0
+scanPeriodNanoSeconds	7355	$FFFF	0	1	UU	ns
+7354	$FFFF	0
+; AirMarksUpdateRequests (MAPKI -> MTO)
+AirMarksUpdateRequestsCount	7357	$FFFF	0	1	UU	
+7356	$FFFF	0
+; AirMarkUpdateRequest
+markId	7359	$FFFF	0	1	UU	
+7358	$FFFF	0
+antennaId	7361	$FFFF	0	1	UU	
+7360	$FFFF	0
+creationTimeSeconds	7363	$FFFF	0	1	UU	s
+7362	$FFFF	0
+creationTimeNanoseconds	7365	$FFFF	0	1	UU	ns
+7364	$FFFF	0
+betaBSK	7366	$FFFF	0	1	FF	deg
+epsilonBSK	7368	$FFFF	0	1	FF	deg
+distanceBSK	7370	$FFFF	0	1	FF	m
+radialVelocity	7372	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_1
+markId	7375	$FFFF	0	1	UU	
+7374	$FFFF	0
+antennaId	7377	$FFFF	0	1	UU	
+7376	$FFFF	0
+creationTimeSeconds	7379	$FFFF	0	1	UU	s
+7378	$FFFF	0
+creationTimeNanoseconds	7381	$FFFF	0	1	UU	ns
+7380	$FFFF	0
+betaBSK	7382	$FFFF	0	1	FF	deg
+epsilonBSK	7384	$FFFF	0	1	FF	deg
+distanceBSK	7386	$FFFF	0	1	FF	m
+radialVelocity	7388	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_2
+markId	7391	$FFFF	0	1	UU	
+7390	$FFFF	0
+antennaId	7393	$FFFF	0	1	UU	
+7392	$FFFF	0
+creationTimeSeconds	7395	$FFFF	0	1	UU	s
+7394	$FFFF	0
+creationTimeNanoseconds	7397	$FFFF	0	1	UU	ns
+7396	$FFFF	0
+betaBSK	7398	$FFFF	0	1	FF	deg
+epsilonBSK	7400	$FFFF	0	1	FF	deg
+distanceBSK	7402	$FFFF	0	1	FF	m
+radialVelocity	7404	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_3
+markId	7407	$FFFF	0	1	UU	
+7406	$FFFF	0
+antennaId	7409	$FFFF	0	1	UU	
+7408	$FFFF	0
+creationTimeSeconds	7411	$FFFF	0	1	UU	s
+7410	$FFFF	0
+creationTimeNanoseconds	7413	$FFFF	0	1	UU	ns
+7412	$FFFF	0
+betaBSK	7414	$FFFF	0	1	FF	deg
+epsilonBSK	7416	$FFFF	0	1	FF	deg
+distanceBSK	7418	$FFFF	0	1	FF	m
+radialVelocity	7420	$FFFF	0	1	FF	m/s
+; AirMarksUpdateRequests (MAPKI -> MTO)_1
+AirMarksUpdateRequestsCount	7423	$FFFF	0	1	UU	
+7422	$FFFF	0
+; AirMarkUpdateRequest
+markId	7425	$FFFF	0	1	UU	
+7424	$FFFF	0
+antennaId	7427	$FFFF	0	1	UU	
+7426	$FFFF	0
+creationTimeSeconds	7429	$FFFF	0	1	UU	s
+7428	$FFFF	0
+creationTimeNanoseconds	7431	$FFFF	0	1	UU	ns
+7430	$FFFF	0
+betaBSK	7432	$FFFF	0	1	FF	deg
+epsilonBSK	7434	$FFFF	0	1	FF	deg
+distanceBSK	7436	$FFFF	0	1	FF	m
+radialVelocity	7438	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_1
+markId	7441	$FFFF	0	1	UU	
+7440	$FFFF	0
+antennaId	7443	$FFFF	0	1	UU	
+7442	$FFFF	0
+creationTimeSeconds	7445	$FFFF	0	1	UU	s
+7444	$FFFF	0
+creationTimeNanoseconds	7447	$FFFF	0	1	UU	ns
+7446	$FFFF	0
+betaBSK	7448	$FFFF	0	1	FF	deg
+epsilonBSK	7450	$FFFF	0	1	FF	deg
+distanceBSK	7452	$FFFF	0	1	FF	m
+radialVelocity	7454	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_2
+markId	7457	$FFFF	0	1	UU	
+7456	$FFFF	0
+antennaId	7459	$FFFF	0	1	UU	
+7458	$FFFF	0
+creationTimeSeconds	7461	$FFFF	0	1	UU	s
+7460	$FFFF	0
+creationTimeNanoseconds	7463	$FFFF	0	1	UU	ns
+7462	$FFFF	0
+betaBSK	7464	$FFFF	0	1	FF	deg
+epsilonBSK	7466	$FFFF	0	1	FF	deg
+distanceBSK	7468	$FFFF	0	1	FF	m
+radialVelocity	7470	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_3
+markId	7473	$FFFF	0	1	UU	
+7472	$FFFF	0
+antennaId	7475	$FFFF	0	1	UU	
+7474	$FFFF	0
+creationTimeSeconds	7477	$FFFF	0	1	UU	s
+7476	$FFFF	0
+creationTimeNanoseconds	7479	$FFFF	0	1	UU	ns
+7478	$FFFF	0
+betaBSK	7480	$FFFF	0	1	FF	deg
+epsilonBSK	7482	$FFFF	0	1	FF	deg
+distanceBSK	7484	$FFFF	0	1	FF	m
+radialVelocity	7486	$FFFF	0	1	FF	m/s
+; AirMarksUpdateRequests (MAPKI -> MTO)_2
+AirMarksUpdateRequestsCount	7489	$FFFF	0	1	UU	
+7488	$FFFF	0
+; AirMarkUpdateRequest
+markId	7491	$FFFF	0	1	UU	
+7490	$FFFF	0
+antennaId	7493	$FFFF	0	1	UU	
+7492	$FFFF	0
+creationTimeSeconds	7495	$FFFF	0	1	UU	s
+7494	$FFFF	0
+creationTimeNanoseconds	7497	$FFFF	0	1	UU	ns
+7496	$FFFF	0
+betaBSK	7498	$FFFF	0	1	FF	deg
+epsilonBSK	7500	$FFFF	0	1	FF	deg
+distanceBSK	7502	$FFFF	0	1	FF	m
+radialVelocity	7504	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_1
+markId	7507	$FFFF	0	1	UU	
+7506	$FFFF	0
+antennaId	7509	$FFFF	0	1	UU	
+7508	$FFFF	0
+creationTimeSeconds	7511	$FFFF	0	1	UU	s
+7510	$FFFF	0
+creationTimeNanoseconds	7513	$FFFF	0	1	UU	ns
+7512	$FFFF	0
+betaBSK	7514	$FFFF	0	1	FF	deg
+epsilonBSK	7516	$FFFF	0	1	FF	deg
+distanceBSK	7518	$FFFF	0	1	FF	m
+radialVelocity	7520	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_2
+markId	7523	$FFFF	0	1	UU	
+7522	$FFFF	0
+antennaId	7525	$FFFF	0	1	UU	
+7524	$FFFF	0
+creationTimeSeconds	7527	$FFFF	0	1	UU	s
+7526	$FFFF	0
+creationTimeNanoseconds	7529	$FFFF	0	1	UU	ns
+7528	$FFFF	0
+betaBSK	7530	$FFFF	0	1	FF	deg
+epsilonBSK	7532	$FFFF	0	1	FF	deg
+distanceBSK	7534	$FFFF	0	1	FF	m
+radialVelocity	7536	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_3
+markId	7539	$FFFF	0	1	UU	
+7538	$FFFF	0
+antennaId	7541	$FFFF	0	1	UU	
+7540	$FFFF	0
+creationTimeSeconds	7543	$FFFF	0	1	UU	s
+7542	$FFFF	0
+creationTimeNanoseconds	7545	$FFFF	0	1	UU	ns
+7544	$FFFF	0
+betaBSK	7546	$FFFF	0	1	FF	deg
+epsilonBSK	7548	$FFFF	0	1	FF	deg
+distanceBSK	7550	$FFFF	0	1	FF	m
+radialVelocity	7552	$FFFF	0	1	FF	m/s
+; AirMarksUpdateRequests (MAPKI -> MTO)_3
+AirMarksUpdateRequestsCount	7555	$FFFF	0	1	UU	
+7554	$FFFF	0
+; AirMarkUpdateRequest
+markId	7557	$FFFF	0	1	UU	
+7556	$FFFF	0
+antennaId	7559	$FFFF	0	1	UU	
+7558	$FFFF	0
+creationTimeSeconds	7561	$FFFF	0	1	UU	s
+7560	$FFFF	0
+creationTimeNanoseconds	7563	$FFFF	0	1	UU	ns
+7562	$FFFF	0
+betaBSK	7564	$FFFF	0	1	FF	deg
+epsilonBSK	7566	$FFFF	0	1	FF	deg
+distanceBSK	7568	$FFFF	0	1	FF	m
+radialVelocity	7570	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_1
+markId	7573	$FFFF	0	1	UU	
+7572	$FFFF	0
+antennaId	7575	$FFFF	0	1	UU	
+7574	$FFFF	0
+creationTimeSeconds	7577	$FFFF	0	1	UU	s
+7576	$FFFF	0
+creationTimeNanoseconds	7579	$FFFF	0	1	UU	ns
+7578	$FFFF	0
+betaBSK	7580	$FFFF	0	1	FF	deg
+epsilonBSK	7582	$FFFF	0	1	FF	deg
+distanceBSK	7584	$FFFF	0	1	FF	m
+radialVelocity	7586	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_2
+markId	7589	$FFFF	0	1	UU	
+7588	$FFFF	0
+antennaId	7591	$FFFF	0	1	UU	
+7590	$FFFF	0
+creationTimeSeconds	7593	$FFFF	0	1	UU	s
+7592	$FFFF	0
+creationTimeNanoseconds	7595	$FFFF	0	1	UU	ns
+7594	$FFFF	0
+betaBSK	7596	$FFFF	0	1	FF	deg
+epsilonBSK	7598	$FFFF	0	1	FF	deg
+distanceBSK	7600	$FFFF	0	1	FF	m
+radialVelocity	7602	$FFFF	0	1	FF	m/s
+; AirMarkUpdateRequest_3
+markId	7605	$FFFF	0	1	UU	
+7604	$FFFF	0
+antennaId	7607	$FFFF	0	1	UU	
+7606	$FFFF	0
+creationTimeSeconds	7609	$FFFF	0	1	UU	s
+7608	$FFFF	0
+creationTimeNanoseconds	7611	$FFFF	0	1	UU	ns
+7610	$FFFF	0
+betaBSK	7612	$FFFF	0	1	FF	deg
+epsilonBSK	7614	$FFFF	0	1	FF	deg
+distanceBSK	7616	$FFFF	0	1	FF	m
+radialVelocity	7618	$FFFF	0	1	FF	m/s
+; AirMarksMisses (MAPKI -> MTO)
+AirMarksMissesCount	7621	$FFFF	0	1	UU	
+7620	$FFFF	0
+; AirMarkMiss
+markId	7623	$FFFF	0	1	UU	
+7622	$FFFF	0
+; AirMarkMiss_1
+markId	7625	$FFFF	0	1	UU	
+7624	$FFFF	0
+; AirMarkMiss_2
+markId	7627	$FFFF	0	1	UU	
+7626	$FFFF	0
+; AirMarkMiss_3
+markId	7629	$FFFF	0	1	UU	
+7628	$FFFF	0
+; AirMarksMisses (MAPKI -> MTO)_1
+AirMarksMissesCount	7631	$FFFF	0	1	UU	
+7630	$FFFF	0
+; AirMarkMiss
+markId	7633	$FFFF	0	1	UU	
+7632	$FFFF	0
+; AirMarkMiss_1
+markId	7635	$FFFF	0	1	UU	
+7634	$FFFF	0
+; AirMarkMiss_2
+markId	7637	$FFFF	0	1	UU	
+7636	$FFFF	0
+; AirMarkMiss_3
+markId	7639	$FFFF	0	1	UU	
+7638	$FFFF	0
+; AirMarksMisses (MAPKI -> MTO)_2
+AirMarksMissesCount	7641	$FFFF	0	1	UU	
+7640	$FFFF	0
+; AirMarkMiss
+markId	7643	$FFFF	0	1	UU	
+7642	$FFFF	0
+; AirMarkMiss_1
+markId	7645	$FFFF	0	1	UU	
+7644	$FFFF	0
+; AirMarkMiss_2
+markId	7647	$FFFF	0	1	UU	
+7646	$FFFF	0
+; AirMarkMiss_3
+markId	7649	$FFFF	0	1	UU	
+7648	$FFFF	0
+; AirMarksMisses (MAPKI -> MTO)_3
+AirMarksMissesCount	7651	$FFFF	0	1	UU	
+7650	$FFFF	0
+; AirMarkMiss
+markId	7653	$FFFF	0	1	UU	
+7652	$FFFF	0
+; AirMarkMiss_1
+markId	7655	$FFFF	0	1	UU	
+7654	$FFFF	0
+; AirMarkMiss_2
+markId	7657	$FFFF	0	1	UU	
+7656	$FFFF	0
+; AirMarkMiss_3
+markId	7659	$FFFF	0	1	UU	
+7658	$FFFF	0
+; TargetingUpdateRequests (MRT -> MAPKI)
+TargetingUpdateRequestsCount	7661	$FFFF	0	1	UU	
+7660	$FFFF	0
+; TargetingUpdateRequest
+trackId	7663	$FFFF	0	1	UU	
+7662	$FFFF	0
+scanPeriod	7664	$FFFF	0	1	FF	s
+priority	7667	$FFFF	0	1	UU	
+7666	$FFFF	0
+type	7669	$FFFF	0	1	UU	
+7668	$FFFF	0
+; TargetingUpdateRequest_1
+trackId	7671	$FFFF	0	1	UU	
+7670	$FFFF	0
+scanPeriod	7672	$FFFF	0	1	FF	s
+priority	7675	$FFFF	0	1	UU	
+7674	$FFFF	0
+type	7677	$FFFF	0	1	UU	
+7676	$FFFF	0
+; TargetingUpdateRequest_2
+trackId	7679	$FFFF	0	1	UU	
+7678	$FFFF	0
+scanPeriod	7680	$FFFF	0	1	FF	s
+priority	7683	$FFFF	0	1	UU	
+7682	$FFFF	0
+type	7685	$FFFF	0	1	UU	
+7684	$FFFF	0
+; TargetingUpdateRequest_3
+trackId	7687	$FFFF	0	1	UU	
+7686	$FFFF	0
+scanPeriod	7688	$FFFF	0	1	FF	s
+priority	7691	$FFFF	0	1	UU	
+7690	$FFFF	0
+type	7693	$FFFF	0	1	UU	
+7692	$FFFF	0
+; TargetingRemoveRequests (MRT -> MAPKI)
+TargetingRemoveRequestsCount	7695	$FFFF	0	1	UU	
+7694	$FFFF	0
+; TargetingRemoveRequest
+markId	7697	$FFFF	0	1	UU	
+7696	$FFFF	0
+; TargetingRemoveRequest_1
+markId	7699	$FFFF	0	1	UU	
+7698	$FFFF	0
+; TargetingRemoveRequest_2
+markId	7701	$FFFF	0	1	UU	
+7700	$FFFF	0
+; TargetingRemoveRequest_3
+markId	7703	$FFFF	0	1	UU	
+7702	$FFFF	0
+; RadiationForbiddenSectors
+RadiationForbiddenSectorsCount	7705	$FFFF	0	1	UU	
+7704	$FFFF	0
+; RadiationForbiddenSector
+minAzimuth	7706	$FFFF	0	1	FF	deg
+maxAzimuth	7708	$FFFF	0	1	FF	deg
+minElevation	7710	$FFFF	0	1	FF	deg
+maxElevation	7712	$FFFF	0	1	FF	deg
+; RadiationForbiddenSector_1
+minAzimuth	7714	$FFFF	0	1	FF	deg
+maxAzimuth	7716	$FFFF	0	1	FF	deg
+minElevation	7718	$FFFF	0	1	FF	deg
+maxElevation	7720	$FFFF	0	1	FF	deg
