@@ -32,7 +32,7 @@ def map_values(data):
             group[1] = bool(group[1])
 
 
-def prepare_data(table_name: str, data: list, cur: any) -> list:
+def prepare_data(table_name: str, data: list, cur: any):
     data_to_insert = []
     col_names = []
     # Для того чтобы узнать имена полей таблицы
@@ -47,7 +47,7 @@ def prepare_data(table_name: str, data: list, cur: any) -> list:
                 if k in col_names:
                     items = [[k, v] for k, v in i.items()][0]
                     data_to_insert.append(items)
-        map_values(data_to_insert)
 
-        insert_into(data_to_insert, table_name, cur)
+        map_values(data_to_insert)
+        insert_into(table_name, data_to_insert, cur)
         data_to_insert.clear()
