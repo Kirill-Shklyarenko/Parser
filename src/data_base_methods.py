@@ -9,29 +9,12 @@ def connection() -> any:
     return cur, conn
 
 
-def map_values(data_to_insert: list):
-    # Преобразование типов (int ---> bool)
-    for group in data_to_insert:
-        for i in group:
-            if type(i) is dict:
-                k = list(i.keys())[0]
-                v = list(i.values())[0]
-
-                if 'isFake' in k:
-                    v = bool(v)
-                    i['isFake'] = v
-
-                if 'hasMatchedTrack' in k:
-                    v = bool(v)
-                    i['hasMatchedTrack'] = v
-
-
-def execute(data_to_insert: list, table_name: str, cur):
+def insert_into(table_name: str, data: list,  cur: any):
     # формирование строки запроса
-    columns = ','.join([f'"{x[0]}"' for x in data_to_insert])
-    param_placeholders = ','.join(['%s' for x in range(len(data_to_insert))])
+    columns = ','.join([f'"{x[0]}"' for x in data])
+    param_placeholders = ','.join(['%s' for x in range(len(data))])
     query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
-    param_values = tuple(x[1] for x in data_to_insert)
+    param_values = tuple(x[1] for x in data)
     try:
         cur.execute(query, param_values)
     except Exception as e:
@@ -40,9 +23,8 @@ def execute(data_to_insert: list, table_name: str, cur):
         print(query, param_values)
 
 
-def insert_into_bd(data: list, cur: any, table_name: str):
+def prepare_data(table_name: str, data: list, cur: any) -> list:
     data_to_insert = []
-
     # Для того чтобы узнать имена полей таблицы
     cur.execute(f'SELECT * FROM "{table_name}";')
     col_names = []
@@ -57,5 +39,10 @@ def insert_into_bd(data: list, cur: any, table_name: str):
                     items = [[k, v] for k, v in i.items()][0]
                     data_to_insert.append(items)
 
-        execute(data_to_insert, table_name, cur)
-        data_to_insert.clear()
+    # Преобразование типов (int ---> bool)
+    for group in data_to_insert:
+        if 'isFake' in group[0]:
+            group[1] = bool(group[1])
+        if 'hasMatchedTrack' in group[0]:
+            group[1] = bool(group[1])
+    return data_to_insert

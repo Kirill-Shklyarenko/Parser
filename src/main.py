@@ -1,7 +1,7 @@
 from text_file_parser import *
 from bin_file_parser import *
 from data_base_methods import *
-from data_convert_methods import *
+from data_find_methods import *
 
 
 
@@ -12,7 +12,7 @@ if __name__ == "__main__":
     frame_c = frame_counter(frame_size)
     # Соединяемся с БД
     cur, conn = connection()
-    # Парсим свинарник по кадрам
+    # Парсим бинарник по кадрам
     for frame_number in range(frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
         data = parse_bin_file(data_structure, frame_size, frame_number)
@@ -23,10 +23,10 @@ if __name__ == "__main__":
         bt_item = find_item(data, item)
         # Добавляем значения из других групп
         add_to(bt, bt_item)
-        # Преобразуем типы некоторых значений
-        map_values(bt)
+        # Подготавливаем данные для вставки в таблицу
+        bt_transformed = prepare_data('BeamTasks', bt, cur)
         # Вставляем группы в бд
-        insert_into_bd(bt, cur, 'BeamTasks')
+        insert_into('BeamTasks', bt_transformed, cur)
         print(105 * '*')
         # ---------------------ЗАПОЛНЯЕМ "PrimaryMarks"----------------------#
         entity_c = entity_counter(data, 'primaryMark')
