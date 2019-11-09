@@ -16,7 +16,9 @@ def connection() -> any:
     return cur, conn
 
 
-def insert_data_to_db(table_name: str, cur: any, data: list):
+def insert_data_to_db(table_name: str, cur: any, z: dict):
+    data = [[k, v] for k, v in z.items()]
+
     # формирование строки запроса
     columns = ','.join([f'"{x[0]}"' for x in data])
     param_placeholders = ','.join(['%s' for x in range(len(data))])
@@ -63,18 +65,9 @@ def map_values(data: dict, col_names: list) -> dict:
             data['isFake'] = bool(v)
             if data['isFake']:
                 raise Exception
-        # elif 'taskType' in k:
-            # data['markType'] = data.pop('taskType')
-            # break
         elif 'processingTime' in k:
             data['scanTime'] = data.pop('processingTime')
-        # elif 'azimuth' in k:
-        #     data['beamAzimuth'] = data.pop('azimuth')
-        #     break
-        # elif 'elevation' in k:
-        #     data['beamElevation'] = data.pop('elevation')
-        #     break
-        if 'distancePeriod' in k:
+        elif 'distancePeriod' in k:
             data['distanceZoneWeight'] = data.pop('distancePeriod')
         elif 'velocityPeriod' in k:
             data['velocityZoneWeight'] = data.pop('velocityPeriod')
@@ -84,20 +77,51 @@ def map_values(data: dict, col_names: list) -> dict:
             data['numVelocityZone'] = data.pop('velocity')
         elif 'possiblePeriod[' in k:
             z.append(v)
-            data.clear()
-            if len(z) == 6:
-                data.append({'possiblePeriods': z})
         elif 'scanPeriodSeconds' in k:
             data['scanPeriod'] = data.pop('scanPeriodSeconds')
         elif 'nextUpdateTimeSeconds' in k:
             data['nextTimeUpdate'] = data.pop('nextUpdateTimeSeconds')
 
+    if len(z) == 6:
+        data.update({'possiblePeriods': z})
+
     return data
 
 
-def prepare_data_for_db(table_name: str, cur: any, data: dict) -> list:
-    data_to_insert = []
+def read_from(table_name: str, cur: any, z: dict, fields: list) -> any:
+    data = {}
+    for key, value in z.items():
+        if key in fields:
+            data.update({key: value})
+
     # Для того чтобы узнать имена полей таблицы
+    cur.execute(f'SELECT * FROM "{table_name}";')
+    col_names = []
+    for elt in cur.description:
+        col_names.append(elt[0])
+
+    # формирование строки запроса
+    columns = ','.join([f'"{x}"' for x in data])
+    param_placeholders = ','.join(['%s' for x in range(len(data))])
+    query = f'SELECT * FROM "{table_name}" WHERE ({columns}) = ({param_placeholders})'
+    param_values = tuple(x for x in data.values())
+    try:
+        cur.execute(query, param_values)
+    except Exception as e:
+        print(f'\r\nException: {e}')
+    else:
+        db_values = cur.fetchall()
+        if db_values:
+            wis = dict(zip(col_names, db_values[0]))
+            # print(wis)
+            return wis
+        else:
+            return None
+
+
+def prepare_data_for_db(table_name: str, cur: any, data: dict) -> list:
+    data_to_insert = {}
+    # Узнаем имена полей таблицы
     cur.execute(f'SELECT * FROM "{table_name}";')
     col_names = []
     for elt in cur.description:
@@ -106,16 +130,8 @@ def prepare_data_for_db(table_name: str, cur: any, data: dict) -> list:
     # MAPPING (int ---> bool), имен ('type' => 'markType')
     data = map_values(data, col_names)
 
-    if type(data) is dict:
-        # 2839
-        for key, value in data.items():
-            if key in col_names:
-                data_to_insert.append([key, value])
-
-    elif type(data) is list:
-        for i in data:
-            for k, v in i.items():
-                if k in col_names:
-                    data_to_insert.append([k, v])
+    for key, value in data.items():
+        if key in col_names:
+            data_to_insert.update({key: value})
 
     return data_to_insert
