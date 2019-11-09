@@ -1,4 +1,11 @@
 import psycopg2
+import re
+
+# ALTER SEQUENCE "Candidates_Candidate_seq" restart with 1;
+
+# SELECT DISTINCT "taskId", "taskType", "antennaId"
+# 	FROM public."BeamTasks"
+# 	ORDER BY "taskId";
 
 
 def connection() -> any:
@@ -49,57 +56,46 @@ def read_from_db(table_name: str, cur: any, data: dict) -> any:
             return None
 
 
-def map_values(data: list, col_names: list) -> list:
+def map_values(data: dict, col_names: list) -> dict:
     z = []
-    if type(data) is list:
-        for group in data:
-            for k, v in group.items():
-                if 'isFake' in k:
-                    group['isFake'] = bool(v)
-                    if group['isFake']:
-                        raise Exception
-                # elif 'taskType' in k:
-                    # group['markType'] = group.pop('taskType')
-                    # break
-                elif 'processingTime' in k:
-                    group['scanTime'] = group.pop('processingTime')
-                    break
-                # elif 'azimuth' in k:
-                #     group['beamAzimuth'] = group.pop('azimuth')
-                #     break
-                # elif 'elevation' in k:
-                #     group['beamElevation'] = group.pop('elevation')
-                #     break
-                if 'distancePeriod' in k:
-                    group['distanceZoneWeight'] = group.pop('distancePeriod')
-                    break
-                elif 'velocityPeriod' in k:
-                    group['velocityZoneWeight'] = group.pop('velocityPeriod')
-                    break
-                elif 'distance' in k and 'distance' not in col_names:
-                    group['numDistanceZone'] = group.pop('distance')
-                    break
-                elif 'velocity' in k:
-                    group['numVelocityZone'] = group.pop('velocity')
-                    break
-                elif 'possiblePeriod[' in k:
-                    z.append(v)
-                    group.clear()
-                    if len(z) == 6:
-                        data.append({'possiblePeriods': z})
-                        # z.clear()
-                    break
-                elif 'scanPeriodSeconds' in k:
-                    group['scanPeriod'] = group.pop('scanPeriodSeconds')
-                    break
-                elif 'nextUpdateTimeSeconds' in k:
-                    group['nextTimeUpdate'] = group.pop('nextUpdateTimeSeconds')
-                    break
+    for k, v in data.items():
+        if 'isFake' in k:
+            data['isFake'] = bool(v)
+            if data['isFake']:
+                raise Exception
+        # elif 'taskType' in k:
+            # data['markType'] = data.pop('taskType')
+            # break
+        elif 'processingTime' in k:
+            data['scanTime'] = data.pop('processingTime')
+        # elif 'azimuth' in k:
+        #     data['beamAzimuth'] = data.pop('azimuth')
+        #     break
+        # elif 'elevation' in k:
+        #     data['beamElevation'] = data.pop('elevation')
+        #     break
+        if 'distancePeriod' in k:
+            data['distanceZoneWeight'] = data.pop('distancePeriod')
+        elif 'velocityPeriod' in k:
+            data['velocityZoneWeight'] = data.pop('velocityPeriod')
+        elif re.search(r'\bdistance\b', k) and 'distance' not in col_names:
+            data['numDistanceZone'] = data.pop('distance')
+        elif re.search(r'\bvelocity\b', k):
+            data['numVelocityZone'] = data.pop('velocity')
+        elif 'possiblePeriod[' in k:
+            z.append(v)
+            data.clear()
+            if len(z) == 6:
+                data.append({'possiblePeriods': z})
+        elif 'scanPeriodSeconds' in k:
+            data['scanPeriod'] = data.pop('scanPeriodSeconds')
+        elif 'nextUpdateTimeSeconds' in k:
+            data['nextTimeUpdate'] = data.pop('nextUpdateTimeSeconds')
 
     return data
 
 
-def prepare_data_for_db(table_name: str, cur: any, data) -> list:
+def prepare_data_for_db(table_name: str, cur: any, data: dict) -> list:
     data_to_insert = []
     # Для того чтобы узнать имена полей таблицы
     cur.execute(f'SELECT * FROM "{table_name}";')
