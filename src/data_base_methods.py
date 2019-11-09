@@ -119,7 +119,7 @@ def read_from(table_name: str, cur: any, z: dict, fields: list) -> any:
             return None
 
 
-def prepare_data_for_db(table_name: str, cur: any, data: dict) -> list:
+def prepare_data_for_db(table_name: str, cur: any, data: dict) -> dict:
     data_to_insert = {}
     # Узнаем имена полей таблицы
     cur.execute(f'SELECT * FROM "{table_name}";')
