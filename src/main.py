@@ -1,7 +1,8 @@
 from text_file_parser import *
 from bin_file_parser import *
 from data_base_methods import *
-from data_find_methods import *
+import re
+
 
 if __name__ == "__main__":
     # Парсим текстовый файл
@@ -11,12 +12,15 @@ if __name__ == "__main__":
     # Соединяемся с БД
     cur, conn = connection()
     # Парсим бинарник по кадрам
-    for frame_number in range(453, frame_c):
+    # frame_number = 814
+    for frame_number in range(1367, frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
         data = parse_bin_file(data_structure, frame_size, frame_number)
+
         primary_marks_count = 0
         candidates_count = 0
         tracks_count = 0
+        rad_forbidden_count = 0
 
         for index, group in enumerate(data):
             # ---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
@@ -83,9 +87,9 @@ if __name__ == "__main__":
                         view_spot.update(c)
                     elif 'velocityPeriod' in c:
                         view_spot.update(c)
-                    elif 'resolvedDistance' in c:
+                    elif 'distance' in c:
                         view_spot.update(c)
-                    elif 'resolvedVelocity' in c:
+                    elif 'velocity' in c:
                         view_spot.update(c)
                 group.clear()
 
@@ -115,11 +119,34 @@ if __name__ == "__main__":
                         primary_mark_pk = {k: v for k, v in pm_data.items() if k == 'PrimaryMark'}
                     candidate.update(beam_task_pk)
                     candidate.update(primary_mark_pk)
-                    z = prepare_data_for_db('Candidates', cur, candidate)
+                    z = prepare_data_for_db('Candidates', cur, [{k: v} for k, v in candidate.items()])
                     group.clear()
                     insert_data_to_db('Candidates', cur, z)
 
                 # ---------------------ЗАПОЛНЯЕМ "CandidatesIds"----------------------#
+                candidate_ids = {}
+                zapros = [
+                    'PrimaryMark',
+                    'BeamTask',
+                    # 'azimuth',
+                    # 'elevation'
+                ]
+                # формирование строки запроса
+                columns = ','.join([f'"{x}"' for x in zapros])
+                # param_placeholders = ','.join(['%s' for x in range(len(data))])
+                query = f'SELECT DISTINCT ({columns}) FROM "Candidates"'
+                # param_values = tuple(x for x in data.values())
+                # param_values = (3, 1)
+                # try:
+                #     cur.execute(query)
+                # except Exception as e:
+                #     print(f'\r\nException: {e}')
+                # else:
+                #     db_values = cur.fetchall()
+                #     if db_values:
+                #         for c, i in enumerate(db_values):
+                #             print(zapros)
+                #             print(db_values[c])
                 # ---------------------ЗДЕСЬ------------------------------------------#
                 # ---------------------ДОЛЖНА БЫТЬ------------------------------------#
                 # ---------------------ВАША РЕКЛАМА-----------------------------------#
@@ -155,3 +182,27 @@ if __name__ == "__main__":
                     z = prepare_data_for_db('AirTracks', cur, track)
                     group.clear()
                     insert_data_to_db('AirTracks', cur, z)
+
+            # ---------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------#
+            elif re.search(r'\bRadiationForbiddenSectors\b', group[0]):
+                group.pop(0)
+                rad_forbidden_sector = {}
+                for c in group:
+                    rad_forbidden_sector.update(c)
+                group.clear()
+
+                if rad_forbidden_sector['RadiationForbiddenSectorsCount'] != 0:
+                    breakpoint()
+
+            elif re.search(r'RadiationForbiddenSector', group[0]) and\
+                    rad_forbidden_sector['RadiationForbiddenSectorsCount'] != 0:
+                rad_forbidden_count += 1
+                group.pop(0)
+                if rad_forbidden_count <= rad_forbidden_sector['RadiationForbiddenSectorsCount']:
+                    for c in group:
+                        rad_forbidden_sector.update(c)
+
+                    z = prepare_data_for_db('ForbiddenSectors', cur, rad_forbidden_sector)
+                    group.clear()
+                    breakpoint()
+                    insert_data_to_db('ForbiddenSectors', cur, z)

@@ -44,26 +44,20 @@ def read_data_from_db(table_name: str, cur: any, data: dict) -> any:
         db_values = cur.fetchall()
         if db_values:
             wis = dict(zip(col_names, db_values[0]))
-            print(wis)
+            # print(wis)
             return wis
         else:
             return None
 
 
-def prepare_data_for_db(table_name: str, cur: any, data) -> list:
-    data_to_insert = []
-    # Для того чтобы узнать имена полей таблицы
-    cur.execute(f'SELECT * FROM "{table_name}";')
-    col_names = []
-    for elt in cur.description:
-        col_names.append(elt[0])
-
-    # Преобразование типов (int ---> bool), имен ('type' => 'markType')
+def map_values(data: list) -> list:
     if type(data) is list:
         for group in data:
             for k, v in group.items():
                 if 'isFake' in k:
                     group['isFake'] = bool(v)
+                    if group['isFake']:
+                        raise Exception
                 elif 'type' in k:
                     group['markType'] = group.pop('type')
                     break
@@ -76,22 +70,35 @@ def prepare_data_for_db(table_name: str, cur: any, data) -> list:
                 # elif 'elevation' in k:
                 #     group['beamElevation'] = group.pop('elevation')
                 #     break
-    else:
-        for k, v in data.items():
-            # if 'azimuth' in k:
-            #     data['epsilonBSK'] = data.pop('azimuth')
-            # elif 'elevation' in k:
-            #     data['betaBSK'] = data.pop('elevation')
-            if 'resolvedDistance' in k:
-                data['numDistanceZone'] = data.pop('resolvedDistance')
-            elif 'resolvedVelocity' in k:
-                data['numVelocityZone'] = data.pop('resolvedVelocity')
-            elif 'distancePeriod' in k:
-                data['distanceZoneWeight'] = data.pop('distancePeriod')
-            elif 'velocityPeriod' in k:
-                data['velocityZoneWeight'] = data.pop('velocityPeriod')
-            elif 'nextUpdateTimeSeconds' in k:
-                data['nextTimeUpdate'] = data.pop('nextUpdateTimeSeconds')
+                if 'distancePeriod' in k:
+                    group['distanceZoneWeight'] = group.pop('distancePeriod')
+                    break
+                elif 'velocityPeriod' in k:
+                    group['velocityZoneWeight'] = group.pop('velocityPeriod')
+                    break
+                elif r'distance' in k:
+                    group['numDistanceZone'] = group.pop('distance')
+                    break
+                elif 'velocity' in k:
+                    group['numVelocityZone'] = group.pop('velocity')
+                    break
+                elif 'nextUpdateTimeSeconds' in k:
+                    group['nextTimeUpdate'] = group.pop('nextUpdateTimeSeconds')
+                    break
+
+    return data
+
+
+def prepare_data_for_db(table_name: str, cur: any, data) -> list:
+    data_to_insert = []
+    # Для того чтобы узнать имена полей таблицы
+    cur.execute(f'SELECT * FROM "{table_name}";')
+    col_names = []
+    for elt in cur.description:
+        col_names.append(elt[0])
+
+    # MAPPING (int ---> bool), имен ('type' => 'markType')
+    data = map_values(data)
 
     if type(data) is dict:
         for key, value in data.items():
