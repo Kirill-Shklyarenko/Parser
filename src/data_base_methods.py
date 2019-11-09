@@ -50,7 +50,7 @@ def read_data_from_db(table_name: str, cur: any, data: dict) -> any:
             return None
 
 
-def map_values(data: list) -> list:
+def map_values(data: list, col_names: list) -> list:
     if type(data) is list:
         for group in data:
             for k, v in group.items():
@@ -58,9 +58,9 @@ def map_values(data: list) -> list:
                     group['isFake'] = bool(v)
                     if group['isFake']:
                         raise Exception
-                elif 'type' in k:
-                    group['markType'] = group.pop('type')
-                    break
+                # elif 'taskType' in k:
+                    # group['markType'] = group.pop('taskType')
+                    # break
                 elif 'processingTime' in k:
                     group['scanTime'] = group.pop('processingTime')
                     break
@@ -76,7 +76,7 @@ def map_values(data: list) -> list:
                 elif 'velocityPeriod' in k:
                     group['velocityZoneWeight'] = group.pop('velocityPeriod')
                     break
-                elif r'distance' in k:
+                elif 'distance' in k and 'distance' not in col_names:
                     group['numDistanceZone'] = group.pop('distance')
                     break
                 elif 'velocity' in k:
@@ -98,7 +98,7 @@ def prepare_data_for_db(table_name: str, cur: any, data) -> list:
         col_names.append(elt[0])
 
     # MAPPING (int ---> bool), имен ('type' => 'markType')
-    data = map_values(data)
+    data = map_values(data, col_names)
 
     if type(data) is dict:
         for key, value in data.items():

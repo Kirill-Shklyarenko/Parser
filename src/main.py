@@ -12,8 +12,8 @@ if __name__ == "__main__":
     # Соединяемся с БД
     cur, conn = connection()
     # Парсим бинарник по кадрам
-    # frame_number = 814
-    for frame_number in range(1367, frame_c):
+    # frame_number = 1947
+    for frame_number in range(1063, frame_c):
         print('\r\nFRAME № %s \r\n' % frame_number)
         data = parse_bin_file(data_structure, frame_size, frame_number)
 
@@ -42,15 +42,12 @@ if __name__ == "__main__":
                     scandata.update(c)
                 group.clear()
 
-                if scandata['primaryMarksCount'] != 0:
-                    # breakpoint()
-
-                    read_data = read_data_from_db('BeamTasks', cur, {k: scandata[k] for k in ('taskId', 'antennaId')})
-                    continue
             elif re.search(r'primaryMark', group[0]) and scandata['primaryMarksCount'] != 0:
                 primary_marks_count += 1
                 group.pop(0)
                 if primary_marks_count <= scandata['primaryMarksCount']:
+                    read_data = read_data_from_db('BeamTasks', cur,
+                                                  {k: scandata[k] for k in ('taskId', 'antennaId', 'taskType')})
                     group.append({k: v for k, v in read_data.items() if k == 'BeamTask'})
                     for k in [{k: v} for k, v in scandata.items()]:
                         group.append(k)
@@ -63,11 +60,6 @@ if __name__ == "__main__":
                 candidate_queue = {}
                 candidate_queue.update(group[1].items())
                 group.pop(0)
-
-                # candidate_queue['candidatesQueueSize'] = 4
-
-                # if candidate_queue['candidatesQueueSize'] != 0:
-                # breakpoint()
 
             elif re.search(r'trackCandidate', group[0]) and \
                     candidate_queue['candidatesQueueSize'] != 0:
@@ -107,21 +99,22 @@ if __name__ == "__main__":
                     candidate.update(view_spot)
                     candidate.update(velocity_res_spot)
 
-                    # candidate['taskId'] = 3
-                    # candidate['antennaId'] = 2
-
                     bt_data = read_data_from_db('BeamTasks', cur, {k: candidate[k] for k in ('taskId', 'antennaId')})
-                    pm_data = read_data_from_db('PrimaryMarks', cur, {k: candidate[k] for k in ('azimuth',
-                                                                                                'elevation')})
-                    if bt_data:
-                        beam_task_pk = {k: v for k, v in bt_data.items() if k == 'BeamTask'}
-                    if pm_data:
+                    beam_task_pk = {k: v for k, v in bt_data.items() if k == 'BeamTask'}
+
+                    cand_keys = {k: candidate[k] for k in ('azimuth', 'elevation', 'beamAzimuth', 'beamElevation')}
+                    z = {}
+                    z.update(beam_task_pk)
+                    z.update(cand_keys)
+                    pm_data = read_data_from_db('PrimaryMarks', cur, z)
+
+                    if bt_data and pm_data:
                         primary_mark_pk = {k: v for k, v in pm_data.items() if k == 'PrimaryMark'}
-                    candidate.update(beam_task_pk)
-                    candidate.update(primary_mark_pk)
-                    z = prepare_data_for_db('Candidates', cur, [{k: v} for k, v in candidate.items()])
-                    group.clear()
-                    insert_data_to_db('Candidates', cur, z)
+                        candidate.update(beam_task_pk)
+                        candidate.update(primary_mark_pk)
+                        z = prepare_data_for_db('Candidates', cur, [{k: v} for k, v in candidate.items()])
+                        group.clear()
+                        insert_data_to_db('Candidates', cur, z)
 
                 # ---------------------ЗАПОЛНЯЕМ "CandidatesIds"----------------------#
                 candidate_ids = {}
@@ -169,6 +162,9 @@ if __name__ == "__main__":
                 for c in group:
                     track.update(c)
                 group.clear()
+
+                if track['antennaId'] != 0:
+                    breakpoint()
 
                 pm_data = read_data_from_db('PrimaryMarks', cur, {k: v for k, v in track.items() if k == 'antennaId'})
                 candidate_data = read_data_from_db('Candidates', cur, {k: track[k] for k in ('azimuth',
