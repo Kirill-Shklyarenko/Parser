@@ -11,8 +11,8 @@ if __name__ == "__main__":
     # Соединяемся с БД
     cur, conn = connection()
     # Парсим бинарник по кадрам
-    # frame_number = 8892
-    for frame_number in range(298, frame_c):
+    # frame_number = 8892 1354
+    for frame_number in range(299, frame_c):
         start_time = time.time()
         print('\r\n\r\n\r\n\r\n       FRAME № %s \r\n' % frame_number)
         data = parse_bin_file(data_structure, frame_size, frame_number)
@@ -58,13 +58,12 @@ if __name__ == "__main__":
 
                 if primary_marks_count <= scandata['primaryMarksCount']:
 
-                    bt_data = read_from_db('BeamTasks', cur,
-                                           {k: scandata[k] for k in ('taskId',
-                                                                     'antennaId',
-                                                                     # 'taskType'
-                                                                     )})
-
-                    primary_mark.update({k: v for k, v in bt_data.items() if k == 'BeamTask'})
+                    bt_data = read_from_db('BeamTasks', cur, {k: scandata[k] for k in ('taskId',
+                                                                                       'antennaId',
+                                                                                       # 'taskType'
+                                                                                       )})
+                    bt_pk = {k: v for k, v in bt_data.items() if k == 'BeamTask'}
+                    primary_mark.update(bt_pk)
 
                     z = prepare_data_for_db('PrimaryMarks', cur, primary_mark)
                     # group.clear()
@@ -114,45 +113,35 @@ if __name__ == "__main__":
                     bt_pk = {k: v for k, v in bt_data.items() if k == 'BeamTask'}
 
                     pm_data = read_from_db('PrimaryMarks', cur,
-                                           {k: velocity_res_spot[k] for k in ('azimuth',
-                                                                              'elevation',
-                                                                              # 'beamAzimuth',
-                                                                              # 'beamElevation'
+                                           {k: velocity_res_spot[k] for k in ('azimuth', 'elevation',
+                                                                              # 'beamAzimuth', 'beamElevation'
                                                                               )})
+                    if pm_data:
+                        pm_pk = {k: v for k, v in pm_data.items() if k == 'PrimaryMark'}
 
-                    pm_pk = {k: v for k, v in pm_data.items() if k == 'PrimaryMark'}
+                        velocity_res_spot.update(bt_pk)
+                        velocity_res_spot.update(pm_pk)
 
-                    velocity_res_spot.update(bt_pk)
-                    velocity_res_spot.update(pm_pk)
+                        z = {}
+                        z.update(bt_pk)
+                        z.update(pm_pk)
+                        candidate_data = read_from_db('Candidates', cur, z)
 
-                    z = {}
-                    z.update(bt_pk)
-                    z.update(pm_pk)
-                    candidate_data = read_from_db('Candidates', cur, z)
+                        if candidate_data is None:
+                            candidates = prepare_data_for_db('Candidates', cur, velocity_res_spot)
+                            insert_data_to_db('Candidates', cur, candidates)
 
-                    if (bt_pk and pm_pk) and candidate_data is None:
-                        candidates = prepare_data_for_db('Candidates', cur, velocity_res_spot)
-                        insert_data_to_db('Candidates', cur, candidates)
+                            # ---------------------ЗАПОЛНЯЕМ "CandidatesIds"----------------------#
+                            candidates_ids = {}
+                            candidate_data = read_from_db(
+                                'Candidates', cur, {k: velocity_res_spot[k] for k in ('BeamTask', 'PrimaryMark')})
 
-                # ---------------------ЗАПОЛНЯЕМ "CandidatesIds"----------------------#
-                candidate_ids = {}
-                zapros = [
-                    "azimuth", "elevation", "state", "numDistanceZone", "numVelocityZone",
-                    "distanceZoneWeight", "velocityZoneWeight", "nextTimeUpdate", "PrimaryMark", "BeamTask"
-                ]
-                # формирование строки запроса
-                columns = ','.join([f'"{x}"' for x in zapros])
-                query = f'SELECT DISTINCT ({columns}) FROM "Candidates"'
-                # try:
-                #     cur.execute(query)
-                # except Exception as e:
-                #     print(f'\r\nException: {e}')
-                # else:
-                #     db_values = cur.fetchall()
-                #     if db_values:
-                #         s = db_values[0][0]
-                #         ss = s.split(',')
-                #         print(ss)
+                            candidate_data_pk = {k: v for k, v in candidate_data.items() if k == 'Candidate'}
+                            candidates_ids.update(velocity_res_spot)
+                            candidates_ids.update(candidate_data_pk)
+
+                            candidates_ids = prepare_data_for_db('CandidatesIds', cur, candidates_ids)
+                            insert_data_to_db('CandidatesIds', cur, candidates_ids)
 
                 # ---------------------ЗДЕСЬ------------------------------------------#
                 # ---------------------ДОЛЖНА БЫТЬ------------------------------------#
