@@ -96,9 +96,9 @@ def map_values(data: dict, col_names: list) -> dict:
         elif 'velocityPeriod' in k:
             returned_data['velocityZoneWeight'] = data['velocityPeriod']
         elif re.search(r'\bdistance\b', k) and 'distance' not in col_names:
-            returned_data['numDistanceZone'] = data['distance']
+            returned_data['numDistanceZone'] = data['resolvedDistance']
         elif re.search(r'\bvelocity\b', k):
-            returned_data['numVelocityZone'] = data['velocity']
+            returned_data['numVelocityZone'] = data['resolvedVelocity']
         elif 'possiblePeriod[' in k:
             z.append(v)
         elif 'scanPeriodSeconds' in k:
