@@ -7,7 +7,7 @@ if __name__ == "__main__":
     data_structure, frame_size = parse_text_file()
     frame_c = frame_counter(frame_size)
     cur, conn = connection()
-    for frame_number in range(453, frame_c):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 5390
+    for frame_number in range(2923, frame_c):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 5390
         start_time = time.time()
 
         primary_marks_count = 0
@@ -79,7 +79,7 @@ if __name__ == "__main__":
             elif re.search(r'trackCandidate', group[0]) and \
                     candidate_q['candidatesQueueSize'] != 0:
                 group.pop(0)
-                candidates_count += 1
+                # candidates_count += 1
                 track_candidate = {}
                 track_candidate.update(candidate_q)
                 for c in group:
@@ -89,22 +89,32 @@ if __name__ == "__main__":
                     candidate_q['candidatesQueueSize'] != 0:
                 group.pop(0)
                 view_spot = {}
-                view_spot.update(track_candidate)
+                # view_spot.update(track_candidate)
                 for c in group:
                     view_spot.update(c)
 
-            elif re.search(r'velocityResolutionSpot', group[0]) and \
+            elif re.search(r'distanceResolutionSpot', group[0]) and \
                     candidate_q['candidatesQueueSize'] != 0:
                 group.pop(0)
-                velocity_res_spot = {}
-                velocity_res_spot.update(view_spot)
+                distance_res_spot = {}
                 for c in group:
-                    if 'nextUpdateTimeSeconds' in c:
-                        velocity_res_spot.update(c)
+                    distance_res_spot.update(c)
+
+            elif re.search(r'velocityResolutionSpot', group[0]) and \
+                    candidates_count <= candidate_q['candidatesQueueSize']:
+                group.pop(0)
+                candidates_count += 1
+                velocity_res_spot = {}
+                for c in group:
+                    # if 'nextUpdateTimeSeconds' in c:
+                    velocity_res_spot.update(c)
+                # breakpoint()
+                # velocity_res_spot.update(view_spot)
 
                 if candidates_count <= candidate_q['candidatesQueueSize']:
                     candidates = {}
-                    candidates.update(velocity_res_spot)
+                    candidates.update(view_spot)
+                    candidate_q['candidatesQueueSize'] -= 1
 
                     bt_pk = read_from('BeamTasks', cur, candidates, ['taskId', 'antennaId'])
                     candidates.update(bt_pk)
@@ -122,7 +132,7 @@ if __name__ == "__main__":
                             candidates = prepare_data_for_db('Candidates', cur, candidates)
                             insert_data_to_db('Candidates', cur, candidates)
 
-                            # ---------------------ЗАПОЛНЯЕМ "CandidatesIds"----------------------#
+                            # ---------------------ЗАПОЛНЯЕМ "CandidatesIds"----------------------#      2687 frame
                             candidates_ids = {}
                             candidates_ids.update(candidates)
                             candidate_pk = read_from('Candidates', cur, candidates_ids, ['BeamTask', 'PrimaryMark'])
@@ -137,7 +147,7 @@ if __name__ == "__main__":
                 # ---------------------ДОЛЖНА БЫТЬ------------------------------------#
                 # ---------------------ВАША РЕКЛАМА-----------------------------------#
 
-            # ---------------------ЗАПОЛНЯЕМ "AirTracks"----------------------#
+            # ---------------------ЗАПОЛНЯЕМ "AirTracks"----------------------#                          2839 frame
             elif re.search(r'\bTracks\b', group[0]):
                 tracks_queue = {}
                 tracks_queue.update(group[1].items())
@@ -151,11 +161,17 @@ if __name__ == "__main__":
 
                 if track['antennaId'] != 0:
 
-                    pm_data = read_from('PrimaryMarks', cur, track, ['antennaId'])
-                    candidate_data = read_from('Candidates', cur, track, ['azimuth', 'elevation'])
-                    if pm_data and candidate_data:
-                        pm_data_pk = {k: v for k, v in pm_data.items() if k == 'PrimaryMark'}
-                        candidate_data_pk = {k: v for k, v in candidate_data.items() if k == 'Candidate'}
+                    pm_data_pk = read_from('PrimaryMarks', cur, track, ['antennaId', 'azimuth', 'elevation'])
+                    if pm_data_pk:
+                        track.update(pm_data_pk)
+
+                        candidate_data_pk = read_from('Candidates', cur, track,
+                                                      ['PrimaryMark', 'BeamTask',
+                                                       # 'azimuth', 'elevation'
+                                                       ])
+                    if pm_data_pk and candidate_data_pk:
+                        # pm_data_pk = {k: v for k, v in pm_data.items() if k == 'PrimaryMark'}
+                        # candidate_data_pk = {k: v for k, v in candidate_data.items() if k == 'Candidate'}
 
                         track.update(pm_data_pk)
                         track.update(candidate_data_pk)
