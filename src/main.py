@@ -10,13 +10,14 @@ if __name__ == "__main__":
     data_structure, frame_size = parse_text_file()
     frame_c = frame_counter(planner_rsf, frame_size)
     cur, conn = connection()
-    for frame_number in range(2839, frame_c):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
+    for frame_number in range(453, frame_c):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
         start_time = time.time()
 
         scandata = {'primaryMarksCount': 0}
         candidate_q = {'candidatesQueueSize': 0}
         track_candidate = {'state': 0}
-        tracks_q ={'tracksQueuesSize': 0}
+        tracks_q = {'tracksQueuesSize': 0}
+        rad_forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
         primary_marks_count = 0
         candidates_count = 0
         tracks_count = 0
@@ -77,101 +78,124 @@ if __name__ == "__main__":
                         if pm_data is None:
                             insert_data_to_db('PrimaryMarks', cur, primary_mark)
 
-            # ---------------------ЗАПОЛНЯЕМ "Candidates"----------------------#
+            # ---------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"---#  2687 4681 6879frame
             elif re.search(r'TrackCandidates', group[0]):
                 group.pop(0)
                 candidate_q = {}
                 for c in group:
                     candidate_q.update(c)
 
-                # if candidates_count <= candidate_q['candidatesQueueSize']:
+            elif candidates_count <= candidate_q['candidatesQueueSize']:
+                candidates_count += 1
 
-            elif re.search(r'trackCandidate', group[0]):
-                group.pop(0)
-                track_candidate = {}
-                for c in group:
-                    track_candidate.update(c)
-
-            elif track_candidate['state'] != 0:
-
-                if re.search(r'viewSpot', group[0]):
+                if re.search(r'trackCandidate', group[0]):
                     group.pop(0)
-                    view_spot = {}
+                    track_candidate = {}
                     for c in group:
-                        view_spot.update(c)
+                        track_candidate.update(c)
 
-                elif re.search(r'distanceResolutionSpot', group[0]):
-                    group.pop(0)
-                    distance_res_spot = {}
-                    for c in group:
-                        distance_res_spot.update(c)
+                elif track_candidate['state'] != 0:
+                    # ---------------------ЗАПОЛНЯЕМ "Candidates"---#  2687 4681 6879frame
+                    candidates_ids = {}
+                    candidates_ids.update({'id': track_candidate['id']})
 
-                elif re.search(r'velocityResolutionSpot', group[0]):
-                    group.pop(0)
-                    candidates_count += 1
-                    velocity_res_spot = {}
-                    for c in group:
-                        velocity_res_spot.update(c)
+                    # Проверка существует ли запись с такими параметрами
+                    candidates_ids = prepare_data_for_db('Candidates', cur, candidates_ids)
+                    candidates_pk = read_from('Candidates', cur, candidates_ids, ['id'])
+                    if candidates_pk is None:
+                        insert_data_to_db('Candidates', cur, candidates_ids)
 
-                    # breakpoint()
-                    candidates = {}
-                    candidates.update(track_candidate)
+                    # ---------------------ЗАПОЛНЯЕМ "CandidatesHistory"----------------------#
+                    if re.search(r'viewSpot', group[0]):
+                        group.pop(0)
+                        view_spot = {}
+                        for c in group:
+                            view_spot.update(c)
 
-                    if track_candidate['state'] == 1:
-                        query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
-                        bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
-                        if bt_pk:
-                            query_for_pm = ['BeamTask', 'azimuth', 'elevation', 'beamAzimuth', 'beamElevation']
-                            pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
-                            if pm_pk:
-                                candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
+                    elif re.search(r'distanceResolutionSpot', group[0]):
+                        group.pop(0)
+                        distance_res_spot = {}
+                        for c in group:
+                            distance_res_spot.update(c)
 
-                                candidates = prepare_data_for_db('Candidates', cur, candidates)
-                                candidates_pk = read_from('Candidates', cur, candidates, ['BeamTask', 'PrimaryMark'])
-                                if candidates_pk is None:
-                                    insert_data_to_db('Candidates', cur, candidates)
+                    elif re.search(r'velocityResolutionSpot', group[0]):
+                        group.pop(0)
 
-                    elif track_candidate['state'] == 2:
-                        candidates.update(distance_res_spot)
-                        query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
-                        query_for_pm = ['BeamTask', 'distance']
-                    elif track_candidate['state'] == 3:
-                        breakpoint()
-                    elif track_candidate['state'] == 4:
-                        candidates.update(velocity_res_spot)
-                        query_for_bt = ['taskId', 'antennaId', 'threshold', 'pulsePeriod']
-                        query_for_pm = ['BeamTask', 'distance']
+                        velocity_res_spot = {}
+                        for c in group:
+                            velocity_res_spot.update(c)
+
+                        # breakpoint()
+                        candidates = {}
+                        candidates.update(track_candidate)
+
+                        if track_candidate['state'] == 1:
+                            query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
+                            bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
+                            if bt_pk:
+                                candidates.update({'BeamTask': bt_pk['BeamTask']})
+                                query_for_pm = ['BeamTask', 'azimuth', 'elevation', 'beamAzimuth', 'beamElevation']
+                                pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
+                                if pm_pk:
+                                    candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
+                                    candidates_pk = read_from('Candidates', cur, candidates, ['id'])
+                                    if candidates_pk:
+                                        candidates.update({'Candidate': candidates_pk['Candidate']})
+
+                                        # Проверка существует ли запись с такими параметрами
+                                        candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
+                                        candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
+                                                                          ['BeamTask', 'PrimaryMark', 'Candidate'])
+                                        if candidates_history_pk is None:
+                                            insert_data_to_db('CandidatesHistory', cur, candidates)
+
+                        elif track_candidate['state'] == 2:
+                            candidates.update(distance_res_spot)
+                            query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
+                            bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
+                            if bt_pk:
+                                candidates.update({'BeamTask': bt_pk['BeamTask']})
+                                query_for_pm = ['BeamTask', 'distance']
+                                pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
+                                if pm_pk:
+                                    candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
+                                    candidates_pk = read_from('Candidates', cur, candidates, ['id'])
+                                    if candidates_pk:
+                                        candidates.update({'Candidate': candidates_pk['Candidate']})
+
+                                        # Проверка существует ли запись с такими параметрами
+                                        candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
+                                        candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
+                                                                          ['BeamTask', 'PrimaryMark', 'Candidate'])
+                                        if candidates_history_pk is None:
+                                            insert_data_to_db('CandidatesHistory', cur, candidates)
+
+                        elif track_candidate['state'] == 3:
+                            breakpoint()
+                        elif track_candidate['state'] == 4:
+                            candidates.update(velocity_res_spot)
+                            query_for_bt = ['taskId', 'antennaId', 'threshold', 'pulsePeriod']
+                            bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
+                            if bt_pk:
+                                candidates.update({'BeamTask': bt_pk['BeamTask']})
+                                query_for_pm = ['BeamTask', 'distance']
+                                pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
+                                if pm_pk:
+                                    candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
+                                    candidates_pk = read_from('Candidates', cur, candidates, ['id'])
+                                    if candidates_pk:
+                                        candidates.update({'Candidate': candidates_pk['Candidate']})
+
+                                        # Проверка существует ли запись с такими параметрами
+                                        candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
+                                        candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
+                                                                          ['BeamTask', 'PrimaryMark', 'Candidate'])
+                                        if candidates_history_pk is None:
+                                            insert_data_to_db('CandidatesHistory', cur, candidates)
+
                         # breakpoint()
 
-                    bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
-
-                    if bt_pk:
-                        candidates.update({'BeamTask': bt_pk['BeamTask']})
-
-                        # candidates.update(velocity_res_spot)
-                        z = prepare_data_for_db('PrimaryMarks', cur, candidates)
-                        pm_pk = read_from('PrimaryMarks', cur, z, query_for_pm)
-
-                        if pm_pk:
-                            candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
-
-                            # Проверка существует ли запись с такими параметрами
-                            candidates = prepare_data_for_db('Candidates', cur, candidates)
-                            candidate_data = read_from('Candidates', cur, z, ['BeamTask', 'PrimaryMark'])
-                            if candidate_data is None:
-                                insert_data_to_db('Candidates', cur, candidates)
-                                # ---------------------ЗАПОЛНЯЕМ "CandidatesIds"---#  2687 4681 6879frame
-                                candidates_ids = {}
-                                candidates_ids.update(candidates)
-                                candidates_pk = read_from('Candidates', cur, candidates_ids, ['BeamTask', 'PrimaryMark'])
-
-                                candidates_ids.update({'Candidate': candidates_pk['Candidate']})
-                                candidates_ids.update({'id': track_candidate['id']})
-
-                                candidates_ids = prepare_data_for_db('CandidatesIds', cur, candidates_ids)
-                                insert_data_to_db('CandidatesIds', cur, candidates_ids)
-
-            # ---------------------ЗАПОЛНЯЕМ "AirTracks"----------------------#                    2839, 4715 4833frame
+            # ---------------------ЗАПОЛНЯЕМ "AirTracks"----------------------#   2839, 4715 4833frame
             elif re.search(r'\bTracks\b', group[0]):
                 group.pop(0)
                 tracks_q = {}
@@ -179,31 +203,42 @@ if __name__ == "__main__":
                     tracks_q.update(c)
 
             elif tracks_count <= tracks_q['tracksQueuesSize']:
+                tracks_count += 1
+
                 if re.search('track_', group[0]):
-                    tracks_count += 1
                     group.pop(0)
                     track = {}
                     for c in group:
                         track.update(c)
 
-                    if track['antennaId'] != 0:
+                    if track['antennaId'] != 0:     # and track['type'] != 0
+                        breakpoint()
+                    # ---------------------ЗАПОЛНЯЕМ "AirTracks"---#  2687 4681 6879frame
+                    air_tracks_ids = {}
+                    air_tracks_ids.update({'id': track['id']})
 
-                        pm_data_pk = read_from('PrimaryMarks', cur, track, ['antennaId', 'azimuth', 'elevation'])
-                        if pm_data_pk:
-                            track.update({'PrimaryMark': pm_data_pk['PrimaryMark']})
+                    # Проверка существует ли запись с такими параметрами
+                    air_tracks_ids = prepare_data_for_db('AirTracks', cur, air_tracks_ids)
+                    air_tracks_pk = read_from('AirTracks', cur, air_tracks_ids, ['id'])
+                    if air_tracks_pk is None:
+                        insert_data_to_db('AirTracks', cur, air_tracks_ids)
 
-                            candidate_data_pk = read_from('Candidates', cur, track,
-                                                          ['PrimaryMark',
-                                                           # 'distance'
-                                                           ])
-                            if candidate_data_pk:
-                                track.update({'Candidate': candidate_data_pk['Candidate']})
-
-                                # Проверка существует ли запись с такими параметрами
-                                track_data = read_from('AirTracks', cur, track, ['PrimaryMark', 'Candidate'])
-                                if track_data is None:
-                                    track = prepare_data_for_db('AirTracks', cur, track)
-                                    insert_data_to_db('AirTracks', cur, track)
+                    # pm_data_pk = read_from('PrimaryMarks', cur, track, ['antennaId', 'azimuth', 'elevation'])
+                    # if pm_data_pk:
+                    #     track.update({'PrimaryMark': pm_data_pk['PrimaryMark']})
+                    #
+                    #     candidate_data_pk = read_from('Candidates', cur, track,
+                    #                                   ['PrimaryMark',
+                    #                                    # 'distance'
+                    #                                    ])
+                    #     if candidate_data_pk:
+                    #         track.update({'Candidate': candidate_data_pk['Candidate']})
+                    #
+                    #         # Проверка существует ли запись с такими параметрами
+                    #         track_data = read_from('AirTracks', cur, track, ['PrimaryMark', 'Candidate'])
+                    #         if track_data is None:
+                    #             track = prepare_data_for_db('AirTracks', cur, track)
+                    #             insert_data_to_db('AirTracks', cur, track)
 
             # ---------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------#
             elif re.search(r'\bRadiationForbiddenSectors\b', group[0]):
@@ -212,22 +247,20 @@ if __name__ == "__main__":
                 for c in group:
                     rad_forbidden_sector.update(c)
 
-            elif re.search(r'RadiationForbiddenSector', group[0]) and \
-                    rad_forbidden_sector['RadiationForbiddenSectorsCount'] != 0:
+            elif rad_forbidden_count <= rad_forbidden_sector['RadiationForbiddenSectorsCount']:
                 rad_forbidden_count += 1
 
-                if rad_forbidden_count <= rad_forbidden_sector['RadiationForbiddenSectorsCount']:
+                if re.search(r'RadiationForbiddenSector', group[0]):
                     for c in group:
                         rad_forbidden_sector.update(c)
 
                     # Проверка существует ли запись с такими параметрами
-                    # rad_forbidden_sector = prepare_data_for_db('ForbiddenSectors', cur, rad_forbidden_sector)
-                    rad_fs_entity = read_from('ForbiddenSectors', cur, rad_forbidden_sector,
-                                              ['azimuthBeginNSSK', 'azimuthEndNSSK',
-                                               'elevationBeginNSSK', 'elevationEndNSSK'
-                                               ])
-                    if rad_fs_entity is None:
-                        rad_forbidden_sector = prepare_data_for_db('ForbiddenSectors', cur, rad_forbidden_sector)
+                    rad_forbidden_sector = prepare_data_for_db('ForbiddenSectors', cur, rad_forbidden_sector)
+                    rad_fs_pk = read_from('ForbiddenSectors', cur, rad_forbidden_sector,
+                                          ['azimuthBeginNSSK', 'azimuthEndNSSK',
+                                           'elevationBeginNSSK', 'elevationEndNSSK'
+                                           ])
+                    if rad_fs_pk is None:
                         insert_data_to_db('ForbiddenSectors', cur, rad_forbidden_sector)
 
         time_sec = "{:7.4f}".format(time.time() - start_time)
