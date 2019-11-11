@@ -10,7 +10,7 @@ if __name__ == "__main__":
     data_structure, frame_size = parse_text_file()
     frame_c = frame_counter(planner_rsf, frame_size)
     cur, conn = connection()
-    for frame_number in range(453, frame_c):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
+    for frame_number in range(2687, frame_c):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
         start_time = time.time()
 
         scandata = {'primaryMarksCount': 0}
@@ -22,13 +22,12 @@ if __name__ == "__main__":
         candidates_count = 0
         tracks_count = 0
         rad_forbidden_count = 0
-        can_read = False
 
         print('\r\n\r\n\r\n\r\n        FRAME № %s \r\n' % frame_number)
         data = parse_bin_file(planner_rsf, data_structure, frame_size, frame_number)
 
         for index, group in enumerate(data):
-            # ---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
+            # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"------------------------------------#
             if re.search(r'\bTask\b', group[0]):
                 group.pop(0)
                 task = {}
@@ -47,7 +46,7 @@ if __name__ == "__main__":
                 if bt_data is None:
                     insert_data_to_db('BeamTasks', cur, beam_task)
 
-            # ---------------------ЗАПОЛНЯЕМ "PrimaryMarks"----------------------#   4470
+            # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"---------------------------------#
             elif re.search(r'scanData', group[0]):
                 group.pop(0)
                 scandata = {}
@@ -55,19 +54,15 @@ if __name__ == "__main__":
                     scandata.update(c)
 
             elif primary_marks_count <= scandata['primaryMarksCount']:
+                primary_marks_count += 1
+
                 if re.search(r'primaryMark', group[0]):
                     group.pop(0)
-                    primary_marks_count += 1
                     primary_mark = {}
                     for c in group:
                         primary_mark.update(c)
 
-                    if primary_mark['azimuth'] != 0 and primary_mark['elevation'] != 0 and primary_mark['type'] != 0:
-                        pass
-                        # breakpoint()
-
                     primary_mark.update(scandata)
-
                     bt_pk = read_from('BeamTasks', cur, primary_mark, ['taskId', 'antennaId', 'taskType'])
                     if bt_pk:
                         primary_mark.update({'BeamTask': bt_pk['BeamTask']})
@@ -78,7 +73,7 @@ if __name__ == "__main__":
                         if pm_data is None:
                             insert_data_to_db('PrimaryMarks', cur, primary_mark)
 
-            # ---------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"---#  2687 4681 6879frame
+            # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-----------------------#
             elif re.search(r'TrackCandidates', group[0]):
                 group.pop(0)
                 candidate_q = {}
@@ -95,7 +90,7 @@ if __name__ == "__main__":
                         track_candidate.update(c)
 
                 elif track_candidate['state'] != 0:
-                    # ---------------------ЗАПОЛНЯЕМ "Candidates"---#  2687 4681 6879frame
+                    # ---------------------------ЗАПОЛНЯЕМ "Candidates"---------------------------------#
                     candidates_ids = {}
                     candidates_ids.update({'id': track_candidate['id']})
 
@@ -105,7 +100,7 @@ if __name__ == "__main__":
                     if candidates_pk is None:
                         insert_data_to_db('Candidates', cur, candidates_ids)
 
-                    # ---------------------ЗАПОЛНЯЕМ "CandidatesHistory"----------------------#
+                    # ---------------------------ЗАПОЛНЯЕМ "CandidatesHistory"--------------------------#
                     if re.search(r'viewSpot', group[0]):
                         group.pop(0)
                         view_spot = {}
@@ -195,7 +190,7 @@ if __name__ == "__main__":
 
                         # breakpoint()
 
-            # ---------------------ЗАПОЛНЯЕМ "AirTracks"----------------------#   2839, 4715 4833frame
+            # ---------------------------------ЗАПОЛНЯЕМ "AirTracks"------------------------------------#   2839frame
             elif re.search(r'\bTracks\b', group[0]):
                 group.pop(0)
                 tracks_q = {}
@@ -211,14 +206,14 @@ if __name__ == "__main__":
                     for c in group:
                         track.update(c)
 
-                    if track['antennaId'] != 0:     # and track['type'] != 0
-                        breakpoint()
-                    # ---------------------ЗАПОЛНЯЕМ "AirTracks"---#  2687 4681 6879frame
+                    # if track['antennaId'] != 0:     # and track['type'] != 0
+                    #     breakpoint()
+                    # ----------------------------ЗАПОЛНЯЕМ "AirTracks"---------------------------------#
                     air_tracks_ids = {}
                     air_tracks_ids.update({'id': track['id']})
 
                     # Проверка существует ли запись с такими параметрами
-                    air_tracks_ids = prepare_data_for_db('AirTracks', cur, air_tracks_ids)
+                    # air_tracks_ids = prepare_data_for_db('AirTracks', cur, air_tracks_ids)
                     air_tracks_pk = read_from('AirTracks', cur, air_tracks_ids, ['id'])
                     if air_tracks_pk is None:
                         insert_data_to_db('AirTracks', cur, air_tracks_ids)
@@ -240,7 +235,7 @@ if __name__ == "__main__":
                     #             track = prepare_data_for_db('AirTracks', cur, track)
                     #             insert_data_to_db('AirTracks', cur, track)
 
-            # ---------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------#
+            # ----------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------#
             elif re.search(r'\bRadiationForbiddenSectors\b', group[0]):
                 group.pop(0)
                 rad_forbidden_sector = {}
