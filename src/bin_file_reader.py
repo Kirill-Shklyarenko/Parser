@@ -1,12 +1,11 @@
 from struct import *
+
 import copy
 import os
 
-planner_RSF = r'../data/Planner.rsf'
 
-
-def byte_reader(type_w: str, offset: int) -> any:
-    with open(planner_RSF, 'rb') as file:
+def byte_reader(file_name: str, type_w: str, offset: int) -> any:
+    with open(file_name, 'rb') as file:
         offset *= 2  # Номер слова в блоке умножаем на размер слова (2 байта)
         file.seek(offset + 14)  # Прибавляем 14 байт, чтобы отсечь Имя файла заголовка
 
@@ -34,7 +33,7 @@ def byte_reader(type_w: str, offset: int) -> any:
     return value
 
 
-def parse_bin_file(data: list, frame_size: int, frame_number: int) -> list:
+def parse_bin_file(file_name: str, data: list, frame_size: int, frame_number: int) -> list:
     data_with_values = copy.deepcopy(data)
     frame_rate = frame_number * frame_size
     for line in data_with_values:
@@ -43,14 +42,14 @@ def parse_bin_file(data: list, frame_size: int, frame_number: int) -> list:
                 name = i.get('name')
                 type_w = i.get('type')
                 offset = i.get('offset')
-                value = byte_reader(type_w, offset + frame_rate)
+                value = byte_reader(file_name, type_w, offset + frame_rate)
                 i.clear()
                 i.update({name: value})
     return data_with_values
 
 
-def frame_counter(frame_size: int) -> int:
-    file_size = os.path.getsize(planner_RSF)  # Размер файла в байтах
+def frame_counter(file_name: str,frame_size: int) -> int:
+    file_size = os.path.getsize(file_name)  # Размер файла в байтах
     file_size = file_size - 14  # отсекаем 14 байт заголовка
     try:
         frames_count = file_size / (frame_size * 2)

@@ -1,10 +1,9 @@
 import copy
+from main import planner
 
-planner = r'../data/Planner'
 
-
-def opener() -> list:
-    with open(planner) as file:
+def opener(file_name: str,) -> list:
+    with open(file_name) as file:
         data = file.readlines()
     return data
 
@@ -13,7 +12,7 @@ def parse_text_file() -> tuple:
     frame_size = 0
     group = []  # просто список элементов [0, 1, 2]
     substring = []  # список содержит имя "NavigationData"[0] и словарь "Parameters"[1]
-    file = opener()
+    file = opener(planner)
 
     for i, line in enumerate(file):
         line = line.split()

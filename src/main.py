@@ -3,9 +3,12 @@ from bin_file_reader import *
 from data_base_methods import *
 import time
 
+planner = r'../data/session_00/Planner'
+planner_rsf = r'../data/session_00/Planner.rsf'
+
 if __name__ == "__main__":
     data_structure, frame_size = parse_text_file()
-    frame_c = frame_counter(frame_size)
+    frame_c = frame_counter(planner_rsf, frame_size)
     cur, conn = connection()
     for frame_number in range(2839, frame_c):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
         start_time = time.time()
@@ -21,7 +24,7 @@ if __name__ == "__main__":
         can_read = False
 
         print('\r\n\r\n\r\n\r\n        FRAME № %s \r\n' % frame_number)
-        data = parse_bin_file(data_structure, frame_size, frame_number)
+        data = parse_bin_file(planner_rsf, data_structure, frame_size, frame_number)
 
         for index, group in enumerate(data):
             # ---------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------#
