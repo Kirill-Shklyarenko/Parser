@@ -10,7 +10,7 @@ if __name__ == "__main__":
     data_structure, frame_size = parse_text_file()
     frame_c = frame_counter(planner_rsf, frame_size)
     cur, conn = connection()
-    for frame_number in range(2687, frame_c):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
+    for frame_number in range(3398, frame_c):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
         start_time = time.time()
 
         scandata = {'primaryMarksCount': 0}
