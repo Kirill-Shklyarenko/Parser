@@ -1,7 +1,6 @@
 ﻿__pycache__
 dist
 parser
-.idea
 .gitattributes
 .idea
 *.rsf
