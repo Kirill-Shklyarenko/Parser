@@ -95,6 +95,12 @@ def map_values(data: dict, col_names: list) -> dict:
             returned_data['distanceZoneWeight'] = data['distancePeriod']
         elif 'velocityPeriod' in k:
             returned_data['velocityZoneWeight'] = data['velocityPeriod']
+        elif 'beamAzimuth' in k and 'beamAzimuth' not in col_names:
+            returned_data['betaBSK'] = data['beamAzimuth']
+        elif 'beamElevation' in k and 'beamElevation' not in col_names:
+            returned_data['epsilonBSK'] = data['beamElevation']
+        elif 'type' in k and 'type' not in col_names:
+            returned_data['markType'] = data['type']
         elif re.search(r'\bdistance\b', k) and 'distance' not in col_names:
             returned_data['numDistanceZone'] = data['resolvedDistance']
         elif re.search(r'\bvelocity\b', k):
@@ -105,6 +111,8 @@ def map_values(data: dict, col_names: list) -> dict:
             returned_data['scanPeriod'] = data['scanPeriodSeconds']
         elif 'nextUpdateTimeSeconds' in k:
             returned_data['nextTimeUpdate'] = data['nextUpdateTimeSeconds']
+        elif 'creationTimeSeconds' in k:
+            returned_data['nextTimeUpdate'] = data['creationTimeSeconds']
 
     if len(z) == 6:
         returned_data.update({'possiblePeriods': z})
