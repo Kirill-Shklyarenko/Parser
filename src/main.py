@@ -67,7 +67,7 @@ if __name__ == "__main__":
                     if primary_mark['type'] == 0:
                         breakpoint()
                     bt_pk = read_from('BeamTasks', cur, primary_mark, ['taskId', 'antennaId',
-                                                                       # 'taskType'
+                                                                       'taskType'
                                                                        ])
 
                     if bt_pk:
