@@ -27,7 +27,7 @@ if __name__ == "__main__":
         data = parse_bin_file(planner_rsf, data_structure, frame_size, frame_number)
 
         for index, group in enumerate(data):
-            # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"------------------------------------#
+            # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------------------- #
             if re.search(r'\bTask\b', group[0]):
                 group.pop(0)
                 task = {}
@@ -46,7 +46,7 @@ if __name__ == "__main__":
                 if bt_data is None:
                     insert_data_to_db('BeamTasks', cur, beam_task)
 
-            # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"---------------------------------#643
+            # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"-------------------------------- #  643
             elif re.search(r'scanData', group[0]):
                 group.pop(0)
                 scan_data = {}
@@ -79,7 +79,7 @@ if __name__ == "__main__":
                         if pm_data is None:
                             insert_data_to_db('PrimaryMarks', cur, primary_mark)
 
-            # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-----------------------#
+            # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"---------------------- #
             elif re.search(r'TrackCandidates', group[0]):
                 group.pop(0)
                 candidate_q = {}
@@ -96,7 +96,7 @@ if __name__ == "__main__":
                         track_candidate.update(c)
                     # breakpoint()
 
-                    # ---------------------------ЗАПОЛНЯЕМ "Candidates"---------------------------------#
+                    # ---------------------------ЗАПОЛНЯЕМ "Candidates"-------------------------------- #
                     candidates_ids = {}
                     candidates_ids.update({'id': track_candidate['id']})
 
@@ -106,7 +106,7 @@ if __name__ == "__main__":
                     if candidates_pk is None:
                         insert_data_to_db('Candidates', cur, candidates_ids)
 
-                # ---------------------------ЗАПОЛНЯЕМ "CandidatesHistory"--------------------------#
+                # ---------------------------ЗАПОЛНЯЕМ "CandidatesHistory"----------------------------- #
                 elif re.search(r'viewSpot', group[0]):
                     group.pop(0)
                     view_spot = {}
@@ -130,10 +130,11 @@ if __name__ == "__main__":
                     candidates = {}
                     except_keys = ['task_id', 'beamAzimuth', 'beamElevation']
                     candidates.update({k: v for k, v in track_candidate.items() if k not in except_keys})
-
+                    # -----------------------------------state == 0------------------------------------ #
                     if candidates['state'] == 0:
                         breakpoint()
                         print('candidates_state == 0')
+                    # -----------------------------------state == 1------------------------------------ #
                     elif candidates['state'] == 1:  # frame 2687
                         print('candidates_state == 1')
                         candidates.update(view_spot)
@@ -162,7 +163,7 @@ if __name__ == "__main__":
                                                                       ['BeamTask', 'PrimaryMark', 'Candidate'])
                                     if candidates_history_pk is None:
                                         insert_data_to_db('CandidatesHistory', cur, candidates)
-
+                    # -----------------------------------state == 2------------------------------------ #
                     elif candidates['state'] == 2:  # frame 2689
                         print('candidates_state == 2')
                         candidates.update(track_candidate)
@@ -191,10 +192,11 @@ if __name__ == "__main__":
                                                                       ['BeamTask', 'PrimaryMark', 'Candidate'])
                                     if candidates_history_pk is None:
                                         insert_data_to_db('CandidatesHistory', cur, candidates)
-
+                    # -----------------------------------state == 3------------------------------------ #
                     elif candidates['state'] == 3:
                         breakpoint()
                         print('candidates_state == 3')
+                    # -----------------------------------state == 4------------------------------------ #
                     elif candidates['state'] == 4:
                         print('candidates_state == 4')
                         candidates.update(velocity_res_spot)
@@ -222,15 +224,14 @@ if __name__ == "__main__":
                                                                       ['BeamTask', 'PrimaryMark', 'Candidate'])
                                     if candidates_history_pk is None:
                                         insert_data_to_db('CandidatesHistory', cur, candidates)
-
+                    # -----------------------------------state == 5------------------------------------ #
                     elif candidates['state'] == 5:
                         # breakpoint()
                         print('candidates_state == 5')
-                    elif candidates['state'] == 0:
-                        breakpoint()
-
+                    # -----------------------------------state == 6------------------------------------ #
                     elif candidates['state'] == 6:
                         print('candidates_state == 6')
+                        # --------------------------------view_spot------------------------------------ #
                         candidates.update(view_spot)
                         query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
                         bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
@@ -258,8 +259,7 @@ if __name__ == "__main__":
                                     if candidates_history_pk is None:
                                         insert_data_to_db('CandidatesHistory', cur, candidates)
 
-                        # ------------------------------------------------------------------------------------------
-
+                        # ----------------------------distance_res_spot-------------------------------- #
                         candidates.update(track_candidate)
                         candidates.update(distance_res_spot)
                         query_for_bt = ['taskId', 'antennaId',
@@ -288,7 +288,7 @@ if __name__ == "__main__":
                                     if candidates_history_pk is None:
                                         insert_data_to_db('CandidatesHistory', cur, candidates)
 
-            # ---------------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"---------------# 2839frame
+            # ---------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"-------------------- # 2839frame
             elif re.search(r'\bTracks\b', group[0]):
                 group.pop(0)
                 tracks_q = {}
@@ -353,7 +353,7 @@ if __name__ == "__main__":
                             if tracks_history_pk is None:
                                 insert_data_to_db('CandidatesHistory', cur, track)
 
-            # ----------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------#
+            # ----------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------------- #
             elif re.search(r'\bRadiationForbiddenSectors\b', group[0]):
                 group.pop(0)
                 rad_forbidden_sector = {}
