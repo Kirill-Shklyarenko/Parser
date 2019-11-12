@@ -10,7 +10,7 @@ if __name__ == "__main__":
     data_structure, frame_size = parse_text_file()
     frames_count = frame_counter(planner_rsf, frame_size)
     cur, conn = connection()
-    for frame_number in range(9422, frames_count):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
+    for frame_number in range(900, frames_count):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
         start_time = time.time()
 
         scan_data = {'primaryMarksCount': 0}
@@ -86,19 +86,16 @@ if __name__ == "__main__":
                 for c in group:
                     candidate_q.update(c)
 
-            # elif candidates_count < candidate_q['candidatesQueueSize']:
-            #     candidates_count += 1
-
-            elif re.search(r'trackCandidate', group[0]):
-                group.pop(0)
-                track_candidate = {}
-                for c in group:
-                    track_candidate.update(c)
-                # breakpoint()
-
             elif candidates_count < candidate_q['candidatesQueueSize']:
+                # candidates_count += 1
 
-                if track_candidate['state'] != 0:
+                if re.search(r'trackCandidate', group[0]):
+                    group.pop(0)
+                    track_candidate = {}
+                    for c in group:
+                        track_candidate.update(c)
+                    # breakpoint()
+
                     # ---------------------------ЗАПОЛНЯЕМ "Candidates"---------------------------------#
                     candidates_ids = {}
                     candidates_ids.update({'id': track_candidate['id']})
@@ -109,183 +106,189 @@ if __name__ == "__main__":
                     if candidates_pk is None:
                         insert_data_to_db('Candidates', cur, candidates_ids)
 
-                    # ---------------------------ЗАПОЛНЯЕМ "CandidatesHistory"--------------------------#
-                    if re.search(r'viewSpot', group[0]):
-                        group.pop(0)
-                        view_spot = {}
-                        for c in group:
-                            view_spot.update(c)
+                # ---------------------------ЗАПОЛНЯЕМ "CandidatesHistory"--------------------------#
+                elif re.search(r'viewSpot', group[0]):
+                    group.pop(0)
+                    view_spot = {}
+                    for c in group:
+                        view_spot.update(c)
 
-                    elif re.search(r'distanceResolutionSpot', group[0]):
-                        group.pop(0)
-                        distance_res_spot = {}
-                        for c in group:
-                            distance_res_spot.update(c)
+                elif re.search(r'distanceResolutionSpot', group[0]):
+                    group.pop(0)
+                    distance_res_spot = {}
+                    for c in group:
+                        distance_res_spot.update(c)
 
-                    elif re.search(r'velocityResolutionSpot', group[0]):
-                        candidates_count += 1
-                        group.pop(0)
-                        velocity_res_spot = {}
-                        for c in group:
-                            velocity_res_spot.update(c)
+                elif re.search(r'velocityResolutionSpot', group[0]):
+                    candidates_count += 1
+                    group.pop(0)
+                    velocity_res_spot = {}
+                    for c in group:
+                        velocity_res_spot.update(c)
 
-                        # breakpoint()
-                        candidates = {}
-                        except_keys = ['task_id', 'beamAzimuth', 'beamElevation']
-                        candidates.update({k: v for k, v in track_candidate.items() if k not in except_keys})
+                    # breakpoint()
+                    candidates = {}
+                    except_keys = ['task_id', 'beamAzimuth', 'beamElevation']
+                    candidates.update({k: v for k, v in track_candidate.items() if k not in except_keys})
 
-                        if candidates['state'] == 1:                                                     # frame 2687
-                            candidates.update(view_spot)
-                            query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
-                            bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
-                            if bt_pk:
-                                candidates.update({'BeamTask': bt_pk['BeamTask']})
-                                candidates.update(track_candidate)
-                                candidates['betaBSK'] = candidates.pop('azimuth')
-                                candidates['epsilonBSK'] = candidates.pop('elevation')
-                                query_for_pm = ['BeamTask',
-                                                # 'azimuth', 'elevation',
-                                                'beamAzimuth', 'beamElevation'
-                                                ]
-                                pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
-                                if pm_pk:
-                                    candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
-
-                                    candidates_pk = read_from('Candidates', cur, candidates, ['id'])
-                                    if candidates_pk:
-                                        candidates.update({'Candidate': candidates_pk['Candidate']})
-
-                                        # Проверка существует ли запись с такими параметрами
-                                        candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
-                                        candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
-                                                                          ['BeamTask', 'PrimaryMark', 'Candidate'])
-                                        if candidates_history_pk is None:
-                                            insert_data_to_db('CandidatesHistory', cur, candidates)
-
-                        elif candidates['state'] == 2:                                                   # frame 2689
-
+                    if candidates['state'] == 0:
+                        breakpoint()
+                        print('candidates_state == 0')
+                    elif candidates['state'] == 1:  # frame 2687
+                        print('candidates_state == 1')
+                        candidates.update(view_spot)
+                        query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
+                        bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
+                        if bt_pk:
+                            candidates.update({'BeamTask': bt_pk['BeamTask']})
                             candidates.update(track_candidate)
-                            candidates.update(distance_res_spot)
-                            query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
-                            bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
-                            if bt_pk:
-                                candidates.update({'BeamTask': bt_pk['BeamTask']})
-                                candidates['betaBSK'] = candidates.pop('azimuth')
-                                candidates['epsilonBSK'] = candidates.pop('elevation')
-                                query_for_pm = ['BeamTask',
-                                                # 'azimuth', 'elevation',
-                                                'beamAzimuth', 'beamElevation'
-                                                ]
-
-                                pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
-                                if pm_pk:
-                                    candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
-                                    candidates_pk = read_from('Candidates', cur, candidates, ['id'])
-                                    if candidates_pk:
-                                        candidates.update({'Candidate': candidates_pk['Candidate']})
-
-                                        # Проверка существует ли запись с такими параметрами
-                                        candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
-                                        candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
-                                                                          ['BeamTask', 'PrimaryMark', 'Candidate'])
-                                        if candidates_history_pk is None:
-                                            insert_data_to_db('CandidatesHistory', cur, candidates)
-
-                        elif candidates['state'] == 3:
-                            breakpoint()
-                        elif candidates['state'] == 4:
-                            candidates.update(velocity_res_spot)
-                            query_for_bt = ['taskId', 'antennaId', 'threshold', 'pulsePeriod']
-                            bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
-                            if bt_pk:
-                                candidates.update({'BeamTask': bt_pk['BeamTask']})
-                                candidates['betaBSK'] = candidates.pop('azimuth')
-                                candidates['epsilonBSK'] = candidates.pop('elevation')
-                                query_for_pm = ['BeamTask',
-                                                'distance',
-                                                # 'azimuth', 'elevation',
-                                                'beamAzimuth', 'beamElevation'
-                                                ]
-                                pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
-                                if pm_pk:
-                                    candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
-                                    candidates_pk = read_from('Candidates', cur, candidates, ['id'])
-                                    if candidates_pk:
-                                        candidates.update({'Candidate': candidates_pk['Candidate']})
-
-                                        # Проверка существует ли запись с такими параметрами
-                                        candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
-                                        candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
-                                                                          ['BeamTask', 'PrimaryMark', 'Candidate'])
-                                        if candidates_history_pk is None:
-                                            insert_data_to_db('CandidatesHistory', cur, candidates)
-
-                        elif candidates['state'] == 5:
-                            # breakpoint()
-                            print('candidates_state == 5')
-                        elif candidates['state'] == 0:
-                            breakpoint()
-
-                        elif candidates['state'] == 6:                                                   # frame 2238
-                            print('candidates_state == 6')
-                            candidates.update(view_spot)
-                            query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
-                            bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
-                            if bt_pk:
-                                candidates.update({'BeamTask': bt_pk['BeamTask']})
-                                candidates.update(track_candidate)
-                                candidates['betaBSK'] = candidates.pop('azimuth')
-                                candidates['epsilonBSK'] = candidates.pop('elevation')
-                                query_for_pm = ['BeamTask',
-                                                # 'azimuth', 'elevation',
-                                                'beamAzimuth', 'beamElevation'
-                                                ]
-                                pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
-                                if pm_pk:
-                                    candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
-
-                                    candidates_pk = read_from('Candidates', cur, candidates, ['id'])
-                                    if candidates_pk:
-                                        candidates.update({'Candidate': candidates_pk['Candidate']})
-
-                                        # Проверка существует ли запись с такими параметрами
-                                        candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
-                                        candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
-                                                                          ['BeamTask', 'PrimaryMark', 'Candidate'])
-                                        if candidates_history_pk is None:
-                                            insert_data_to_db('CandidatesHistory', cur, candidates)
-
-                            # ------------------------------------------------------------------------------------------
-
-                            candidates.update(track_candidate)
-                            candidates.update(distance_res_spot)
-                            query_for_bt = ['taskId', 'antennaId',
-                                            'pulsePeriod',
+                            candidates['betaBSK'] = candidates.pop('azimuth')
+                            candidates['epsilonBSK'] = candidates.pop('elevation')
+                            query_for_pm = ['BeamTask',
+                                            # 'azimuth', 'elevation',
+                                            'beamAzimuth', 'beamElevation'
                                             ]
-                            bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
-                            if bt_pk:
-                                candidates.update({'BeamTask': bt_pk['BeamTask']})
-                                candidates['betaBSK'] = candidates.pop('azimuth')
-                                candidates['epsilonBSK'] = candidates.pop('elevation')
-                                query_for_pm = ['BeamTask',
-                                                # 'azimuth', 'elevation',
-                                                'beamAzimuth', 'beamElevation',
-                                                ]
-                                pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
-                                if pm_pk:
-                                    candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
-                                    candidates_pk = read_from('Candidates', cur, candidates, ['id'])
-                                    if candidates_pk:
-                                        candidates.update({'Candidate': candidates_pk['Candidate']})
+                            pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
+                            if pm_pk:
+                                candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
 
-                                        # Проверка существует ли запись с такими параметрами
-                                        candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
-                                        candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
-                                                                          ['BeamTask', 'PrimaryMark', 'Candidate'])
-                                        if candidates_history_pk is None:
-                                            insert_data_to_db('CandidatesHistory', cur, candidates)
+                                candidates_pk = read_from('Candidates', cur, candidates, ['id'])
+                                if candidates_pk:
+                                    candidates.update({'Candidate': candidates_pk['Candidate']})
 
-            # ---------------------------------ЗАПОЛНЯЕМ "AirTracks"------------------------------------#   2839frame
+                                    # Проверка существует ли запись с такими параметрами
+                                    candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
+                                    candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
+                                                                      ['BeamTask', 'PrimaryMark', 'Candidate'])
+                                    if candidates_history_pk is None:
+                                        insert_data_to_db('CandidatesHistory', cur, candidates)
+
+                    elif candidates['state'] == 2:  # frame 2689
+                        print('candidates_state == 2')
+                        candidates.update(track_candidate)
+                        candidates.update(distance_res_spot)
+                        query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
+                        bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
+                        if bt_pk:
+                            candidates.update({'BeamTask': bt_pk['BeamTask']})
+                            candidates['betaBSK'] = candidates.pop('azimuth')
+                            candidates['epsilonBSK'] = candidates.pop('elevation')
+                            query_for_pm = ['BeamTask',
+                                            # 'azimuth', 'elevation',
+                                            'beamAzimuth', 'beamElevation'
+                                            ]
+
+                            pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
+                            if pm_pk:
+                                candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
+                                candidates_pk = read_from('Candidates', cur, candidates, ['id'])
+                                if candidates_pk:
+                                    candidates.update({'Candidate': candidates_pk['Candidate']})
+
+                                    # Проверка существует ли запись с такими параметрами
+                                    candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
+                                    candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
+                                                                      ['BeamTask', 'PrimaryMark', 'Candidate'])
+                                    if candidates_history_pk is None:
+                                        insert_data_to_db('CandidatesHistory', cur, candidates)
+
+                    elif candidates['state'] == 3:
+                        breakpoint()
+                        print('candidates_state == 3')
+                    elif candidates['state'] == 4:
+                        print('candidates_state == 4')
+                        candidates.update(velocity_res_spot)
+                        query_for_bt = ['taskId', 'antennaId', 'threshold', 'pulsePeriod']
+                        bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
+                        if bt_pk:
+                            candidates.update({'BeamTask': bt_pk['BeamTask']})
+                            candidates['betaBSK'] = candidates.pop('azimuth')
+                            candidates['epsilonBSK'] = candidates.pop('elevation')
+                            query_for_pm = ['BeamTask',
+                                            'distance',
+                                            # 'azimuth', 'elevation',
+                                            'beamAzimuth', 'beamElevation'
+                                            ]
+                            pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
+                            if pm_pk:
+                                candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
+                                candidates_pk = read_from('Candidates', cur, candidates, ['id'])
+                                if candidates_pk:
+                                    candidates.update({'Candidate': candidates_pk['Candidate']})
+
+                                    # Проверка существует ли запись с такими параметрами
+                                    candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
+                                    candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
+                                                                      ['BeamTask', 'PrimaryMark', 'Candidate'])
+                                    if candidates_history_pk is None:
+                                        insert_data_to_db('CandidatesHistory', cur, candidates)
+
+                    elif candidates['state'] == 5:
+                        # breakpoint()
+                        print('candidates_state == 5')
+                    elif candidates['state'] == 0:
+                        breakpoint()
+
+                    elif candidates['state'] == 6:
+                        print('candidates_state == 6')
+                        candidates.update(view_spot)
+                        query_for_bt = ['taskId', 'antennaId', 'pulsePeriod']
+                        bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
+                        if bt_pk:
+                            candidates.update({'BeamTask': bt_pk['BeamTask']})
+                            candidates.update(track_candidate)
+                            candidates['betaBSK'] = candidates.pop('azimuth')
+                            candidates['epsilonBSK'] = candidates.pop('elevation')
+                            query_for_pm = ['BeamTask',
+                                            # 'azimuth', 'elevation',
+                                            'beamAzimuth', 'beamElevation'
+                                            ]
+                            pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
+                            if pm_pk:
+                                candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
+
+                                candidates_pk = read_from('Candidates', cur, candidates, ['id'])
+                                if candidates_pk:
+                                    candidates.update({'Candidate': candidates_pk['Candidate']})
+
+                                    # Проверка существует ли запись с такими параметрами
+                                    candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
+                                    candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
+                                                                      ['BeamTask', 'PrimaryMark', 'Candidate'])
+                                    if candidates_history_pk is None:
+                                        insert_data_to_db('CandidatesHistory', cur, candidates)
+
+                        # ------------------------------------------------------------------------------------------
+
+                        candidates.update(track_candidate)
+                        candidates.update(distance_res_spot)
+                        query_for_bt = ['taskId', 'antennaId',
+                                        'pulsePeriod',
+                                        ]
+                        bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
+                        if bt_pk:
+                            candidates.update({'BeamTask': bt_pk['BeamTask']})
+                            candidates['betaBSK'] = candidates.pop('azimuth')
+                            candidates['epsilonBSK'] = candidates.pop('elevation')
+                            query_for_pm = ['BeamTask',
+                                            # 'azimuth', 'elevation',
+                                            'beamAzimuth', 'beamElevation',
+                                            ]
+                            pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
+                            if pm_pk:
+                                candidates.update({'PrimaryMark': pm_pk['PrimaryMark']})
+                                candidates_pk = read_from('Candidates', cur, candidates, ['id'])
+                                if candidates_pk:
+                                    candidates.update({'Candidate': candidates_pk['Candidate']})
+
+                                    # Проверка существует ли запись с такими параметрами
+                                    candidates = prepare_data_for_db('CandidatesHistory', cur, candidates)
+                                    candidates_history_pk = read_from('CandidatesHistory', cur, candidates,
+                                                                      ['BeamTask', 'PrimaryMark', 'Candidate'])
+                                    if candidates_history_pk is None:
+                                        insert_data_to_db('CandidatesHistory', cur, candidates)
+
+            # ---------------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"---------------# 2839frame
             elif re.search(r'\bTracks\b', group[0]):
                 group.pop(0)
                 tracks_q = {}
@@ -295,6 +298,7 @@ if __name__ == "__main__":
             elif tracks_count < tracks_q['tracksQueuesSize']:
                 tracks_count += 1
 
+                # ---------------------------ЗАПОЛНЯЕМ "AirTracks"----------------------------------#
                 if re.search('track_', group[0]):
                     group.pop(0)
                     track = {}
@@ -312,22 +316,42 @@ if __name__ == "__main__":
                     if air_tracks_pk is None:
                         insert_data_to_db('AirTracks', cur, air_tracks_ids)
 
-                    # pm_data_pk = read_from('PrimaryMarks', cur, track, ['antennaId', 'azimuth', 'elevation'])
-                    # if pm_data_pk:
-                    #     track.update({'PrimaryMark': pm_data_pk['PrimaryMark']})
-                    #
-                    #     candidate_data_pk = read_from('Candidates', cur, track,
-                    #                                   ['PrimaryMark',
-                    #                                    # 'distance'
-                    #                                    ])
-                    #     if candidate_data_pk:
-                    #         track.update({'Candidate': candidate_data_pk['Candidate']})
-                    #
-                    #         # Проверка существует ли запись с такими параметрами
-                    #         track_data = read_from('AirTracks', cur, track, ['PrimaryMark', 'Candidate'])
-                    #         if track_data is None:
-                    #             track = prepare_data_for_db('AirTracks', cur, track)
-                    #             insert_data_to_db('AirTracks', cur, track)
+                    # ---------------------------ЗАПОЛНЯЕМ "AirTracksHistory"-----------------------#
+
+                    # track['betaBSK'] = track.pop('azimuth')
+                    # track['epsilonBSK'] = track.pop('elevation')
+                    query_for_pm = [
+                                    'azimuth', 'elevation',
+                                    # 'distance'
+                                    # 'type',
+                                    # 'antennaId',
+                                    ]
+                    pm_pk = read_from('PrimaryMarks', cur, track, query_for_pm)
+                    if pm_pk:
+                        track.update({'PrimaryMark': pm_pk['PrimaryMark']})
+                        query_for_ch = [
+                                        # 'BeamTask',
+                                        'PrimaryMark',
+                                        # 'azimuth', 'elevation',
+                                        # 'antennaId',
+                                        'beamAzimuth', 'beamElevation'
+                                        ]
+                        candidates_history_pk = read_from('CandidatesHistory', cur, track, query_for_ch)
+                        if candidates_history_pk:
+                            track.update({'CandidatesHistory': candidates_history_pk['CandidatesHistory']})
+                            air_tracks_pk = read_from('AirTracks', cur, air_tracks_ids, ['id'])
+                            track.update({'AirTracks': air_tracks_pk['AirTracks']})
+
+                            # Проверка существует ли запись с такими параметрами
+                            track = prepare_data_for_db('AirTracksHistory', cur, track)
+                            tracks_history_pk = read_from('AirTracksHistory', cur, track,
+                                                          ['BeamTask',
+                                                           'PrimaryMark',
+                                                           'Candidate',
+                                                           'AirTracks'
+                                                           ])
+                            if tracks_history_pk is None:
+                                insert_data_to_db('CandidatesHistory', cur, track)
 
             # ----------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------#
             elif re.search(r'\bRadiationForbiddenSectors\b', group[0]):
