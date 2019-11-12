@@ -10,7 +10,7 @@ if __name__ == "__main__":
     data_structure, frame_size = parse_text_file()
     frames_count = frame_counter(planner_rsf, frame_size)
     cur, conn = connection()
-    for frame_number in range(5205, frames_count):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
+    for frame_number in range(9422, frames_count):  # frame_number = (300 - Candidates); (2237, 2838 - airTracks) 12849
         start_time = time.time()
 
         scan_data = {'primaryMarksCount': 0}
@@ -66,7 +66,9 @@ if __name__ == "__main__":
 
                     if primary_mark['type'] == 0:
                         breakpoint()
-                    bt_pk = read_from('BeamTasks', cur, primary_mark, ['taskId', 'antennaId', 'taskType'])
+                    bt_pk = read_from('BeamTasks', cur, primary_mark, ['taskId', 'antennaId',
+                                                                       # 'taskType'
+                                                                       ])
 
                     if bt_pk:
                         primary_mark.update({'BeamTask': bt_pk['BeamTask']})
@@ -139,9 +141,11 @@ if __name__ == "__main__":
                             if bt_pk:
                                 candidates.update({'BeamTask': bt_pk['BeamTask']})
                                 candidates.update(track_candidate)
+                                candidates['betaBSK'] = candidates.pop('azimuth')
+                                candidates['epsilonBSK'] = candidates.pop('elevation')
                                 query_for_pm = ['BeamTask',
-                                                'azimuth', 'elevation',
-                                                # 'beamAzimuth', 'beamElevation'
+                                                # 'azimuth', 'elevation',
+                                                'beamAzimuth', 'beamElevation'
                                                 ]
                                 pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
                                 if pm_pk:
@@ -166,9 +170,11 @@ if __name__ == "__main__":
                             bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
                             if bt_pk:
                                 candidates.update({'BeamTask': bt_pk['BeamTask']})
+                                candidates['betaBSK'] = candidates.pop('azimuth')
+                                candidates['epsilonBSK'] = candidates.pop('elevation')
                                 query_for_pm = ['BeamTask',
-                                                'azimuth', 'elevation',
-                                                # 'beamAzimuth', 'beamElevation'
+                                                # 'azimuth', 'elevation',
+                                                'beamAzimuth', 'beamElevation'
                                                 ]
 
                                 pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
@@ -193,10 +199,12 @@ if __name__ == "__main__":
                             bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
                             if bt_pk:
                                 candidates.update({'BeamTask': bt_pk['BeamTask']})
+                                candidates['betaBSK'] = candidates.pop('azimuth')
+                                candidates['epsilonBSK'] = candidates.pop('elevation')
                                 query_for_pm = ['BeamTask',
                                                 'distance',
-                                                'azimuth', 'elevation',
-                                                # 'beamAzimuth', 'beamElevation'
+                                                # 'azimuth', 'elevation',
+                                                'beamAzimuth', 'beamElevation'
                                                 ]
                                 pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
                                 if pm_pk:
@@ -215,6 +223,9 @@ if __name__ == "__main__":
                         elif candidates['state'] == 5:
                             # breakpoint()
                             print('candidates_state == 5')
+                        elif candidates['state'] == 0:
+                            breakpoint()
+
                         elif candidates['state'] == 6:                                                   # frame 2238
                             print('candidates_state == 6')
                             candidates.update(view_spot)
@@ -223,9 +234,11 @@ if __name__ == "__main__":
                             if bt_pk:
                                 candidates.update({'BeamTask': bt_pk['BeamTask']})
                                 candidates.update(track_candidate)
+                                candidates['betaBSK'] = candidates.pop('azimuth')
+                                candidates['epsilonBSK'] = candidates.pop('elevation')
                                 query_for_pm = ['BeamTask',
-                                                'azimuth', 'elevation',
-                                                # 'beamAzimuth', 'beamElevation'
+                                                # 'azimuth', 'elevation',
+                                                'beamAzimuth', 'beamElevation'
                                                 ]
                                 pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
                                 if pm_pk:
@@ -252,11 +265,11 @@ if __name__ == "__main__":
                             bt_pk = read_from('BeamTasks', cur, candidates, query_for_bt)
                             if bt_pk:
                                 candidates.update({'BeamTask': bt_pk['BeamTask']})
-                                # candidates['betaBSK'] = candidates.pop('azimuth')
-                                # candidates['epsilonBSK'] = candidates.pop('elevation')
+                                candidates['betaBSK'] = candidates.pop('azimuth')
+                                candidates['epsilonBSK'] = candidates.pop('elevation')
                                 query_for_pm = ['BeamTask',
-                                                'azimuth', 'elevation',
-                                                # 'beamAzimuth', 'beamElevation',
+                                                # 'azimuth', 'elevation',
+                                                'beamAzimuth', 'beamElevation',
                                                 ]
                                 pm_pk = read_from('PrimaryMarks', cur, candidates, query_for_pm)
                                 if pm_pk:
