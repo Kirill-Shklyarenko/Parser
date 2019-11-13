@@ -304,3 +304,87 @@
 # where "taskType" != 0
 # and "taskType" != 1
 # ;
+
+
+
+
+
+# for i, type_w in enumerate(massive_of_types):
+    #     if 'WW' in type_w:
+    #         massive_of_types[i] = 'B'  # UINT_2
+    #     elif 'SS' in type_w:
+    #         massive_of_types[i] = 'b'  # INT_2
+    #     elif 'UU' in type_w:
+    #         massive_of_types[i] = 'hh'
+    #         # size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
+    #     elif 'LL' in type_w:
+    #         massive_of_types[i] = ''
+    #         # size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
+    #     elif 'RR' in type_w:
+    #         massive_of_types[i] = 'c'  # битовая переменная
+    #         # size = 1  # Размер 1 байт
+    #     elif 'FF' in type_w:
+    #         massive_of_types[i] = 'f'
+    #         # size = 4  # 2 слова х 2 байта(размер слова)
+    # massive_of_types.insert(0, '<')
+    # with open(frame_rate_file, 'r+', encoding='UTF-8') as fr_c:
+    #     try:
+    #         old_frame_rate = int(fr_c.read())
+    #     except:
+    #         fr_c.write(str(frame_rate) + '\r\n')
+    #         old_frame_rate = frame_rate
+    # if frame_rate == old_frame_rate:
+    #     with open(file_name, 'rb') as file:
+    #         file.seek(14)  # отсечь Имя файла заголовка
+    #         file.seek(frame_rate)
+    #         file = file.read()
+    #         with open(file_name + 's', 'wb') as new_file:
+    #             new_file.write(bytes(file))
+    #         with open(file_name + 's', 'rb') as new_file:
+    #
+    #             frame = new_file.read(len(massive_of_types * 2))
+    #             asd = ''.join(massive_of_types)
+    #             massive_of_values = unpack(asd, frame)[0]
+    #
+    #             for line in frame:
+    #                 for number, cursor in enumerate(line):
+    #                     if type(cursor) is dict:
+    #                         number = 0
+    #                         name = cursor.get('name')
+    #                         cursor.clear()
+    #                         cursor.update({'name': name,
+    #                                        'value': massive_of_values[number]})
+    #
+    # elif frame_rate < old_frame_rate:
+    #     with open(file_name, 'rb') as file:
+    #         file.seek(14)  # отсечь Имя файла заголовка
+    #         file.seek(frame_rate)
+    #         frame = file.read(len(massive_of_types))
+    #         massive_of_values = unpack(massive_of_types, frame)[0]
+    #
+    #         for line in frame:
+    #             for number, cursor in enumerate(line):
+    #                 if type(cursor) is dict:
+    #                     number = 0
+    #                     name = cursor.get('name')
+    #                     cursor.clear()
+    #                     cursor.update({'name': name,
+    #                                    'value': massive_of_values[number]})
+    # else:
+    #     with open(file_name + 's', 'rb') as file:
+    #         file.seek(14)  # отсечь Имя файла заголовка
+    #         file.seek(frame_rate)
+    #         frame = file.read(len(massive_of_types))
+    #         massive_of_values = unpack(massive_of_types, frame)[0]
+    #
+    #         for line in frame:
+    #             for number, cursor in enumerate(line):
+    #                 if type(cursor) is dict:
+    #                     number = 0
+    #                     name = cursor.get('name')
+    #                     cursor.clear()
+    #                     cursor.update({'name': name,
+    #                                    'value': massive_of_values[number]})
+    #
+    #
+    # return frame

@@ -5,7 +5,7 @@ import time
 
 planner = r'../data/session_00/Planner'
 planner_rsf = r'../data/session_00/Planner.rsf'
-start_frame = 15255  # 14655
+start_frame = 15290  # 15269
 
 if __name__ == "__main__":
     data_structure, frame_size = parse_text_file()
