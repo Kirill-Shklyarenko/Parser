@@ -46,7 +46,7 @@ if __name__ == "__main__":
                 beam_task.update(task)
                 for c in group:
                     beam_task.update(c)
-                print('BT_type == ', beam_task['taskType'])
+                print('Task_type == ', beam_task['taskType'])
                 # Проверка существует ли запись с такими параметрами
                 beam_task = prepare_data_for_db('BeamTasks', cur, beam_task)
                 bt_data = read_from('BeamTasks', cur, beam_task, ['taskId', 'antennaId'])
@@ -70,9 +70,9 @@ if __name__ == "__main__":
                     primary_mark.update(scan_data)
 
                     primary_marks_size = scan_data['primaryMarksCount']
-                    print(f'\r\n\r\nprimaryMarksCount == {primary_marks_size}')
-                    print('pM_type == ', primary_mark['type'])
                     primary_marks_count += 1
+                    print(f'\r\n\r\nprimaryMarksCount == {primary_marks_count} / {primary_marks_size}')
+                    print('pM_type == ', primary_mark['type'])
 
                     bt_pk = read_from('BeamTasks', cur, primary_mark, ['taskId',
                                                                        'antennaId',
@@ -116,9 +116,9 @@ if __name__ == "__main__":
 
                 elif re.search(r'velocityResolutionSpot', group[0]):
                     candidates_queue_size = candidate_q['candidatesQueueSize']
-                    print(f'\r\n\r\ncandidatesQueueSize == {candidates_queue_size}')
-                    print('c_state == ', track_candidate['state'])
                     candidates_count += 1
+                    print(f'\r\n\r\ncandidatesQueueSize == {candidates_count} / {candidates_queue_size}')
+                    print('c_state == ', track_candidate['state'])
 
                     group.pop(0)
                     velocity_res_spot = {}
@@ -306,11 +306,10 @@ if __name__ == "__main__":
                     tracks_q.update(c)
 
             elif tracks_count < tracks_q['tracksQueuesSize']:
-                # ---------------------------ЗАПОЛНЯЕМ "AirTracks"------------------------------------- #
                 if re.search('track_', group[0]):
                     tracks_size = tracks_q['tracksQueuesSize']
-                    print(f'\r\n\r\ntracksQueuesSize == {tracks_size}')
                     tracks_count += 1
+                    print(f'\r\n\r\ntracksQueuesSize == {tracks_count} / {tracks_size}')
 
                     group.pop(0)
                     track = {}
@@ -364,8 +363,8 @@ if __name__ == "__main__":
 
             elif rad_forbidden_count < rad_forbidden_sector['RadiationForbiddenSectorsCount']:
                 rad_forbidden_size = rad_forbidden_sector['RadiationForbiddenSectorsCount']
-                print(f'primaryMarksCount == {rad_forbidden_size}')
                 rad_forbidden_count += 1
+                print(f'primaryMarksCount == {rad_forbidden_count} / {rad_forbidden_size}')
 
                 if re.search(r'RadiationForbiddenSector', group[0]):
                     for c in group:
