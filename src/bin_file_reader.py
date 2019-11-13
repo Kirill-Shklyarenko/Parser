@@ -1,9 +1,7 @@
 from struct import *
-from pathlib import Path
+import json
 import copy
 import os
-
-frame_rate_file = Path(r'../data/session_00/frame_rate')
 
 
 def byte_reader(file_name: str, type_w: str, offset: int) -> any:
@@ -38,21 +36,6 @@ def byte_reader(file_name: str, type_w: str, offset: int) -> any:
 def parse_bin_file(file_name: str, data_struct: list, frame_size: int, frame_number: int) -> list:
     frame = copy.deepcopy(data_struct)
     frame_rate = frame_number * frame_size
-    if frame_rate_file.is_file():
-        with open(frame_rate_file, 'a+') as fr_c:
-            try:
-                old_frame_number = fr_c.readline(1)
-            except Exception as e:
-                fr_c.truncate(0)
-                fr_c.write(f'{frame_number}')
-                old_frame_number = frame_number
-            else:
-                fr_c.truncate(0)
-                fr_c.write(str(frame_number))
-
-    else:
-        with open(frame_rate_file, 'w+') as fr_c:
-            fr_c.write(f'{frame_number}')
 
     for line in frame:
         for i in line:
@@ -76,3 +59,22 @@ def frame_counter(file_name: str, frame_size: int) -> int:
     else:
         frames_count = int(frames_count)
     return frames_count
+
+
+def read_start_frame(file_name: str, frame_number=None):
+    if file_name.is_file():
+        if frame_number:
+            prev_frame_number = {'prev_frame_number': frame_number - 1}
+            with open(file_name, 'w') as fr_c:
+                fr_c.write(json.dumps(prev_frame_number))
+        else:
+            prev_frame_number = {'prev_frame_number': 0}
+            with open(file_name) as fr_c:
+                prev_frame_number.update(json.load(fr_c))
+        return prev_frame_number['prev_frame_number']
+
+    else:
+        prev_frame_number = {'prev_frame_number': 0}
+        with open(file_name, 'w+') as fr_c:
+            fr_c.write(json.dumps(prev_frame_number))
+        return prev_frame_number['prev_frame_number']

@@ -1,18 +1,23 @@
 from text_file_reader import *
 from bin_file_reader import *
 from data_base_methods import *
+from pathlib import Path
 import time
 
-planner = r'../data/session_00/Planner'
-planner_rsf = r'../data/session_00/Planner.rsf'
-start_frame = 15290  # 15269
+data_folder = Path(r'../data/session_00/')
+planner = data_folder / r'Planner'
+planner_rsf = data_folder / r'Planner.rsf'
+frame_rate_file = data_folder / r'frame_rate'
+
 
 if __name__ == "__main__":
     data_structure, frame_size = parse_text_file()
+    start_frame = read_start_frame(frame_rate_file)
     frames_count = frame_counter(planner_rsf, frame_size)
     cur, conn = connection()
     for frame_number in range(start_frame, frames_count):  # (2237, 2838 - airTracks)
         start_time = time.time()
+        read_start_frame(frame_rate_file, frame_number)
         print(f"\r\n\r\n\r\n--------------- FRAME № {frame_number} ---------------")
         data = parse_bin_file(planner_rsf, data_structure, frame_size, frame_number)
 
