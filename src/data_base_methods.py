@@ -1,5 +1,6 @@
 import psycopg2
 import re
+import pprint
 
 
 def connection() -> any:
@@ -23,7 +24,8 @@ def insert_data_to_db(table_name: str, cur: any, z: dict):
     except Exception as e:
         print(f'\r\nException: {e}')
     else:
-        print(f'INSERT INTO "{table_name}" {data}')
+        pprint.pprint(f'INSERT INTO "{table_name}" {data}')
+        print('\r')
 
 
 def read_from(table_name: str, cur: any, z: dict, fields: list) -> any:
