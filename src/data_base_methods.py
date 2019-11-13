@@ -1,30 +1,6 @@
 import psycopg2
 import re
 
-# ALTER SEQUENCE "Candidates_Candidate_seq" restart with 1;
-
-# SELECT DISTINCT "taskId", "taskType", "antennaId"
-# FROM public."BeamTasks"
-# ORDER BY "taskId"
-# ;
-
-
-# SELECT "BeamTask", "taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
-# threshold, "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim", "upperDistanceTrim", "betaBSK",
-# "epsilonBSK"
-# FROM public."BeamTasks"
-# where "trackId" != 0
-# ;
-
-
-# SELECT "BeamTask", "taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId",
-# "pulsePeriod", threshold, "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
-# "upperDistanceTrim", "betaBSK", "epsilonBSK"
-# FROM public."BeamTasks"
-# where "taskType" != 0
-# and "taskType" != 1
-# ;
-
 
 def connection() -> any:
     conn = psycopg2.connect(dbname='Telemetry', user='postgres',
