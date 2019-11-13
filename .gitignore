@@ -6,5 +6,5 @@ parser
 *.rsf
 *.7z
 ~$отокол согласования телеметрии.docx
-data/session_00/frame_rate
-data/session_00/frame_rate
+data/session_00/frame_rate.*
+
