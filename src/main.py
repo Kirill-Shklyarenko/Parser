@@ -12,18 +12,18 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 
 if __name__ == "__main__":
-    data_structure, frame_size = parse_text_file()
-    start_frame = read_start_frame(frame_rate_file)
-    frames_count = frame_counter(planner_rsf, frame_size)
-
     data_base = DB(dsn)
     data_base.connection()
 
-    for frame_number in range(start_frame, frames_count):  # (2237, 2838 - airTracks)
+    data_structure, frame_size = parse_text_file()
+
+    telemetry = TelemetryReader(planner_rsf, data_structure, frame_size, frame_rate_file)
+
+    for frame_number in range(telemetry.start_frame, telemetry.frames_count):  # (2237, 2838 - airTracks)
         start_time = time.time()
-        read_start_frame(frame_rate_file, frame_number)
+        telemetry.write_start_frame(frame_number)
         print(f"\r\n\r\n\r\n--------------- FRAME № {frame_number} ---------------")
-        data = parse_bin_file(planner_rsf, data_structure, frame_size, frame_number)
+        data = telemetry.read_frame()
 
         scan_data = {'primaryMarksCount': 0}
         candidate_q = {'candidatesQueueSize': 0}

@@ -5,90 +5,92 @@ import os
 
 
 class TelemetryReader:
-    def __init__(self, file_name: str, data_struct: list, frame_size: int, frame_number: int):
-        self.file_name = file_name
+    def __init__(self, file_name_str: str, data_struct: list, frame_size: int, frame_rate_file: str):
+        self.file_name_str = file_name_str
         self.data_struct = data_struct
         self.frame_size = frame_size
-        self.frame_number = frame_number
+        self.frame_rate_file = frame_rate_file
 
-        self.file = self.opener()
-
+        self.start_frame = self.read_start_frame()
         self.frames_count = self.frame_counter()
 
-    def opener(self):
-        with open(self.file_name, 'rb') as file:
-            return file
+    def write_start_frame(self, frame_number):
+        if self.frame_rate_file.is_file():
+            prev_frame_number = {'prev_frame_number': frame_number - 1}
+            with open(self.frame_rate_file, 'w') as fr_c:
+                fr_c.write(json.dumps(prev_frame_number))
+            return prev_frame_number['prev_frame_number']
+        else:
+            prev_frame_number = {'prev_frame_number': frame_number - 1}
+            with open(self.frame_rate_file, 'w+') as fr_c:
+                fr_c.write(json.dumps(prev_frame_number))
+            return prev_frame_number['prev_frame_number']
 
-    def header_seeker(self):
-        self.file.seek(14)
+    def read_start_frame(self):
+        if self.frame_rate_file.is_file():
+            prev_frame_number = {'prev_frame_number': 0}
+            with open(self.frame_rate_file) as fr_c:
+                prev_frame_number.update(json.load(fr_c))
+            return prev_frame_number['prev_frame_number']
 
-    def read_frame(self) -> list:
-        # frame_rate = self.frame_number * self.frame_size
-        frame = copy.deepcopy(self.data_struct)
-
-        for line in frame:
-            for number, cursor in enumerate(line):
-                if type(cursor) is dict:
-                    number = 0
-                    name = cursor.get('name')
-                    cursor.clear()
-                    cursor.update({'name': name,
-                                   'value': massive_of_values[number]})
-
-        for i, type_w in enumerate(massive_of_types):
-            if 'WW' in type_w:
-                massive_of_types[i] = 'B'  # UINT_2
-            elif 'SS' in type_w:
-                massive_of_types[i] = 'b'  # INT_2
-            elif 'UU' in type_w:
-                massive_of_types[i] = 'hh'
-                # size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
-            elif 'LL' in type_w:
-                massive_of_types[i] = ''
-                # size = 4  # Размер 4 байта потому что используется 2 слова х 2 байта идущие друг за другом
-            elif 'RR' in type_w:
-                massive_of_types[i] = 'c'  # битовая переменная
-                # size = 1  # Размер 1 байт
-            elif 'FF' in type_w:
-                massive_of_types[i] = 'f'
-                # size = 4  # 2 слова х 2 байта(размер слова)
-            massive_of_types.insert(0, '<')
-
-
-            frame = file.read(len(massive_of_types))
-                        massive_of_values = unpack(massive_of_types, frame)[0]
-
-
-
+        else:
+            prev_frame_number = {'prev_frame_number': 0}
+            with open(self.frame_rate_file, 'w+') as fr_c:
+                fr_c.write(json.dumps(prev_frame_number))
+            return prev_frame_number['prev_frame_number']
 
     def frame_counter(self) -> int:
-        file_size = os.path.getsize(self.file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
+        file_size = os.path.getsize(self.file_name_str) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
         try:
             frames_count = file_size / (self.frame_size * 2)
         except ZeroDivisionError as e:
             print(frames_count)
             print(e)
-        else:
-            frames_count = int(frames_count)
-        return frames_count
+        finally:
+            return int(frames_count)
 
-        # word = file.read(size)
-        # value = unpack(type_w, word)[0]
+    def create_serialize_string(self) -> str:
+        serialize_string = '='
+        for line in self.data_struct:
+            for c in line:
+                if type(c) is dict:
+                    if 'WW' in c['type']:  # UINT_2 # "<"  little-endian
+                        serialize_string += 'H'
+                    elif 'SS' in c['type']:  # INT_2
+                        serialize_string += 'h'
+                    elif 'UU' in c['type']:  # INT_4
+                        serialize_string += 'i'
+                    elif 'LL' in c['type']:  # INT_4
+                        serialize_string += 'i'
+                    elif 'RR' in c['type']:
+                        serialize_string += 'c'  # char
+                    elif 'FF' in c['type']:
+                        serialize_string += 'f'  # float_4
+        return serialize_string
 
-    def read_start_frame(file_name: str, frame_number=None):
-        if file_name.is_file():
-            if frame_number:
-                prev_frame_number = {'prev_frame_number': frame_number - 1}
-                with open(file_name, 'w') as fr_c:
-                    fr_c.write(json.dumps(prev_frame_number))
-            else:
-                prev_frame_number = {'prev_frame_number': 0}
-                with open(file_name) as fr_c:
-                    prev_frame_number.update(json.load(fr_c))
-            return prev_frame_number['prev_frame_number']
+    def read_frame(self) -> list:
+        serialize_string = self.create_serialize_string()
+        buff_size = (self.frame_size * 2) - 16  # 1 frame = 15444bytes   need 15428
+        with open(self.file_name_str, 'rb') as file_object:
+            file_object.seek(14)
+            print(len(serialize_string))
+            buffer = file_object.read(buff_size)
+            frame_values = unpack(serialize_string, buffer)
+            frame = copy.deepcopy(self.data_struct)
+            dict_of_params = {}
+            group_names = []
+            value_names = []
+            for number, line in enumerate(frame):
+                group_names.append(line[0])
+                for cursor in line:
+                    if type(cursor) is dict:
+                        value_names.append(cursor.get('name'))
+                group_names.append(value_names)
 
-        else:
-            prev_frame_number = {'prev_frame_number': 0}
-            with open(file_name, 'w+') as fr_c:
-                fr_c.write(json.dumps(prev_frame_number))
-            return prev_frame_number['prev_frame_number']
+            for group in group_names:
+                if type(group) is list:
+                    for id, val in enumerate(group):
+                        dict_of_params.update({val: frame_values[id]})
+                    group.clear()
+                    group.append()
+        return frame
