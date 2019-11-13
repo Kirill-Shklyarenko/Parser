@@ -95,21 +95,11 @@ if __name__ == "__main__":
                     candidate_q.update(c)
 
             elif candidates_count < candidate_q['candidatesQueueSize']:
-                # ---------------------------ЗАПОЛНЯЕМ "Candidates"------------------------------------ #
                 if re.search(r'trackCandidate', group[0]):
                     group.pop(0)
                     track_candidate = {}
                     for c in group:
                         track_candidate.update(c)
-
-                    candidates_ids = {}
-                    candidates_ids.update({'id': track_candidate['id']})
-
-                    # Проверка существует ли запись с такими параметрами
-                    candidates_ids = prepare_data_for_db('Candidates', cur, candidates_ids)
-                    candidates_pk = read_from('Candidates', cur, candidates_ids, ['id'])
-                    if candidates_pk is None:
-                        insert_data_to_db('Candidates', cur, candidates_ids)
 
                 # ---------------------------ЗАПОЛНЯЕМ "CandidatesHistory"----------------------------- #
                 elif re.search(r'viewSpot', group[0]):
@@ -134,6 +124,15 @@ if __name__ == "__main__":
                     velocity_res_spot = {}
                     for c in group:
                         velocity_res_spot.update(c)
+                    # ---------------------------ЗАПОЛНЯЕМ "Candidates"-------------------------------- #
+                    candidates_ids = {}
+                    candidates_ids.update({'id': track_candidate['id']})
+
+                    # Проверка существует ли запись с такими параметрами
+                    candidates_ids = prepare_data_for_db('Candidates', cur, candidates_ids)
+                    candidates_pk = read_from('Candidates', cur, candidates_ids, ['id'])
+                    if candidates_pk is None:
+                        insert_data_to_db('Candidates', cur, candidates_ids)
 
                     candidates = {}
                     # -----------------------------------state == 0------------------------------------ #
