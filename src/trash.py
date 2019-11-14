@@ -137,3 +137,37 @@ class Data_structure:
 # ;
 
 
+class TelemetryReader:
+    def __init__(self, file_name_str: str, data_struct: list, frame_size: int, frame_rate_file: str):
+        self.file_name_str = file_name_str
+        self.data_struct = data_struct
+        self.frame_size = frame_size
+        self.frame_rate_file = frame_rate_file
+
+        self.start_frame = self.read_start_frame()
+        self.frames_count = self.frame_counter()
+
+    def write_start_frame(self, frame_number):
+        if self.frame_rate_file.is_file():
+            prev_frame_number = {'prev_frame_number': frame_number - 1}
+            with open(self.frame_rate_file, 'w') as fr_c:
+                fr_c.write(json.dumps(prev_frame_number))
+            return prev_frame_number['prev_frame_number']
+        else:
+            prev_frame_number = {'prev_frame_number': frame_number - 1}
+            with open(self.frame_rate_file, 'w+') as fr_c:
+                fr_c.write(json.dumps(prev_frame_number))
+            return prev_frame_number['prev_frame_number']
+
+    def read_start_frame(self):
+        if self.frame_rate_file.is_file():
+            prev_frame_number = {'prev_frame_number': 0}
+            with open(self.frame_rate_file) as fr_c:
+                prev_frame_number.update(json.load(fr_c))
+            return prev_frame_number['prev_frame_number']
+
+        else:
+            prev_frame_number = {'prev_frame_number': 0}
+            with open(self.frame_rate_file, 'w+') as fr_c:
+                fr_c.write(json.dumps(prev_frame_number))
+            return prev_frame_number['prev_frame_number']
