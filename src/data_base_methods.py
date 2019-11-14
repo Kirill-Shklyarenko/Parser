@@ -3,7 +3,7 @@ import re
 import pprint
 
 
-class DB:
+class DataBase:
     def __init__(self, dsn: str):
         self.dsn = dsn
         self.cur = self.connection()
@@ -26,19 +26,18 @@ class DB:
         except Exception as e:
             print(f'\r\nException: {e}')
         else:
-            print(f'INSERT INTO "{table_name}" {data}')
+            pprint.pprint(f'INSERT INTO "{table_name}" {data}')
 
     def read_from(self, table_name: str, z: dict, fields: list) -> any:
         data = {}
         for key, value in z.items():
             if key in fields:
                 data.update({key: value})
-
-        # Для того чтобы узнать имена полей таблицы
-        self.cur.execute(f'SELECT * FROM "{table_name}";')
-        col_names = []
-        for elt in self.cur.description:
-            col_names.append(elt[0])
+        # # Для того чтобы узнать имена полей таблицы
+        # self.cur.execute(f'SELECT * FROM "{table_name}";')
+        # col_names = []
+        # for elt in self.cur.description:
+        #     col_names.append(elt[0])
 
         # формирование строки запроса
         columns = ','.join([f'"{x}"' for x in data])
@@ -52,65 +51,93 @@ class DB:
         else:
             return None
 
-    @staticmethod
-    def map_values(data: dict, col_names: list) -> dict:
-        z = []
-        returned_data = {}
-        for k, v in data.items():
-            if 'isFake' in k:
-                data['isFake'] = bool(v)
-                if data['isFake']:
-                    raise Exception
-            elif 'processingTime' in k:
-                returned_data['scanTime'] = data['processingTime']
-            elif 'distancePeriod' in k:
-                returned_data['distanceZoneWeight'] = data['distancePeriod']
-            elif 'velocityPeriod' in k:
-                returned_data['velocityZoneWeight'] = data['velocityPeriod']
-            elif 'beamAzimuth' in k and 'beamAzimuth' not in col_names:
-                returned_data['betaBSK'] = data['beamAzimuth']
-            elif 'beamElevation' in k and 'beamElevation' not in col_names:
-                returned_data['epsilonBSK'] = data['beamElevation']
-            elif 'type' in k and 'type' not in col_names:
-                returned_data['markType'] = data['type']
-            elif re.search(r'\bdistance\b', k) and 'distance' not in col_names:
-                returned_data['numDistanceZone'] = data['resolvedDistance']
-            elif re.search(r'\bvelocity\b', k):
-                returned_data['numVelocityZone'] = data['resolvedVelocity']
-            elif 'possiblePeriod[' in k:
-                z.append(v)
-            elif 'scanPeriodSeconds' in k:
-                returned_data['scanPeriod'] = data['scanPeriodSeconds']
-            elif 'nextUpdateTimeSeconds' in k:
-                returned_data['nextTimeUpdate'] = data['nextUpdateTimeSeconds']
-            elif 'creationTimeSeconds' in k:
-                returned_data['nextTimeUpdate'] = data['creationTimeSeconds']
+    # @staticmethod
+    # def map_values(data: dict, col_names: list) -> dict:
+    #     z = []
+    #     returned_data = {}
+    #     for k, v in data.items():
+    #         if 'isFake' in k:
+    #             data['isFake'] = bool(v)
+    #             if data['isFake']:
+    #                 raise Exception
+    #         elif 'processingTime' in k:
+    #             returned_data['scanTime'] = data['processingTime']
+    #         elif 'distancePeriod' in k:
+    #             returned_data['distanceZoneWeight'] = data['distancePeriod']
+    #         elif 'velocityPeriod' in k:
+    #             returned_data['velocityZoneWeight'] = data['velocityPeriod']
+    #         elif 'beamAzimuth' in k and 'beamAzimuth' not in col_names:
+    #             returned_data['betaBSK'] = data['beamAzimuth']
+    #         elif 'beamElevation' in k and 'beamElevation' not in col_names:
+    #             returned_data['epsilonBSK'] = data['beamElevation']
+    #         elif 'type' in k and 'type' not in col_names:
+    #             returned_data['markType'] = data['type']
+    #         elif re.search(r'\bdistance\b', k) and 'distance' not in col_names:
+    #             returned_data['numDistanceZone'] = data['resolvedDistance']
+    #         elif re.search(r'\bvelocity\b', k):
+    #             returned_data['numVelocityZone'] = data['resolvedVelocity']
+    #         elif 'possiblePeriod[' in k:
+    #             z.append(v)
+    #         elif 'scanPeriodSeconds' in k:
+    #             returned_data['scanPeriod'] = data['scanPeriodSeconds']
+    #         elif 'nextUpdateTimeSeconds' in k:
+    #             returned_data['nextTimeUpdate'] = data['nextUpdateTimeSeconds']
+    #         elif 'creationTimeSeconds' in k:
+    #             returned_data['nextTimeUpdate'] = data['creationTimeSeconds']
+    #
+    #     if len(z) == 6:
+    #         returned_data.update({'possiblePeriods': z})
+    #     returned_data.update(data)
+    #     return returned_data
+    #
+    # def prepare_data_for_db(self, table_name: str, cur: any, data: dict) -> dict:
+    #     data_to_insert = {}
+    #     # Узнаем имена полей таблицы
+    #     cur.execute(f'SELECT * FROM "{table_name}";')
+    #     col_names = []
+    #     for elt in cur.description:
+    #         col_names.append(elt[0])
+    #
+    #     # MAPPING (int ---> bool), имен ('type' => 'markType')
+    #     data = self.map_values(data, col_names)
+    #
+    #     for key, value in data.items():
+    #         if key in col_names:
+    #             data_to_insert.update({key: value})
+    #
+    #     db_values = self.cur.fetchall()
+    #     if db_values:
+    #         wis = dict(zip(col_names, db_values[0]))
+    #         return wis
+    #     else:
+    #         return None
 
-        if len(z) == 6:
-            returned_data.update({'possiblePeriods': z})
-        returned_data.update(data)
-        return returned_data
 
-    def prepare_data_for_db(self, table_name: str, cur: any, data: dict) -> dict:
-        data_to_insert = {}
-        # Узнаем имена полей таблицы
-        cur.execute(f'SELECT * FROM "{table_name}";')
-        col_names = []
-        for elt in cur.description:
-            col_names.append(elt[0])
+class FrameHandler(DataBase):
+    def __init__(self, frame):
+        self.frame = frame
 
-        # MAPPING (int ---> bool), имен ('type' => 'markType')
-        data = self.map_values(data, col_names)
+    def get_pk(self, table_name: str, diction: dict):
+        return
 
-        for key, value in data.items():
-            if key in col_names:
-                data_to_insert.update({key: value})
+    def beam_task(self, frame):
+        for group in frame:
+            if re.search(r'\bTask\b', group[0]):
+                group.pop(0)
+                task = {}
+                for c in group:
+                    task.update(c)
 
-        db_values = self.cur.fetchall()
-        if db_values:
-            wis = dict(zip(col_names, db_values[0]))
-            return wis
-        else:
-            return None
-
-
+            elif re.search(r'beamTask', group[0]):
+                group.pop(0)
+                beam_task = {}
+                beam_task.update(task)
+                for c in group:
+                    beam_task.update(c)
+                print('Task_type == ', beam_task['taskType'])
+                # Проверка существует ли запись с такими параметрами
+                # beam_task = data_base.prepare_data_for_db('BeamTasks', beam_task)
+                # beam_task_pk = data_base.get_pk('table_name', dict{key: val})
+                bt_data = data_base.read_from('BeamTasks', beam_task, ['taskId', 'antennaId'])
+                if bt_data is None:
+                    data_base.insert_data_to_db('BeamTasks', beam_task)

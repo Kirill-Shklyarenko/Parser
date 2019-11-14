@@ -2,6 +2,7 @@ from struct import *
 import json
 import copy
 import os
+import sys
 
 
 class TelemetryReader:
@@ -41,6 +42,7 @@ class TelemetryReader:
 
     def frame_counter(self) -> int:
         file_size = os.path.getsize(self.file_name_str) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
+        frames_count = 0
         try:
             frames_count = file_size / (self.frame_size * 2)
         except ZeroDivisionError as e:
@@ -73,24 +75,18 @@ class TelemetryReader:
         buff_size = (self.frame_size * 2) - 16  # 1 frame = 15444bytes   need 15428
         with open(self.file_name_str, 'rb') as file_object:
             file_object.seek(14)
-            print(len(serialize_string))
             buffer = file_object.read(buff_size)
-            frame_values = unpack(serialize_string, buffer)
+            frame_values = list(unpack(serialize_string, buffer))
             frame = copy.deepcopy(self.data_struct)
-            dict_of_params = {}
             group_names = []
-            value_names = []
             for number, line in enumerate(frame):
                 group_names.append(line[0])
                 for cursor in line:
                     if type(cursor) is dict:
-                        value_names.append(cursor.get('name'))
-                group_names.append(value_names)
-
-            for group in group_names:
-                if type(group) is list:
-                    for id, val in enumerate(group):
-                        dict_of_params.update({val: frame_values[id]})
-                    group.clear()
-                    group.append()
+                        key = cursor.get('name')
+                        cursor.clear()
+                        value = frame_values[0]
+                        frame_values.pop(0)
+                        cursor.update({key: value})
+        frame_size = sys.getsizeof(frame)
         return frame

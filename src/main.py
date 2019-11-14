@@ -12,8 +12,7 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 
 if __name__ == "__main__":
-    data_base = DB(dsn)
-    data_base.connection()
+    data_base = DataBase(dsn)
 
     data_structure, frame_size = parse_text_file()
 
@@ -23,7 +22,7 @@ if __name__ == "__main__":
         start_time = time.time()
         telemetry.write_start_frame(frame_number)
         print(f"\r\n\r\n\r\n--------------- FRAME № {frame_number} ---------------")
-        data = telemetry.read_frame()
+        frame = telemetry.read_frame()
 
         scan_data = {'primaryMarksCount': 0}
         candidate_q = {'candidatesQueueSize': 0}
@@ -35,9 +34,15 @@ if __name__ == "__main__":
         tracks_count = 0
         rad_forbidden_count = 0
 
-        for index, group in enumerate(data):
+        # ---------"BeamTasks"-----"BeamTasks"-----З"BeamTasks" "BeamTasks"--------"BeamTasks"----"BeamTa
+        frame_handler = FrameHandler(frame)
+        columns_names = []
+        diction = {}
+        beam_task = frame_handler.beam_task(frame)
+        beam_task_pk = frame_handler.get_pk('table_name', diction, columns_names)
+        if beam_task_pk is None:
+            data_base.insert_data_to_db('BeamTasks', beam_task)
             # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"----------------------------------- #
-
             if re.search(r'\bTask\b', group[0]):
                 group.pop(0)
                 task = {}
@@ -52,7 +57,8 @@ if __name__ == "__main__":
                     beam_task.update(c)
                 print('Task_type == ', beam_task['taskType'])
                 # Проверка существует ли запись с такими параметрами
-                beam_task = data_base.prepare_data_for_db('BeamTasks', beam_task)
+                # beam_task = data_base.prepare_data_for_db('BeamTasks', beam_task)
+                # beam_task_pk = data_base.get_pk('table_name', dict{key: val})
                 bt_data = data_base.read_from('BeamTasks', beam_task, ['taskId', 'antennaId'])
                 if bt_data is None:
                     data_base.insert_data_to_db('BeamTasks', beam_task)
