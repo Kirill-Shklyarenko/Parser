@@ -36,7 +36,6 @@ if __name__ == "__main__":
             columns_for_get_pk = ['taskId', 'antennaId']
             beam_task_pk = frame_handler.get_pk('BeamTasks', beam, columns_for_get_pk)
             if beam_task_pk is None:
-                beam.update(beam_task_pk)
                 data_base.insert_to('BeamTasks', beam)
 
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"-------------------------------- # 643 5283
@@ -341,5 +340,5 @@ if __name__ == "__main__":
         #             if rad_fs_pk is None:
         #                 data_base.insert_to('ForbiddenSectors', rad_forbidden_sector)
         time_sec = "{:7.4f}".format(time.time() - start_time)
-        log.info(f"--------------{time_sec} seconds --------------")
+        log.info(f"---------------{time_sec} seconds -------------\r\n\r\n")
         # print(f"\r\n--------------{time_sec} seconds --------------")

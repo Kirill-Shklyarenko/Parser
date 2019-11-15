@@ -1,6 +1,38 @@
+from unittest.test.testmock.testpatch import function
+
 import psycopg2
 import re
 import logging as log
+
+
+def change_name_of_binary_data(func: function) -> function:
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        for i in result:
+            i['beamAzimuth'] = i.pop('betaBSK')
+            i['beamElevation'] = i.pop('epsilonBSK')
+            if 'isFake' in i:
+                v = bool(i.get('isFake'))
+                i.update({'isFake': v})
+        return result
+
+    return wrapper
+
+
+def adjust_to_col_names(func: function) -> function:
+    def wrapper(*args, **kwargs):
+        data = {}
+        res = []
+        result = func(*args, **kwargs)
+        columns_names = ["taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
+                         "threshold", "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
+                         "upperDistanceTrim", "beamAzimuth", "beamElevation"]
+        for i in result:
+            data.update({key: value for key, value in i.items() if key in columns_names})
+            res.append(data)
+        return res
+
+    return wrapper
 
 
 class DataBase:
@@ -59,45 +91,6 @@ class FrameHandler(DataBase):
         self.obj = {}
         self.task = {}
 
-    @staticmethod
-    def map_values(data: dict) -> dict:
-        z = []
-        returned_data = {}
-        for k, v in data.items():
-            if 'isFake' in k:
-                data['isFake'] = bool(v)
-                if data['isFake']:
-                    raise Exception
-            elif 'processingTime' in k:
-                returned_data['scanTime'] = data['processingTime']
-            elif 'distancePeriod' in k:
-                returned_data['distanceZoneWeight'] = data['distancePeriod']
-            elif 'velocityPeriod' in k:
-                returned_data['velocityZoneWeight'] = data['velocityPeriod']
-            elif 'betaBSK' in k:
-                returned_data['beamAzimuth'] = data['betaBSK']
-            elif 'epsilonBSK' in k:
-                returned_data['beamElevation'] = data['epsilonBSK']
-            elif 'type' in k:
-                returned_data['markType'] = data['type']
-            elif re.search(r'\bdistance\b', k):
-                returned_data['numDistanceZone'] = data['resolvedDistance']
-            elif re.search(r'\bvelocity\b', k):
-                returned_data['numVelocityZone'] = data['resolvedVelocity']
-            elif 'possiblePeriod[' in k:
-                z.append(v)
-            elif 'scanPeriodSeconds' in k:
-                returned_data['scanPeriod'] = data['scanPeriodSeconds']
-            elif 'nextUpdateTimeSeconds' in k:
-                returned_data['nextTimeUpdate'] = data['nextUpdateTimeSeconds']
-            elif 'creationTimeSeconds' in k:
-                returned_data['nextTimeUpdate'] = data['creationTimeSeconds']
-
-        if len(z) == 6:
-            returned_data.update({'possiblePeriods': z})
-        returned_data.update(data)
-        return returned_data
-
     def get_pk(self, table_name: str, z: dict, columns_for_get_pk: list):
         columns_names = []
         data = {}
@@ -122,10 +115,12 @@ class FrameHandler(DataBase):
             log.debug(f'get_pk data is None')
             return None
 
+    @adjust_to_col_names
+    @change_name_of_binary_data
     def beam_task(self):
         container = []
         for index, group in enumerate(self.frame):
-            if re.search("rINFO" , group[0]):
+            if re.search("rINFO", group[0]):
                 group.pop(0)
                 for c in group:
                     self.task.update(c)
@@ -139,7 +134,7 @@ class FrameHandler(DataBase):
                 log.info(f'Task_type == {beam_task["taskType"]}')
                 # print('Task_type == ', beam_task['taskType'])
                 self.frame = self.frame[index:]
-                beam_task = self.map_values(beam_task)
+                # beam_task = self.map_values(beam_task)
                 container.append(beam_task)
                 self.obj = container
         return container
@@ -184,3 +179,44 @@ class FrameHandler(DataBase):
 
         self.obj = self.obj[1:]
         return result
+
+    # @staticmethod
+    # def map_values(data: dict) -> dict:
+    #     z = []
+    #     returned_data = {}
+    #     for k, v in data.items():
+    #         if 'isFake' in k:
+    #             data['isFake'] = bool(v)
+    #             if data['isFake']:
+    #                 raise Exception
+    #         elif 'processingTime' in k:
+    #             returned_data['scanTime'] = data['processingTime']
+    #         elif 'distancePeriod' in k:
+    #             returned_data['distanceZoneWeight'] = data['distancePeriod']
+    #         elif 'velocityPeriod' in k:
+    #             returned_data['velocityZoneWeight'] = data['velocityPeriod']
+    #         elif 'betaBSK' in k:
+    #             returned_data['beamAzimuth'] = data['betaBSK']
+    #         elif 'epsilonBSK' in k:
+    #             returned_data['beamElevation'] = data['epsilonBSK']
+    #         elif 'type' in k:
+    #             returned_data['markType'] = data['type']
+    #         elif re.search(r'\bdistance\b', k):
+    #             returned_data['numDistanceZone'] = data['resolvedDistance']
+    #         elif re.search(r'\bvelocity\b', k):
+    #             returned_data['numVelocityZone'] = data['resolvedVelocity']
+    #         elif 'possiblePeriod[' in k:
+    #             z.append(v)
+    #         elif 'scanPeriodSeconds' in k:
+    #             returned_data['scanPeriod'] = data['scanPeriodSeconds']
+    #         elif 'nextUpdateTimeSeconds' in k:
+    #             returned_data['nextTimeUpdate'] = data['nextUpdateTimeSeconds']
+    #         elif 'creationTimeSeconds' in k:
+    #             returned_data['nextTimeUpdate'] = data['creationTimeSeconds']
+    #
+    #     if len(z) == 6:
+    #         returned_data.update({'possiblePeriods': z})
+    #     data.pop('betaBSK')
+    #     data.pop('epsilonBSK')
+    #     returned_data.update(data)
+    #     return returned_data
