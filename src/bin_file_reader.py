@@ -11,14 +11,18 @@ class TelemetryReader:
         self.frame_size = data_struct.__dict__['frame_size']
 
         self.frame_number = 0
+        self.buff_size = (self.frame_size * 2) - 2  # 1 frame = 15444bytes   need 15428
         self.frames_count = self.frame_counter()
         self.serialize_string = self.create_serialize_string()
 
-    # def opener(self):
-    #     file = open(self.file_name_str, 'rb')
-    #
-    #     file.read()
-    #     return file
+    def open(self):
+        with open(self.file_name_str, 'rb') as file:
+            frame_rate = self.frame_number * (self.frame_size * 2)
+            buffer = file.read(self.buff_size + frame_rate)
+            buffer = buffer[frame_rate:]
+            buffer = buffer[:self.buff_size]
+            buffer = buffer[14:]
+        return buffer
 
     def frame_counter(self) -> int:
         file_size = os.path.getsize(self.file_name_str) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
@@ -28,8 +32,6 @@ class TelemetryReader:
         except ZeroDivisionError as e:
             log.exception(f'{frames_count}')
             log.exception(f'{e}')
-            # print(frames_count)
-            # print(e)
         finally:
             log.info(f'frames_count = {int(frames_count)}')
             return int(frames_count)
@@ -54,23 +56,13 @@ class TelemetryReader:
         return serialize_string
 
     def read_frame(self) -> list:
-        file = open(self.file_name_str, 'rb')
-
-        buff_size = (self.frame_size * 2) - 2  # 1 frame = 15444bytes   need 15428
-        frame_rate = self.frame_number * (self.frame_size * 2)
-        buffer = file.read(buff_size + frame_rate)
-
-        buffer = buffer[frame_rate:]
-        buffer = buffer[:buff_size]
-        buffer = buffer[14:]
-
+        buffer = self.open()
         try:
             frame_values = list(unpack(self.serialize_string, buffer))
         except Exception as e:
-            log.exception(f'\r\nException: {e}')
-
-        print(f"\r\n\r\n\r\n--------------- FRAME № {self.frame_number} ---------------")
-        log.warning(f"--------------- FRAME № {self.frame_number} ---------------")
+            log.exception(f'Exception: {e}')
+        log.info(f'----------------------FRAME {self.frame_number}-----------------------')
+        # print(f"\r\n\r\n\r\n--------------- FRAME № {self.frame_number} ---------------")
         frame = copy.deepcopy(self.data_struct)
         group_names = []
         for number, line in enumerate(frame):
@@ -82,6 +74,7 @@ class TelemetryReader:
                     value = frame_values[0]
                     frame_values.pop(0)
                     cursor.update({key: value})
+
         return frame
 
     def __iter__(self):

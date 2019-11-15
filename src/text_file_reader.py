@@ -4,11 +4,11 @@ import copy
 class StructureReader:
     def __init__(self, file_name: str):
         self.file_name = file_name
-        self.fileObj = self.opener()
+        self.fileObj = self.open()
         self.frame_size = self.find_frame_size()
         self.data_struct = self.parse_text_file()
 
-    def opener(self) -> list:
+    def open(self) -> list:
         with open(self.file_name) as file:
             data = file.readlines()
         return data
