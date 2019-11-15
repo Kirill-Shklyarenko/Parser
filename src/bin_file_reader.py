@@ -10,7 +10,7 @@ class TelemetryReader:
         self.data_struct = data_struct.__dict__['data_struct']
         self.frame_size = data_struct.__dict__['frame_size']
 
-        self.frame_number = 880
+        self.frame_number = 0
         self.frames_count = self.frame_counter()
         self.serialize_string = self.create_serialize_string()
 
@@ -67,10 +67,10 @@ class TelemetryReader:
         try:
             frame_values = list(unpack(self.serialize_string, buffer))
         except Exception as e:
-            print(e)
+            log.exception(f'\r\nException: {e}')
 
         print(f"\r\n\r\n\r\n--------------- FRAME № {self.frame_number} ---------------")
-        log.info(f"--------------- FRAME № {self.frame_number} ---------------")
+        log.warning(f"--------------- FRAME № {self.frame_number} ---------------")
         frame = copy.deepcopy(self.data_struct)
         group_names = []
         for number, line in enumerate(frame):

@@ -345,5 +345,5 @@ if __name__ == "__main__":
         #             if rad_fs_pk is None:
         #                 data_base.insert_to('ForbiddenSectors', rad_forbidden_sector)
         time_sec = "{:7.4f}".format(time.time() - start_time)
-        log.info(f"--------------------{time_sec} seconds ---------------\r\n\r\n")
+        log.warning(f"--------------------{time_sec} seconds ---------------\r\n\r\n")
         # print(f"\r\n--------------{time_sec} seconds --------------")
