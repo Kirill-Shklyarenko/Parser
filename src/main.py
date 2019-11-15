@@ -2,76 +2,49 @@ from text_file_reader import *
 from bin_file_reader import *
 from data_base_methods import *
 from pathlib import Path
+from logging import
 import time
-import sys
 
 data_folder = Path(r'../data/session_00/')
 planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
-
 if __name__ == "__main__":
     data_structure = StructureReader(planner)
     telemetry = TelemetryReader(planner_rsf, data_structure)
     data_base = DataBase(dsn)
-    for frame in telemetry:          # (2237, 2838 - airTracks)
+    for frame in telemetry:  # (2237, 2838 - airTracks)
         # print(sys.getsizeof(frame))
 
-        # scan_data = {'primaryMarksCount': 0}
         # candidate_q = {'candidatesQueueSize': 0}
         # track_candidate = {'state': 0}
         # tracks_q = {'tracksQueuesSize': 0}
         # rad_forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
-        # primary_marks_count = 0
         # candidates_count = 0
         # tracks_count = 0
         # rad_forbidden_count = 0
         start_time = time.time()
-
-        # ---------"BeamTasks"-----"BeamTasks"-----З"BeamTasks" "BeamTasks"--------"BeamTasks"----"BeamTa
         frame_handler = FrameHandler(frame, dsn)
-
-        beam_task = frame_handler.beam_task()
-        columns_for_get_pk = ['taskId', 'antennaId']
-        beam_task_pk = frame_handler.get_pk('BeamTasks', beam_task, columns_for_get_pk)
-        if beam_task_pk is None:
-            data_base.insert_to('BeamTasks', beam_task)
+        # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
+        for beam in frame_handler.beam_task():
+            columns_for_get_pk = ['taskId', 'antennaId']
+            beam_task_pk = frame_handler.get_pk('BeamTasks', beam, columns_for_get_pk)
+            if beam_task_pk is None:
+                beam.update(beam_task_pk)
+                data_base.insert_to('BeamTasks', beam)
 
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"-------------------------------- # 643 5283
-        elif re.search(r'scanData', frame[0]):
-            frame.pop(0)
-            scan_data = {}
-            for c in frame:
-                scan_data.update(c)
+        for primary_mark in frame_handler.primary_mark():
+            columns_for_get_pk = ['taskId', 'antennaId', 'taskType']
+            beam_task_pk = frame_handler.get_pk('BeamTasks', primary_mark, columns_for_get_pk)
+            if beam_task_pk:
+                primary_mark.update(beam_task_pk)
+                columns_for_get_pk = ['BeamTask', 'PrimaryMark']
+                primary_mark_pk = frame_handler.get_pk('PrimaryMarks', primary_mark, columns_for_get_pk)
+                if primary_mark_pk is None:
+                    data_base.insert_to('PrimaryMarks', primary_mark)
 
-        # elif primary_marks_count < scan_data['primaryMarksCount']:
-        #     if re.search(r'primaryMark', frame[0]):
-        #         frame.pop(0)
-        #         primary_mark = {}
-        #         for c in frame:
-        #             primary_mark.update(c)
-        #
-        #         primary_mark.update(scan_data)
-        #
-        #         primary_marks_size = scan_data['primaryMarksCount']
-        #         primary_marks_count += 1
-        #         print(f'\r\n\r\nprimaryMarksCount == {primary_marks_count} / {primary_marks_size}')
-        #         print('pM_type == ', primary_mark['type'])
-        #
-        #         bt_pk = data_base.read_from('BeamTasks', primary_mark, ['taskId',
-        #                                                            'antennaId',
-        #                                                            'taskType'
-        #                                                            ])
-        #         if bt_pk:
-        #             primary_mark.update({'BeamTask': bt_pk['BeamTask']})
-        #
-        #             # Проверка существует ли запись с такими параметрами
-        #             primary_mark = data_base.prepare_data_for_db('PrimaryMarks', primary_mark)
-        #             pm_data = data_base.read_from('PrimaryMarks', primary_mark, ['BeamTask'])
-        #             if pm_data is None:
-        #                 data_base.insert_to('PrimaryMarks', primary_mark)
-        #
         #     # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"---------------------- #
         #     elif re.search(r'TrackCandidates', frame[0]):
         #         frame.pop(0)
