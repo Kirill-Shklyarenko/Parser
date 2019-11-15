@@ -10,7 +10,7 @@ class TelemetryReader:
         self.data_struct = data_struct.__dict__['data_struct']
         self.frame_size = data_struct.__dict__['frame_size']
 
-        self.frame_number = 0
+        self.frame_number = 880
         self.frames_count = self.frame_counter()
         self.serialize_string = self.create_serialize_string()
 

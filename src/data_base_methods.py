@@ -19,20 +19,20 @@ def change_name_of_binary_data(func: function) -> function:
     return wrapper
 
 
-def adjust_to_col_names(func: function) -> function:
-    def wrapper(*args, **kwargs):
-        data = {}
-        res = []
-        result = func(*args, **kwargs)
-        columns_names = ["taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
-                         "threshold", "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
-                         "upperDistanceTrim", "beamAzimuth", "beamElevation"]
-        for i in result:
-            data.update({key: value for key, value in i.items() if key in columns_names})
-            res.append(data)
-        return res
-
-    return wrapper
+# def adjust_to_col_names(func: function) -> function:
+#     def wrapper(*args, **kwargs):
+#         data = {}
+#         res = []
+#         result = func(*args, **kwargs)
+#         columns_names = ["taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
+#                          "threshold", "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
+#                          "upperDistanceTrim", "beamAzimuth", "beamElevation"]
+#         for i in result:
+#             data.update({key: value for key, value in i.items() if key in columns_names})
+#             res.append(data)
+#         return res
+#
+#     return wrapper
 
 
 class DataBase:
@@ -112,7 +112,7 @@ class FrameHandler(DataBase):
         # data.update({key: value for key, value in z.items() if key in columns_names})
         data_with_pk = DataBase.read_from(self, table_name, data, columns_for_get_pk)
         if data_with_pk:
-            log.debug(f'get_pk data is {pk_name}: {data_with_pk[0]}')
+            log.debug(f'{pk_name} : {data_with_pk[0]}')
             data.update({pk_name: data_with_pk[0]})
             return data
         else:
@@ -166,8 +166,8 @@ class FrameHandler(DataBase):
                     container.append(primary_mark)
                     primary_marks_size = scan_data['primaryMarksCount']
                     primary_marks_count += 1
-                    log.info(f'\r\n\r\nprimaryMarksCount == {primary_marks_count} / {primary_marks_size}')
-                    log.info(f'pM_type == {primary_mark["type"]}')
+                    log.info(f'primaryMarksCount == {primary_marks_count} / {primary_marks_size}')
+                    log.info(f'markType = {primary_mark["type"]}')
                     # print(f'\r\n\r\nprimaryMarksCount == {primary_marks_count} / {primary_marks_size}')
                     # print('pM_type == ', primary_mark['type'])
                     self.obj = container

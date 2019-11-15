@@ -15,7 +15,7 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
     log.basicConfig(filename=logger, filemode='w+', level=log.DEBUG,
-                    format='%(levelname)s : %(funcName)s: : %(message)s')  # %(lineno)d
+                    format='%(levelname)s : %(lineno)d : %(funcName)s: : %(message)s')  # %(lineno)d
     data_structure = StructureReader(planner)
     telemetry = TelemetryReader(planner_rsf, data_structure)
     data_base = DataBase(dsn)
@@ -37,17 +37,22 @@ if __name__ == "__main__":
             beam_task_pk = frame_handler.get_pk('BeamTasks', beam, columns_for_get_pk)
             if beam_task_pk is None:
                 data_base.insert_to('BeamTasks', beam)
-
+            else:
+                log.debug(f'BeamTask : {beam_task_pk["BeamTask"]} is already exists')
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"-------------------------------- # 643 5283
         for primary_mark in frame_handler.primary_mark():
-            columns_for_get_pk = ['taskId', 'antennaId', 'taskType']
+            columns_for_get_pk = ['taskId', 'antennaId',
+                                  # 'taskType'
+                                  ]
             beam_task_pk = frame_handler.get_pk('BeamTasks', primary_mark, columns_for_get_pk)
             if beam_task_pk:
                 primary_mark.update(beam_task_pk)
-                columns_for_get_pk = ['BeamTask', 'PrimaryMark']
+                columns_for_get_pk = ['BeamTask', 'beamAzimuth', 'beamElevation']
                 primary_mark_pk = frame_handler.get_pk('PrimaryMarks', primary_mark, columns_for_get_pk)
                 if primary_mark_pk is None:
                     data_base.insert_to('PrimaryMarks', primary_mark)
+                else:
+                    log.debug(f'PrimaryMark : {primary_mark_pk["PrimaryMark"]} is already exists')
         #     # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"---------------------- #
         #     elif re.search(r'TrackCandidates', frame[0]):
         #         frame.pop(0)
