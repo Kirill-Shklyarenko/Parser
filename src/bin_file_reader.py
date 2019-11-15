@@ -1,7 +1,7 @@
 from struct import *
 import copy
 import os
-import sys
+import logging as log
 
 
 class TelemetryReader:
@@ -19,9 +19,12 @@ class TelemetryReader:
         try:
             frames_count = file_size / (self.frame_size * 2)
         except ZeroDivisionError as e:
-            print(frames_count)
-            print(e)
+            log.exception(f'{frames_count}')
+            log.exception(f'{e}')
+            # print(frames_count)
+            # print(e)
         finally:
+            log.info(f'frames_count = {int(frames_count)}')
             return int(frames_count)
 
     def create_serialize_string(self) -> str:
@@ -47,6 +50,8 @@ class TelemetryReader:
         serialize_string = self.create_serialize_string()
         buff_size = (self.frame_size * 2) - 16  # 1 frame = 15444bytes   need 15428
         with open(self.file_name_str, 'rb') as file_object:
+            print(f"\r\n\r\n\r\n--------------- FRAME № {self.frame_number} ---------------")
+            log.info(f"--------------- FRAME № {self.frame_number} ---------------")
             file_object.seek(self.frame_number * self.frame_size)
             file_object.seek(14)
 
@@ -73,6 +78,5 @@ class TelemetryReader:
             result = self.read_frame()
         except IndexError:
             raise StopIteration
-        print(f"\r\n\r\n\r\n--------------- FRAME № {self.frame_number} ---------------")
         self.frame_number += 1
         return result

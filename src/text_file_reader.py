@@ -1,5 +1,4 @@
 import copy
-from main import planner
 
 
 class StructureReader:
@@ -15,6 +14,7 @@ class StructureReader:
         return data
 
     def find_frame_size(self):
+        frame_size = 0
         # Поиск размера блока данных
         for i, line in enumerate(self.fileObj):
             line = line.split()

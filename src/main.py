@@ -2,15 +2,20 @@ from text_file_reader import *
 from bin_file_reader import *
 from data_base_methods import *
 from pathlib import Path
-from logging import
+
+import logging as log
 import time
+
 
 data_folder = Path(r'../data/session_00/')
 planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
+logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
+    log.basicConfig(filename=logger, filemode='w+', level=log.INFO,
+                    format='— %(levelname)s — %(funcName)s: — %(message)s')  # %(lineno)d
     data_structure = StructureReader(planner)
     telemetry = TelemetryReader(planner_rsf, data_structure)
     data_base = DataBase(dsn)
@@ -44,7 +49,6 @@ if __name__ == "__main__":
                 primary_mark_pk = frame_handler.get_pk('PrimaryMarks', primary_mark, columns_for_get_pk)
                 if primary_mark_pk is None:
                     data_base.insert_to('PrimaryMarks', primary_mark)
-
         #     # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"---------------------- #
         #     elif re.search(r'TrackCandidates', frame[0]):
         #         frame.pop(0)
@@ -336,6 +340,6 @@ if __name__ == "__main__":
         #                                    ])
         #             if rad_fs_pk is None:
         #                 data_base.insert_to('ForbiddenSectors', rad_forbidden_sector)
-
         time_sec = "{:7.4f}".format(time.time() - start_time)
-        print(f"\r\n--------------{time_sec} seconds --------------")
+        log.info(f"--------------{time_sec} seconds --------------")
+        # print(f"\r\n--------------{time_sec} seconds --------------")

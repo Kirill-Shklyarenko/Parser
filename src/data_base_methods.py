@@ -1,6 +1,6 @@
 import psycopg2
 import re
-import pprint
+import logging as log
 
 
 class DataBase:
@@ -24,9 +24,11 @@ class DataBase:
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
-            print(f'\r\nException: {e}')
+            log.exception(f'\r\nException: {e}')
+            # print(f'\r\nException: {e}')
         else:
-            pprint.pprint(f'INSERT INTO "{table_name}" {data}')
+            log.warning(f'INSERT INTO "{table_name}" {data}')
+            # pprint.pprint(f'INSERT INTO "{table_name}" {data}')
 
     def read_from(self, table_name: str, z: dict, fields: list) -> any:
         data = {}
@@ -39,7 +41,8 @@ class DataBase:
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
-            print(f'\r\nException: {e}')
+            log.exception(f'\r\nException: {e}')
+            # print(f'\r\nException: {e}')
         else:
             db_values = self.cur.fetchall()
             if db_values:
@@ -55,7 +58,6 @@ class FrameHandler(DataBase):
         self.frame = frame
         self.obj = {}
         self.task = {}
-        # self.entity_value = 0
 
     @staticmethod
     def map_values(data: dict) -> dict:
@@ -113,15 +115,17 @@ class FrameHandler(DataBase):
         data.update({key: value for key, value in z.items() if key in columns_names})
         data_with_pk = DataBase.read_from(self, table_name, data, columns_for_get_pk)
         if data_with_pk:
+            log.debug(f'get_pk data is {data_with_pk[0]}')
             data = {pk_name: data_with_pk[0]}
             return data
         else:
+            log.debug(f'get_pk data is None')
             return None
 
     def beam_task(self):
         container = []
         for index, group in enumerate(self.frame):
-            if re.search(r'\bTask\b', group[0]):
+            if re.search("rINFO" , group[0]):
                 group.pop(0)
                 for c in group:
                     self.task.update(c)
@@ -132,7 +136,7 @@ class FrameHandler(DataBase):
                 beam_task.update(self.task)
                 for c in group:
                     beam_task.update(c)
-
+                log.info(f'Task_type == {beam_task["taskType"]}')
                 # print('Task_type == ', beam_task['taskType'])
                 self.frame = self.frame[index:]
                 beam_task = self.map_values(beam_task)
@@ -162,8 +166,10 @@ class FrameHandler(DataBase):
                     container.append(primary_mark)
                     primary_marks_size = scan_data['primaryMarksCount']
                     primary_marks_count += 1
-                    print(f'\r\n\r\nprimaryMarksCount == {primary_marks_count} / {primary_marks_size}')
-                    print('pM_type == ', primary_mark['type'])
+                    log.info(f'\r\n\r\nprimaryMarksCount == {primary_marks_count} / {primary_marks_size}')
+                    log.info(f'pM_type == {primary_mark["type"]}')
+                    # print(f'\r\n\r\nprimaryMarksCount == {primary_marks_count} / {primary_marks_size}')
+                    # print('pM_type == ', primary_mark['type'])
                     self.obj = container
         return container
 
@@ -178,16 +184,3 @@ class FrameHandler(DataBase):
 
         self.obj = self.obj[1:]
         return result
-
-# def beamtask_columns(func):
-#     def wrapper(*args, **kwargs):
-#         columns_names = ["taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
-#                          "threshold", "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
-#                          "upperDistanceTrim", "beamAzimuth", "beamElevation"]
-#
-#         print ("Передали ли мне что-нибудь?:")
-#         print (args)
-#         print (kwargs)      # Теперь мы распакуем *args и **kwargs
-#         func(*args, **kwargs)
-#         print(func)
-#     return wrapper
