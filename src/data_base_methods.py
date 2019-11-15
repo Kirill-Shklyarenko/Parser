@@ -154,7 +154,7 @@ class FrameHandler(DataBase):
                 scan_data = {}
                 for c in group:
                     scan_data.update(c)
-
+                log.info(f'primaryMarksCount = {scan_data["primaryMarksCount"]}')
             elif primary_marks_count < scan_data['primaryMarksCount']:
                 if re.search(r'primaryMark', group[0]):
                     group.pop(0)
