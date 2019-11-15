@@ -47,7 +47,12 @@ class DataBase:
         return cur
 
     def insert_to(self, table_name: str, z: dict):
-        data = [[k, v] for k, v in z.items()]
+        # Для того чтобы узнать имена полей таблицы
+        self.cur.execute(f'SELECT * FROM "{table_name}";')
+        col_names = []
+        for elt in self.cur.description:
+            col_names.append(elt[0])
+        data = [[k, v] for k, v in z.items() if k in col_names]
         # формирование строки запроса
         columns = ','.join([f'"{x[0]}"' for x in data])
         param_placeholders = ','.join(['%s' for x in range(len(data))])
@@ -89,49 +94,49 @@ class FrameHandler(DataBase):
         super().__init__(dsn)
         self.frame = frame
         self.obj = {}
-        self.task = {}
 
-    def get_pk(self, table_name: str, z: dict, columns_for_get_pk: list):
+    def get_pk(self, table_name: str, data: dict, columns_for_get_pk: list):
         columns_names = []
-        data = {}
+        # data = {}
         pk_name = ''
         if table_name is 'BeamTasks':
-            columns_names = ["taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
-                             "threshold", "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
-                             "upperDistanceTrim", "beamAzimuth", "beamElevation"]
+            # columns_names = ["taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
+            #                  "threshold", "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
+            #                  "upperDistanceTrim", "beamAzimuth", "beamElevation"]
             pk_name = 'BeamTask'
         elif table_name is 'PrimaryMarks':
-            columns_names = ["BeamTask", "PrimaryMark", "primaryMarkId", "scanTime", "azimuth", "elevation",
-                             "markType", "distance", "dopplerSpeed", "signalLevel", "reflectedEnergy",
-                             "antennaId", "taskType", "beamAzimuth", "beamElevation"]
+            # columns_names = ["BeamTask", "PrimaryMark", "primaryMarkId", "scanTime", "azimuth", "elevation",
+            #                  "markType", "distance", "dopplerSpeed", "signalLevel", "reflectedEnergy",
+            #                  "antennaId", "taskType", "beamAzimuth", "beamElevation"]
             pk_name = 'PrimaryMark'
-        data.update({key: value for key, value in z.items() if key in columns_names})
+        # data.update({key: value for key, value in z.items() if key in columns_names})
         data_with_pk = DataBase.read_from(self, table_name, data, columns_for_get_pk)
         if data_with_pk:
-            log.debug(f'get_pk data is {data_with_pk[0]}')
-            data = {pk_name: data_with_pk[0]}
+            log.debug(f'get_pk data is {pk_name}: {data_with_pk[0]}')
+            data.update({pk_name: data_with_pk[0]})
             return data
         else:
             log.debug(f'get_pk data is None')
             return None
 
-    @adjust_to_col_names
+    # @adjust_to_col_names
     @change_name_of_binary_data
     def beam_task(self):
         container = []
+        task = {}
         for index, group in enumerate(self.frame):
-            if re.search("rINFO", group[0]):
+            if re.search(r'\bTask\b', group[0]):
                 group.pop(0)
                 for c in group:
-                    self.task.update(c)
+                    task.update(c)
+                    log.info(f'taskId = {task["taskId"]}')
             elif re.search(r'beamTask', group[0]):
-                # self.entity_value += 1
                 group.pop(0)
                 beam_task = {}
-                beam_task.update(self.task)
+                beam_task.update(task)
                 for c in group:
                     beam_task.update(c)
-                log.info(f'Task_type == {beam_task["taskType"]}')
+                log.info(f'TaskType = {beam_task["taskType"]}')
                 # print('Task_type == ', beam_task['taskType'])
                 self.frame = self.frame[index:]
                 # beam_task = self.map_values(beam_task)

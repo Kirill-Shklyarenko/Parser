@@ -14,8 +14,8 @@ logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
-    log.basicConfig(filename=logger, filemode='w+', level=log.INFO,
-                    format='— %(levelname)s — %(funcName)s: — %(message)s')  # %(lineno)d
+    log.basicConfig(filename=logger, filemode='w+', level=log.DEBUG,
+                    format='%(levelname)s : %(funcName)s: : %(message)s')  # %(lineno)d
     data_structure = StructureReader(planner)
     telemetry = TelemetryReader(planner_rsf, data_structure)
     data_base = DataBase(dsn)
@@ -340,5 +340,5 @@ if __name__ == "__main__":
         #             if rad_fs_pk is None:
         #                 data_base.insert_to('ForbiddenSectors', rad_forbidden_sector)
         time_sec = "{:7.4f}".format(time.time() - start_time)
-        log.info(f"---------------{time_sec} seconds -------------\r\n\r\n")
+        log.info(f"--------------------{time_sec} seconds ---------------\r\n\r\n")
         # print(f"\r\n--------------{time_sec} seconds --------------")

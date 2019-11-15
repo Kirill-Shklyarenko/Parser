@@ -5,13 +5,20 @@ import logging as log
 
 
 class TelemetryReader:
-    def __init__(self, file_name_str: str, data_struct: object):
-        self.file_name_str = file_name_str
+    def __init__(self, file_name: str, data_struct: object):
+        self.file_name_str = file_name
         self.data_struct = data_struct.__dict__['data_struct']
         self.frame_size = data_struct.__dict__['frame_size']
 
-        self.frames_count = self.frame_counter()
         self.frame_number = 0
+        self.frames_count = self.frame_counter()
+        self.serialize_string = self.create_serialize_string()
+
+    # def opener(self):
+    #     file = open(self.file_name_str, 'rb')
+    #
+    #     file.read()
+    #     return file
 
     def frame_counter(self) -> int:
         file_size = os.path.getsize(self.file_name_str) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
@@ -47,27 +54,34 @@ class TelemetryReader:
         return serialize_string
 
     def read_frame(self) -> list:
-        serialize_string = self.create_serialize_string()
-        buff_size = (self.frame_size * 2) - 16  # 1 frame = 15444bytes   need 15428
-        with open(self.file_name_str, 'rb') as file_object:
-            print(f"\r\n\r\n\r\n--------------- FRAME № {self.frame_number} ---------------")
-            log.info(f"--------------- FRAME № {self.frame_number} ---------------")
-            file_object.seek(self.frame_number * self.frame_size)
-            file_object.seek(14)
+        file = open(self.file_name_str, 'rb')
 
-            buffer = file_object.read(buff_size)
-            frame_values = list(unpack(serialize_string, buffer))
-            frame = copy.deepcopy(self.data_struct)
-            group_names = []
-            for number, line in enumerate(frame):
-                group_names.append(line[0])
-                for cursor in line:
-                    if type(cursor) is dict:
-                        key = cursor.get('name')
-                        cursor.clear()
-                        value = frame_values[0]
-                        frame_values.pop(0)
-                        cursor.update({key: value})
+        buff_size = (self.frame_size * 2) - 2  # 1 frame = 15444bytes   need 15428
+        frame_rate = self.frame_number * (self.frame_size * 2)
+        buffer = file.read(buff_size + frame_rate)
+
+        buffer = buffer[frame_rate:]
+        buffer = buffer[:buff_size]
+        buffer = buffer[14:]
+
+        try:
+            frame_values = list(unpack(self.serialize_string, buffer))
+        except Exception as e:
+            print(e)
+
+        print(f"\r\n\r\n\r\n--------------- FRAME № {self.frame_number} ---------------")
+        log.info(f"--------------- FRAME № {self.frame_number} ---------------")
+        frame = copy.deepcopy(self.data_struct)
+        group_names = []
+        for number, line in enumerate(frame):
+            group_names.append(line[0])
+            for cursor in line:
+                if type(cursor) is dict:
+                    key = cursor.get('name')
+                    cursor.clear()
+                    value = frame_values[0]
+                    frame_values.pop(0)
+                    cursor.update({key: value})
         return frame
 
     def __iter__(self):
