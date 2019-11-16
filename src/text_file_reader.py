@@ -4,7 +4,7 @@ import copy
 class StructureReader:
     def __init__(self, file_name: str):
         self.file_name = file_name
-        self.fileObj = self.open()
+        self.file_obj = self.open()
         self.frame_size = self.find_frame_size()
         self.data_struct = self.parse_text_file()
 
@@ -13,33 +13,33 @@ class StructureReader:
             data = file.readlines()
         return data
 
-    def find_frame_size(self):
+    def find_frame_size(self) -> int:
         frame_size = 0
         # Поиск размера блока данных
-        for i, line in enumerate(self.fileObj):
+        for i, line in enumerate(self.file_obj):
             line = line.split()
             if i == 0:
                 frame_size = int(line[0])
-                self.fileObj.pop(i)
-                self.fileObj.pop(i)
+                self.file_obj.pop(i)
+                self.file_obj.pop(i)
                 break
         return frame_size
 
-    def parse_text_file(self) -> tuple:
+    def parse_text_file(self) -> list:
         group = []  # список элементов [0, 1, 2]
         substring = []  # элемент содержит str "NavigationData"[0] & dict "Parameters"[1]
 
-        for i, line in enumerate(self.fileObj):
+        for i, line in enumerate(self.file_obj):
             line = line.split()
             # Поиск размера блока данных
             if len(line) == 1 and ';' not in line[0]:
-                next_line = self.fileObj[i + 1].split()
+                next_line = self.file_obj[i + 1].split()
                 if len(next_line) == 1 and ';' not in next_line[0]:
                     frame_size = int(line[0])
 
             # Поиск имени группы
             elif ';' in line[0]:
-                next_line = self.fileObj[i + 1].split()
+                next_line = self.file_obj[i + 1].split()
                 if ';' not in next_line[0]:
                     if substring:
                         group.append(copy.copy(substring))
