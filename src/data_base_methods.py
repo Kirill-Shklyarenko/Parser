@@ -1,5 +1,6 @@
-import psycopg2
 import logging as log
+
+import psycopg2
 
 
 class DataBase:
@@ -27,8 +28,6 @@ class DataBase:
             log.warning(f'INSERT INTO "{table_name}" {data}')
 
     def read_from(self, table_name: str, dict_for_get_pk: dict) -> any:
-        data = {}
-        # data.update({key: value for key, value in z.items() if key in fields})
         # формирование строки запроса
         columns = ','.join([f'"{x}"' for x in dict_for_get_pk])
         param_placeholders = ','.join(['%s' for x in range(len(dict_for_get_pk))])

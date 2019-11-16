@@ -1,10 +1,9 @@
-from text_file_reader import *
-from bin_file_reader import *
-from data_base_methods import *
+import time
 from pathlib import Path
 
-import logging as log
-import time
+from bin_file_reader import *
+from data_base_methods import *
+from text_file_reader import *
 
 data_folder = Path(r'../data/session_00/')
 planner = data_folder / r'Planner'
@@ -52,7 +51,7 @@ if __name__ == "__main__":
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ # 643 5283
         for primary_mark in frame_handler.primary_mark():
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
-            get_pk_pm = {'BeamTask': 'BeamTask', 'antennaId': 'antennaId'}
+            get_pk_pm = {'BeamTask': 'BeamTask'}
             dict_for_get_pk = map_fields_table_to_table(primary_mark, get_pk_bt)
             pk_name = 'BeamTask'
             beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
@@ -72,7 +71,7 @@ if __name__ == "__main__":
             if candidate['state'] != 0 and candidate['state'] != 3 \
                     and candidate['state'] != 5 and candidate['state'] != 6:
                 get_pk_bt = {'taskId': 'taskId', 'trackId': 'id', 'taskType': 2, 'antennaId': 'antennaId'}
-                get_pk_pm = {'BeamTask': 'BeamTask', 'taskId': 'taskId', 'antennaId': 'antennaId'}
+                get_pk_pm = {'BeamTask': 'BeamTask'}
                 get_pk_candidate = {'id': 'id'}
                 get_pk_candidate_hist = {'BeamTask': 'BeamTask', 'PrimaryMark': 'PrimaryMark', 'Candidate': 'Candidate'}
 
@@ -81,15 +80,17 @@ if __name__ == "__main__":
                 beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
                 if beam_task_pk:
                     candidate.update(beam_task_pk)
-                    pk_name = 'PrimaryMarks'
+                    pk_name = 'PrimaryMark'
                     dict_for_get_pk = map_fields_table_to_table(candidate, get_pk_pm)
                     pm_pk = data_base.get_pk('PrimaryMarks', pk_name, dict_for_get_pk)
                     if pm_pk:
                         candidate.update(pm_pk)
                         pk_name = 'Candidate'
                         dict_for_get_pk = map_fields_table_to_table(candidate, get_pk_candidate)
-                        candidates_pk = data_base.insert_to('Candidates', dict_for_get_pk)
-                        candidates_pk = data_base.get_pk('Candidates', pk_name, candidates_pk)
+                        candidates_pk = data_base.get_pk('Candidates', pk_name, dict_for_get_pk)
+                        if candidates_pk is None:
+                            data_base.insert_to('Candidates', dict_for_get_pk)
+                            candidates_pk = data_base.get_pk('Candidates', pk_name, dict_for_get_pk)
                         candidate.update(candidates_pk)
                         pk_name = 'CandidateHistory'
                         dict_for_get_pk = map_fields_table_to_table(candidate, get_pk_candidate_hist)
@@ -112,7 +113,7 @@ if __name__ == "__main__":
             beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
             if beam_task_pk:
                 air_track.update(beam_task_pk)
-                pk_name = 'PrimaryMarks'
+                pk_name = 'PrimaryMark'
                 dict_for_get_pk = map_fields_table_to_table(air_track, get_pk_pm)
                 pm_pk = data_base.get_pk('PrimaryMarks', pk_name, dict_for_get_pk)
                 if pm_pk:
