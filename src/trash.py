@@ -23,6 +23,12 @@
 # ;
 
 
+# def insert_to(self, table_name: str, dict_to_insert: dict):
+#     # формирование строки запроса
+#     columns = ','.join([f'"{x[0]}"' for x in data])
+#     param_values = tuple(x[1] for x in data)
+
+
 class TelemetryReader:
     def __init__(self, file_name_str: str, data_struct: list, frame_size: int, frame_rate_file: str):
         self.file_name_str = file_name_str

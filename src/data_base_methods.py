@@ -13,18 +13,12 @@ class DataBase:
         cur = conn.cursor()
         return cur
 
-    def insert_to(self, table_name: str, dict_to_insert: dict):
-        # Для того чтобы узнать имена полей таблицы
-        self.cur.execute(f'SELECT * FROM "{table_name}";')
-        col_names = []
-        for elt in self.cur.description:
-            col_names.append(elt[0])
-        data = [[k, v] for k, v in dict_to_insert.items() if k in col_names]
+    def insert_to(self, table_name: str, data: dict):
         # формирование строки запроса
-        columns = ','.join([f'"{x[0]}"' for x in data])
+        columns = ','.join([f'"{x}"' for x in data])
         param_placeholders = ','.join(['%s' for x in range(len(data))])
         query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
-        param_values = tuple(x[1] for x in data)
+        param_values = tuple(x for x in data.values())
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
@@ -52,25 +46,20 @@ class DataBase:
                 return None
 
     def get_pk(self, table_name: str, pk_name: str, dict_for_get_pk: dict):
-        # columns_names = []
-        # data = {}
-        # pk_name = ''
-        # if table_name is 'BeamTasks':
-            # columns_names = ["taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
-            #                  "threshold", "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
-            #                  "upperDistanceTrim", "beamAzimuth", "beamElevation"]
-            # pk_name = 'BeamTask'
-        # elif table_name is 'PrimaryMarks':
-            # columns_names = ["BeamTask", "PrimaryMark", "primaryMarkId", "scanTime", "azimuth", "elevation",
-            #                  "markType", "distance", "dopplerSpeed", "signalLevel", "reflectedEnergy",
-            #                  "antennaId", "taskType", "beamAzimuth", "beamElevation"]
-            # pk_name = 'PrimaryMark'
-        # data.update({key: value for key, value in z.items() if key in columns_names})
         data_with_pk = self.read_from(table_name, dict_for_get_pk)
         if data_with_pk:
-            # log.debug(f'{pk_name} : {data_with_pk[0]}')
-            # dict_for_get_pk.update({pk_name: data_with_pk[0]})
+            log.debug(f'{pk_name} : {data_with_pk[0]}')
+            dict_for_get_pk.update({pk_name: data_with_pk[0]})
             return {pk_name: data_with_pk[0]}
         else:
-            log.debug(f'get_pk data is None')
+            log.debug(f'{table_name} : {dict_for_get_pk} doesnt exists')
             return None
+
+    def map_fields_bin_to_table(self, table_name: str, data: dict) -> dict:
+        # Для того чтобы узнать имена полей таблицы
+        self.cur.execute(f'SELECT * FROM "{table_name}";')
+        col_names = []
+        for elt in self.cur.description:
+            col_names.append(elt[0])
+        data = {k: v for k, v in data.items() if k in col_names}
+        return data

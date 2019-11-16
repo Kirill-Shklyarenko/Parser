@@ -13,10 +13,10 @@ class TelemetryReader:
         self.frame_size = data_struct.__dict__['frame_size']
         self.buff_size = (self.frame_size * 2) - 2  # 1 frame = 15444bytes   need 15428
 
-        self.frame_number = 0
+        self.frame_number = 2600
         self.frames_range = self.frame_counter()
         self.serialize_string = self.create_serialize_string()
-        self.buffer = self.open()
+        # self.buffer = self.open()
 
     def open(self):
         with open(self.file_name, 'rb') as file:
@@ -61,7 +61,7 @@ class TelemetryReader:
     def read_frame(self) -> list:
         frame_values = None
         try:
-            frame_values = list(unpack(self.serialize_string, self.buffer))
+            frame_values = list(unpack(self.serialize_string, self.open()))
         except Exception as e:
             log.exception(f'Exception: {e}')
         finally:
@@ -78,10 +78,10 @@ class TelemetryReader:
                         value = frame_values[0]
                         frame_values.pop(0)
                         cursor.update({key: value})
-            formatted = pformat(frame, width=105, compact=True)
-            for line in formatted.splitlines():
-                log.info(line.rstrip())
-        return frame
+            # formatted = pformat(frame, width=105, compact=True)
+            # for line in formatted.splitlines():
+            #     log.info(line.rstrip())
+        return frame[2:]
 
     def __iter__(self):
         return self
@@ -98,88 +98,79 @@ class TelemetryReader:
 class FrameHandler:
     def __init__(self, frame):
         self.frame = frame
-        self.obj = {}
-        self.entity_counter = 0
 
     def beam_task(self):
-        self.entity_counter = 0
         container = []
         task = {}
         for index, group in enumerate(self.frame):
             if re.search(r'\bTask\b', group[0]):
-                group.pop(0)
-                for c in group:
+                for c in group[1:]:
                     task.update(c)
+                self.frame = self.frame[1:]
             elif re.search(r'beamTask', group[0]):
-                self.entity_counter += 1
-                group.pop(0)
                 beam_task = {}
                 beam_task.update(task)
-                for c in group:
+                for c in group[1:]:
                     beam_task.update(c)
-                log.info(f'TaskType = {beam_task["taskType"]}')
+                # log.info(f'TaskType = {beam_task["taskType"]}')
                 container.append(beam_task)
-                self.frame = self.frame[index:]
-                self.obj = container
+                self.frame = self.frame[1:]
+                if len(container) == 4:
+                    break
         return container
 
     def primary_mark(self):
-        self.entity_counter = 0
         container = []
         scan_data = {'primaryMarksCount': 0}
         primary_marks_count = 0
         for index, group in enumerate(self.frame):
             if re.search(r'scanData', group[0]):
-                self.entity_counter += 1
-                group.pop(0)
                 scan_data = {}
-                for c in group:
+                for c in group[1:]:
                     scan_data.update(c)
-                log.info(f'primaryMarksCount = {scan_data["primaryMarksCount"]}')
-                self.frame = self.frame[index:]
+                # if scan_data["primaryMarksCount"] == 0:
+                #     log.info(f'primaryMarksCount = {scan_data["primaryMarksCount"]}')
+                # self.frame = self.frame[1:]
                 # scan_data = {'primaryMarksCount': 10}
             elif primary_marks_count < scan_data['primaryMarksCount']:
                 primary_marks_count += 1
-                log.info(f'primaryMarksCount == {primary_marks_count} / {scan_data["primaryMarksCount"]}')
+                log.debug(f'primaryMarksCount == {primary_marks_count} / {scan_data["primaryMarksCount"]}')
                 if re.search(r'primaryMark', group[0]):
-                    self.entity_counter += 1
-                    group.pop(0)
                     primary_mark = {}
-                    for c in group:
+                    for c in group[1:]:
                         primary_mark.update(c)
+                    primary_mark.update(scan_data)
                     container.append(primary_mark)
-                    log.info(f'markType = {primary_mark["type"]}')
-                    self.frame = self.frame[index:]
-                    self.obj = container
+                    log.debug(f'markType = {primary_mark["type"]}')
+                    self.frame = self.frame[index + 1:]
+            elif re.search(r'TrackCandidates', group[0]):
+                break
         return container
 
     def candidate(self):
-        self.entity_counter = 0
         container = []
         track_candidate = {'state': 0}
         candidate_q = {'candidatesQueueSize': 0}
         candidates_count = 0
         for index, group in enumerate(self.frame):
             if re.search(r'TrackCandidates', group[0]):
-                group.pop(0)
                 candidate_q = {}
-                for c in group:
+                for c in group[1:]:
                     candidate_q.update(c)
-                log.info(f'candidatesQueueSize = {candidate_q["candidatesQueueSize"]}')
-                self.frame = self.frame[index:]
+                if candidate_q["candidatesQueueSize"] == 0:
+                    log.info(f'candidatesQueueSize = {candidate_q["candidatesQueueSize"]}')
+                self.frame = self.frame[1:]
                 # candidate_q = {'candidatesQueueSize': 4}
             elif candidates_count < candidate_q['candidatesQueueSize']:
-                self.entity_counter = 4
+                breakpoint()
                 if re.search(r'trackCandidate', group[0]):
-                    group.pop(0)
                     track_candidate = {}
-                    for c in group:
+                    for c in group[1:]:
                         track_candidate.update(c)
                 elif track_candidate['state'] == 0:
                     if re.search(r'viewSpot', group[0]):
-                        group.pop(0)
                         view_spot = {}
-                        for c in group:
+                        for c in group[1:]:
                             view_spot.update(c)
                         track_candidate.update(view_spot)
                         container.append(track_candidate)
@@ -189,9 +180,8 @@ class FrameHandler:
                         break
                 elif track_candidate['state'] == 2:
                     if re.search(r'distanceResolutionSpot', group[0]):
-                        group.pop(0)
                         distance_res_spot = {}
-                        for c in group:
+                        for c in group[1:]:
                             distance_res_spot.update(c)
                         track_candidate.update(distance_res_spot)
                         container.append(track_candidate)
@@ -201,49 +191,50 @@ class FrameHandler:
                         break
                 elif track_candidate['state'] == 4:
                     if re.search(r'velocityResolutionSpot', group[0]):
-                        group.pop(0)
                         velocity_res_spot = {}
-                        for c in group:
+                        for c in group[1:]:
                             velocity_res_spot.update(c)
                         track_candidate.update(velocity_res_spot)
                         container.append(track_candidate)
                         candidates_count += 1
-                        log.info(f'candidatesQueueSize = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'candidate state = {track_candidate["state"]}')
+                        log.warning(f'candidatesQueueSize = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
+                        log.debug(f'candidate state = {track_candidate["state"]}')
                         break
             else:
-                self.frame = self.frame[index:]
+                self.frame = self.frame[1:]
                 break
-        self.obj = container
         return container
 
     def air_track(self):
-        self.entity_counter = 0
         container = []
         tracks_q = {'tracksQueuesSize': 0}
         tracks_count = 0
         for index, group in enumerate(self.frame):
+            if type(group[0]) is not str:
+                breakpoint()
             if re.search(r'\bTracks\b', group[0]):
-                group.pop(0)
                 tracks_q = {}
-                for c in group:
+                for c in group[1:]:
                     tracks_q.update(c)
-                log.info(f'tracksQueuesSize = {tracks_q["tracksQueuesSize"]}')
+                if tracks_q["tracksQueuesSize"] != 0:
+                    log.warning(f'tracksQueuesSize = {tracks_q["tracksQueuesSize"]}')
+                else:
+                    log.info(f'tracksQueuesSize = {tracks_q["tracksQueuesSize"]}')
                 self.frame = self.frame[index:]
-                tracks_q = {'tracksQueuesSize': 4}
+                # tracks_q = {'tracksQueuesSize': 4}
             elif tracks_count < tracks_q['tracksQueuesSize']:
                 if re.search('track_', group[0]):
-                    group.pop(0)
                     track = {}
-                    for c in group:
+                    for c in group[1:]:
                         track.update(c)
                     container.append(track)
                     tracks_count += 1
                     log.info(f'track = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
                     log.info(f'track_type  = {track["type"]}')
+                    if track["type"] != 0:
+                        log.warning(f'track_type  = {track["type"]}')
                     if tracks_count == tracks_q['tracksQueuesSize']:
                         break
-        self.obj = container
         return container
 
     def __iter__(self):
