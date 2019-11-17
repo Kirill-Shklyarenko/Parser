@@ -10,9 +10,9 @@ class TelemetryReader:
         self.file_name = file_name
         self.data_struct = data_struct.__dict__['data_struct']
         self.frame_size = data_struct.__dict__['frame_size']
-        self.buff_size = (self.frame_size * 2) - 2  # 1 frame = 15444bytes   need 15428
+        self.buff_size = (self.frame_size * 2) - 6  # need 16072 bytes
 
-        self.frame_number = 0
+        self.frame_number = 299
         self.frames_range = self.frame_counter()
         self.serialize_string = self.create_serialize_string()
 
@@ -62,7 +62,7 @@ class TelemetryReader:
         except Exception as e:
             log.exception(f'Exception: {e}')
         finally:
-            log.info(f'----------------------FRAME {self.frame_number}-----------------------')
+            log.info(f'----------------------- FRAME {self.frame_number} ------------------')
             frame = copy.deepcopy(self.data_struct)
             group_names = []
             for number, line in enumerate(frame):
@@ -91,9 +91,9 @@ class TelemetryReader:
         return result
 
 
-# ---------------------- #  ---------------------- # ---------------------- # ---------------------- #
-# ---------------------- #  ---------------------- # ---------------------- # ---------------------- #
-# ---------------------- #  ---------------------- # ---------------------- # ---------------------- #
+# ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
+# ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
+# ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 class FrameHandler:
     def __init__(self, frame):
         self.frame = frame
@@ -175,7 +175,7 @@ class FrameHandler:
                         container.append(track_candidate)
                         candidates_count += 1
                         log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'Candidates state = {track_candidate["state"]}')
+                        log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.frame = self.frame[1:]
                             break
@@ -188,7 +188,7 @@ class FrameHandler:
                         container.append(track_candidate)
                         candidates_count += 1
                         log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'Candidates state = {track_candidate["state"]}')
+                        log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.frame = self.frame[1:]
                             break
@@ -201,14 +201,14 @@ class FrameHandler:
                         container.append(track_candidate)
                         candidates_count += 1
                         log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'Candidates state = {track_candidate["state"]}')
+                        log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.frame = self.frame[1:]
                             break
                 else:
                     candidates_count += 1
                     log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                    log.info(f'Candidates state = {track_candidate["state"]}')
+                    log.info(f'Candidate state = {track_candidate["state"]}')
                     if candidates_count == candidate_q['candidatesQueueSize']:
                         self.frame = self.frame[1:]
                         break
