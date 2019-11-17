@@ -15,9 +15,8 @@ class TelemetryReader:
         self.frame_number = 0
         self.frames_range = self.frame_counter()
         self.serialize_string = self.create_serialize_string()
-        # self.buffer = self.open()
 
-    def open(self):
+    def open(self) -> bytes:
         with open(self.file_name, 'rb') as file:
             frame_rate = self.frame_number * (self.frame_size * 2)
             buffer = file.read(self.buff_size + frame_rate)
@@ -32,10 +31,9 @@ class TelemetryReader:
         try:
             frames_count = file_size / (self.frame_size * 2)
         except ZeroDivisionError as e:
-            log.exception(f'{frames_count}')
-            log.exception(f'{e}')
+            log.exception(f'{e} , {frames_count}')
         finally:
-            log.info(f'frames_count = {int(frames_count)}')
+            log.debug(f'frames_count = {int(frames_count)}')
             return int(frames_count)
 
     def create_serialize_string(self) -> str:
@@ -51,8 +49,8 @@ class TelemetryReader:
                         serialize_string += 'i'
                     elif 'LL' in c['type']:  # INT_4
                         serialize_string += 'i'
-                    elif 'RR' in c['type']:
-                        serialize_string += 'c'  # char
+                    elif 'RR' in c['type']:  # char
+                        serialize_string += 'c'
                     elif 'FF' in c['type']:
                         serialize_string += 'f'  # float_4
         return serialize_string
@@ -65,7 +63,6 @@ class TelemetryReader:
             log.exception(f'Exception: {e}')
         finally:
             log.info(f'----------------------FRAME {self.frame_number}-----------------------')
-            # print(f"\r\n\r\n\r\n--------------- FRAME № {self.frame_number} ---------------")
             frame = copy.deepcopy(self.data_struct)
             group_names = []
             for number, line in enumerate(frame):
@@ -135,15 +132,15 @@ class FrameHandler:
                 # self.frame = self.frame[1:]
                 # scan_data = {'primaryMarksCount': 10}
             elif primary_marks_count < scan_data['primaryMarksCount']:
-                primary_marks_count += 1
-                log.debug(f'primaryMarksCount == {primary_marks_count} / {scan_data["primaryMarksCount"]}')
                 if re.search(r'primaryMark', group[0]):
                     primary_mark = {}
                     for c in group[1:]:
                         primary_mark.update(c)
                     primary_mark.update(scan_data)
                     container.append(primary_mark)
-                    log.info(f'type = {primary_mark["type"]}')
+                    primary_marks_count += 1
+                    log.info(f'PrimaryMarks == {primary_marks_count} / {scan_data["primaryMarksCount"]}')
+                    log.info(f'PrimaryMark type = {primary_mark["type"]}')
                     self.frame = self.frame[index + 1:]
             elif re.search(r'TrackCandidates', group[0]):
                 break
@@ -159,10 +156,8 @@ class FrameHandler:
                 candidate_q = {}
                 for c in group[1:]:
                     candidate_q.update(c)
-                if candidate_q["candidatesQueueSize"] != 0:
-                    log.warning(f'candidatesQueueSize = {candidate_q["candidatesQueueSize"]}')
-                else:
-                    log.info(f'candidatesQueueSize = {candidate_q["candidatesQueueSize"]}')
+                # if candidate_q["candidatesQueueSize"] != 0:
+                #     log.warning(f'candidatesQueueSize = {candidate_q["candidatesQueueSize"]}')
                 self.frame = self.frame[index:]
                 # candidate_q = {'candidatesQueueSize': 4}
             elif candidates_count < candidate_q['candidatesQueueSize']:
@@ -179,8 +174,8 @@ class FrameHandler:
                         track_candidate.update(view_spot)
                         container.append(track_candidate)
                         candidates_count += 1
-                        log.info(f'candidatesQueueSize = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'state = {track_candidate["state"]}')
+                        log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
+                        log.info(f'Candidates state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.frame = self.frame[1:]
                             break
@@ -192,8 +187,8 @@ class FrameHandler:
                         track_candidate.update(distance_res_spot)
                         container.append(track_candidate)
                         candidates_count += 1
-                        log.info(f'candidatesQueueSize = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'state = {track_candidate["state"]}')
+                        log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
+                        log.info(f'Candidates state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.frame = self.frame[1:]
                             break
@@ -205,19 +200,18 @@ class FrameHandler:
                         track_candidate.update(velocity_res_spot)
                         container.append(track_candidate)
                         candidates_count += 1
-                        log.info(f'candidatesQueueSize = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'state = {track_candidate["state"]}')
+                        log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
+                        log.info(f'Candidates state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.frame = self.frame[1:]
                             break
                 else:
                     candidates_count += 1
-                    log.info(f'candidatesQueueSize = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                    log.info(f'state = {track_candidate["state"]}')
+                    log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
+                    log.info(f'Candidates state = {track_candidate["state"]}')
                     if candidates_count == candidate_q['candidatesQueueSize']:
                         self.frame = self.frame[1:]
                         break
-
                 self.frame = self.frame[1:]
         return container
 
@@ -232,10 +226,10 @@ class FrameHandler:
                 tracks_q = {}
                 for c in group[1:]:
                     tracks_q.update(c)
-                if tracks_q["tracksQueuesSize"] != 0:
-                    log.warning(f'tracksQueuesSize = {tracks_q["tracksQueuesSize"]}')
-                else:
-                    log.info(f'tracksQueuesSize = {tracks_q["tracksQueuesSize"]}')
+                # if tracks_q["tracksQueuesSize"] != 0:
+                #     log.info(f'tracksQueuesSize = {tracks_q["tracksQueuesSize"]}')
+                # else:
+                #     log.info(f'tracksQueuesSize = {tracks_q["tracksQueuesSize"]}')
                 self.frame = self.frame[index:]
                 # tracks_q = {'tracksQueuesSize': 4}
             elif tracks_count < tracks_q['tracksQueuesSize']:
@@ -245,62 +239,38 @@ class FrameHandler:
                         track.update(c)
                     container.append(track)
                     tracks_count += 1
-                    log.info(f'track = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
-                    log.info(f'type  = {track["type"]}')
+                    log.info(f'Tracks = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
+                    log.info(f'Track type  = {track["type"]}')
                     if track["type"] != 0:
                         log.warning(f'type  = {track["type"]}')
                     if tracks_count == tracks_q['tracksQueuesSize']:
                         break
+            self.frame = self.frame[1:]
         return container
-    # def __iter__(self):
-    #     return self.container[self.i]
-    #
-    # def __next__(self):
-    #
-    #     try:
-    #         result = self.container[self.i]
-    #     except IndexError:
-    #         raise StopIteration
-    #     self.i += 1
-    #     return result
 
-    # @staticmethod
-    # def map_values(data: dict) -> dict:
-    #     z = []
-    #     returned_data = {}
-    #     for k, v in data.items():
-    #         if 'isFake' in k:
-    #             data['isFake'] = bool(v)
-    #             if data['isFake']:
-    #                 raise Exception
-    #         elif 'processingTime' in k:
-    #             returned_data['scanTime'] = data['processingTime']
-    #         elif 'distancePeriod' in k:
-    #             returned_data['distanceZoneWeight'] = data['distancePeriod']
-    #         elif 'velocityPeriod' in k:
-    #             returned_data['velocityZoneWeight'] = data['velocityPeriod']
-    #         elif 'betaBSK' in k:
-    #             returned_data['beamAzimuth'] = data['betaBSK']
-    #         elif 'epsilonBSK' in k:
-    #             returned_data['beamElevation'] = data['epsilonBSK']
-    #         elif 'type' in k:
-    #             returned_data['markType'] = data['type']
-    #         elif re.search(r'\bdistance\b', k):
-    #             returned_data['numDistanceZone'] = data['resolvedDistance']
-    #         elif re.search(r'\bvelocity\b', k):
-    #             returned_data['numVelocityZone'] = data['resolvedVelocity']
-    #         elif 'possiblePeriod[' in k:
-    #             z.append(v)
-    #         elif 'scanPeriodSeconds' in k:
-    #             returned_data['scanPeriod'] = data['scanPeriodSeconds']
-    #         elif 'nextUpdateTimeSeconds' in k:
-    #             returned_data['nextTimeUpdate'] = data['nextUpdateTimeSeconds']
-    #         elif 'creationTimeSeconds' in k:
-    #             returned_data['nextTimeUpdate'] = data['creationTimeSeconds']
+    def forbidden_sector(self):
+        pass
+
+    #     elif re.search(r'\bRadiationForbiddenSectors\b', frame[0]):
+    #         frame.pop(0)
+    #         rad_forbidden_sector = {}
+    #         for c in frame:
+    #             rad_forbidden_sector.update(c)
     #
-    #     if len(z) == 6:
-    #         returned_data.update({'possiblePeriods': z})
-    #     data.pop('betaBSK')
-    #     data.pop('epsilonBSK')
-    #     returned_data.update(data)
-    #     return returned_data
+    #     elif rad_forbidden_count < rad_forbidden_sector['RadiationForbiddenSectorsCount']:
+    #         rad_forbidden_size = rad_forbidden_sector['RadiationForbiddenSectorsCount']
+    #         rad_forbidden_count += 1
+    #         print(f'primaryMarksCount == {rad_forbidden_count} / {rad_forbidden_size}')
+    #
+    #         if re.search(r'RadiationForbiddenSector', frame[0]):
+    #             for c in frame:
+    #                 rad_forbidden_sector.update(c)
+    #
+    #             # Проверка существует ли запись с такими параметрами
+    #             rad_forbidden_sector = data_base.prepare_data_for_db('ForbiddenSectors', rad_forbidden_sector)
+    #             rad_fs_pk = data_base.read_from('ForbiddenSectors', rad_forbidden_sector,
+    #                                   ['azimuthBeginNSSK', 'azimuthEndNSSK',
+    #                                    'elevationBeginNSSK', 'elevationEndNSSK'
+    #                                    ])
+    #             if rad_fs_pk is None:
+    #                 data_base.insert_to('ForbiddenSectors', rad_forbidden_sector)

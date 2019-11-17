@@ -108,3 +108,57 @@
 #         return res
 #
 #     return wrapper
+
+
+# def __iter__(self):
+#     return self.container[self.i]
+#
+# def __next__(self):
+#
+#     try:
+#         result = self.container[self.i]
+#     except IndexError:
+#         raise StopIteration
+#     self.i += 1
+#     return result
+
+# @staticmethod
+# def map_values(data: dict) -> dict:
+#     z = []
+#     returned_data = {}
+#     for k, v in data.items():
+#         if 'isFake' in k:
+#             data['isFake'] = bool(v)
+#             if data['isFake']:
+#                 raise Exception
+#         elif 'processingTime' in k:
+#             returned_data['scanTime'] = data['processingTime']
+#         elif 'distancePeriod' in k:
+#             returned_data['distanceZoneWeight'] = data['distancePeriod']
+#         elif 'velocityPeriod' in k:
+#             returned_data['velocityZoneWeight'] = data['velocityPeriod']
+#         elif 'betaBSK' in k:
+#             returned_data['beamAzimuth'] = data['betaBSK']
+#         elif 'epsilonBSK' in k:
+#             returned_data['beamElevation'] = data['epsilonBSK']
+#         elif 'type' in k:
+#             returned_data['markType'] = data['type']
+#         elif re.search(r'\bdistance\b', k):
+#             returned_data['numDistanceZone'] = data['resolvedDistance']
+#         elif re.search(r'\bvelocity\b', k):
+#             returned_data['numVelocityZone'] = data['resolvedVelocity']
+#         elif 'possiblePeriod[' in k:
+#             z.append(v)
+#         elif 'scanPeriodSeconds' in k:
+#             returned_data['scanPeriod'] = data['scanPeriodSeconds']
+#         elif 'nextUpdateTimeSeconds' in k:
+#             returned_data['nextTimeUpdate'] = data['nextUpdateTimeSeconds']
+#         elif 'creationTimeSeconds' in k:
+#             returned_data['nextTimeUpdate'] = data['creationTimeSeconds']
+#
+#     if len(z) == 6:
+#         returned_data.update({'possiblePeriods': z})
+#     data.pop('betaBSK')
+#     data.pop('epsilonBSK')
+#     returned_data.update(data)
+#     return returned_data

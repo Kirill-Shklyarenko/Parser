@@ -26,8 +26,11 @@ def map_fields_table_to_table(dict_from_telemetry: dict, formatter_dict: dict) -
 
 
 if __name__ == "__main__":
-    log.basicConfig(filename=logger, filemode='w+', level=log.DEBUG,
-                    format='%(levelname)s : %(lineno)d : %(funcName)s : %(message)s')  # %(lineno)d
+    log.basicConfig(level=log.DEBUG,
+                    format='%(asctime)s %(levelname)-7s %(lineno)-3s %(funcName)-10s %(message)s',
+                    datefmt='%H:%m:%S',
+                    filename=logger,
+                    filemode='w')
     data_structure = StructureReader(planner)
     telemetry = TelemetryReader(planner_rsf, data_structure)
     data_base = DataBase(dsn)
@@ -38,18 +41,20 @@ if __name__ == "__main__":
         frame_handler = FrameHandler(frame)
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam in frame_handler.beam_task():
-            get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
+            get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId',
+                         'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK'}
             dict_for_get_pk = map_fields_table_to_table(beam, get_pk_bt)
             pk_name = 'BeamTask'
             beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
             if beam_task_pk is None:
-                beam = data_base.map_fields_bin_to_table('BeamTasks', beam)
+                beam = data_base.map_bin_fields_to('BeamTasks', beam)
                 data_base.insert_to('BeamTasks', beam)
             else:
                 log.debug(f'BeamTask is already exists')
 
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ # 643 5283
         for primary_mark in frame_handler.primary_mark():
+
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
             get_pk_pm = {'BeamTask': 'BeamTask'}
             dict_for_get_pk = map_fields_table_to_table(primary_mark, get_pk_bt)
@@ -61,12 +66,12 @@ if __name__ == "__main__":
                 pk_name = 'PrimaryMark'
                 primary_mark_pk = data_base.get_pk('PrimaryMarks', pk_name, dict_for_get_pk)
                 if primary_mark_pk is None:
-                    primary_mark = data_base.map_fields_bin_to_table('PrimaryMarks', primary_mark)
+                    primary_mark = data_base.map_bin_fields_to('PrimaryMarks', primary_mark)
                     data_base.insert_to('PrimaryMarks', primary_mark)
                 else:
                     log.debug(f'PrimaryMark is already exists')
 
-        #     # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------- #
+        # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_handler.candidate():
             if candidate['state'] != 0 and candidate['state'] != 3 \
                     and candidate['state'] != 5 and candidate['state'] != 6:
@@ -96,11 +101,12 @@ if __name__ == "__main__":
                         dict_for_get_pk = map_fields_table_to_table(candidate, get_pk_candidate_hist)
                         candidates_history_pk = data_base.get_pk('CandidatesHistory', pk_name, dict_for_get_pk)
                         if candidates_history_pk is None:
-                            candidate = data_base.map_fields_bin_to_table('CandidatesHistory', candidate)
+                            candidate = data_base.map_bin_fields_to('CandidatesHistory', candidate)
                             data_base.insert_to('CandidatesHistory', candidate)
                         else:
                             log.debug(f'CandidatesHistory is already exists')
-        # ---------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"------------------------ # 2839frame
+
+        # ------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- # 2839frame
         for air_track in frame_handler.air_track():
             get_pk_bt = {'trackId': 'id', 'taskType': 3, 'antennaId': 'antennaId'}
             get_pk_pm = {'BeamTask': 'BeamTask'}
@@ -135,34 +141,12 @@ if __name__ == "__main__":
                             dict_for_get_pk = map_fields_table_to_table(air_track, get_pk_air_tracks_hist)
                             air_track_history_pk = data_base.get_pk('AirTracksHistory', pk_name, dict_for_get_pk)
                             if candidates_history_pk is None:
-                                air_track = data_base.map_fields_bin_to_table('AirTracksHistory', air_track)
+                                air_track = data_base.map_bin_fields_to('AirTracksHistory', air_track)
                                 data_base.insert_to('AirTracksHistory', air_track)
                             else:
                                 log.debug(f'AirTracksHistory is already exists')
-        #     # ----------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------------- #
-        #     elif re.search(r'\bRadiationForbiddenSectors\b', frame[0]):
-        #         frame.pop(0)
-        #         rad_forbidden_sector = {}
-        #         for c in frame:
-        #             rad_forbidden_sector.update(c)
-        #
-        #     elif rad_forbidden_count < rad_forbidden_sector['RadiationForbiddenSectorsCount']:
-        #         rad_forbidden_size = rad_forbidden_sector['RadiationForbiddenSectorsCount']
-        #         rad_forbidden_count += 1
-        #         print(f'primaryMarksCount == {rad_forbidden_count} / {rad_forbidden_size}')
-        #
-        #         if re.search(r'RadiationForbiddenSector', frame[0]):
-        #             for c in frame:
-        #                 rad_forbidden_sector.update(c)
-        #
-        #             # Проверка существует ли запись с такими параметрами
-        #             rad_forbidden_sector = data_base.prepare_data_for_db('ForbiddenSectors', rad_forbidden_sector)
-        #             rad_fs_pk = data_base.read_from('ForbiddenSectors', rad_forbidden_sector,
-        #                                   ['azimuthBeginNSSK', 'azimuthEndNSSK',
-        #                                    'elevationBeginNSSK', 'elevationEndNSSK'
-        #                                    ])
-        #             if rad_fs_pk is None:
-        #                 data_base.insert_to('ForbiddenSectors', rad_forbidden_sector)
+        # --------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------------- #
+
         time_sec = "{:7.4f}".format(time.time() - start_time)
-        log.warning(f"--------------------{time_sec} seconds ---------------\r\n\r\n")
+        log.info(f"--------------------{time_sec} seconds ---------------\r\n\r\n")
         # print(f"\r\n--------------{time_sec} seconds --------------")
