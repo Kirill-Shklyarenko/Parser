@@ -67,7 +67,7 @@ if __name__ == "__main__":
                 get_pk_pm = {'BeamTask': 'BeamTask'}
                 get_pk_candidate = {'id': 'id'}
                 get_pk_candidate_hist = {'BeamTask': 'BeamTask', 'PrimaryMark': 'PrimaryMark',
-                                         'Candidate': 'Candidate',
+                                         # 'Candidate': 'Candidate',
                                          'nextTimeUpdate': 'creationTimeSeconds',
                                          }
                 pk_name = 'BeamTask'
