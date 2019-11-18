@@ -69,7 +69,6 @@ if __name__ == "__main__":
                 get_pk_candidate_hist = {'BeamTask': 'BeamTask', 'PrimaryMark': 'PrimaryMark', 'Candidate': 'Candidate',
                                          'nextTimeUpdate': 'creationTimeSeconds',
                                          }
-
                 pk_name = 'BeamTask'
                 dict_for_get_pk = data_base.map_table_fields_to_table(candidate, get_pk_bt)
                 beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
@@ -139,5 +138,4 @@ if __name__ == "__main__":
         # --------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------------- #
 
         time_sec = "{:7.4f}".format(time.time() - start_time)
-        log.info(f"--------------------{time_sec} seconds ---------------\r\n\r\n")
-        # print(f"\r\n--------------{time_sec} seconds --------------")
+        log.info(f"--------------------{time_sec} seconds -----------------\r\n\r\n")
