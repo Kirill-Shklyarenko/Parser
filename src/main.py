@@ -11,6 +11,7 @@ planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
+frame_number = 0
 if __name__ == "__main__":
     log.basicConfig(level=log.DEBUG,
                     format='%(asctime)s %(levelname)-7s %(lineno)-3s %(funcName)-10s %(message)s',
@@ -37,8 +38,6 @@ if __name__ == "__main__":
             if beam_task_pk is None:
                 beam_task = data_base.map_bin_fields_to_table('BeamTasks', beam_task)
                 data_base.insert_to_table('BeamTasks', beam_task)
-            else:
-                log.debug(f'BeamTask is already exists')
 
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ # 643 5283
         for primary_mark in frame_handler.primary_mark():
@@ -56,8 +55,6 @@ if __name__ == "__main__":
                 if primary_mark_pk is None:
                     primary_mark = data_base.map_bin_fields_to_table('PrimaryMarks', primary_mark)
                     data_base.insert_to_table('PrimaryMarks', primary_mark)
-                else:
-                    log.debug(f'PrimaryMark is already exists')
 
         # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_handler.candidate():
@@ -94,8 +91,6 @@ if __name__ == "__main__":
                         if candidates_history_pk is None:
                             candidate = data_base.map_bin_fields_to_table('CandidatesHistory', candidate)
                             data_base.insert_to_table('CandidatesHistory', candidate)
-                        else:
-                            log.debug(f'CandidatesHistory is already exists')
 
         # ------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- #
         for air_track in frame_handler.air_track():
@@ -134,8 +129,7 @@ if __name__ == "__main__":
                             if candidates_history_pk is None:
                                 air_track = data_base.map_bin_fields_to_table('AirTracksHistory', air_track)
                                 data_base.insert_to_table('AirTracksHistory', air_track)
-                            else:
-                                log.debug(f'AirTracksHistory is already exists')
+
         # --------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------------- #
 
         time_sec = "{:7.4f}".format(time.time() - start_time)

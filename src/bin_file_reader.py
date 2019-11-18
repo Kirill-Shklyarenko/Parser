@@ -4,6 +4,8 @@ import os
 import re
 from struct import *
 
+from main import frame_number
+
 
 class TelemetryReader:
     def __init__(self, file_name: str, data_struct: object):
@@ -11,8 +13,7 @@ class TelemetryReader:
         self.data_struct = data_struct.__dict__['data_struct']
         self.frame_size = data_struct.__dict__['frame_size']
         self.buff_size = (self.frame_size * 2) - 6  # need 16072 bytes
-
-        self.frame_number = 299
+        self.frame_number = frame_number
         self.frames_range = self.frame_counter()
         self.serialize_string = self.create_serialize_string()
 

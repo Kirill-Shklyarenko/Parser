@@ -52,11 +52,11 @@ class DataBase:
     def get_pk(self, table_name: str, pk_name: str, dict_for_get_pk: dict) -> any:
         data_with_pk = self.read_from_table(table_name, dict_for_get_pk)
         if data_with_pk:
-            log.debug(f'{pk_name} : {data_with_pk[0]}')
+            log.debug(f'{pk_name} : {table_name} : {data_with_pk[0]}')
             dict_for_get_pk.update({pk_name: data_with_pk[0]})
             return {pk_name: data_with_pk[0]}
         else:
-            log.debug(f'{table_name} : {dict_for_get_pk} doesnt exists')
+            log.debug(f'{pk_name} : {table_name} : doesnt exists : {dict_for_get_pk} ')
             return None
 
     def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:
