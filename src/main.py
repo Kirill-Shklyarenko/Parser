@@ -40,7 +40,7 @@ if __name__ == "__main__":
                 data_base.insert_to_table('BeamTasks', beam_task)
             else:
                 log.warning(f'{pk_name} : already exists')
-        # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ # 643 5283
+        # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ #
         for primary_mark in frame_handler.primary_mark():
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
             get_pk_pm = {'BeamTask': 'BeamTask', 'primaryMarkId': 'id'}
@@ -86,7 +86,7 @@ if __name__ == "__main__":
                             data_base.insert_to_table('Candidates', dict_for_get_pk)
                             candidates_pk = data_base.get_pk('Candidates', pk_name, dict_for_get_pk)
                         else:
-                            log.warning(f'{pk_name} : {candidates_pk} : already exists')
+                            log.warning(f'{pk_name} : already exists')
                         candidate.update(candidates_pk)
                         pk_name = 'CandidateHistory'
                         dict_for_get_pk = data_base.map_table_fields_to_table(candidate, get_pk_candidate_hist)
@@ -126,7 +126,7 @@ if __name__ == "__main__":
                         if air_track_pk is None:
                             data_base.insert_to_table('AirTracks', dict_for_get_pk)
                         else:
-                            log.warning(f'{pk_name} : {air_track_pk} : already exists')
+                            log.warning(f'{pk_name} : already exists')
                         air_track_pk = data_base.get_pk('AirTracks', pk_name, dict_for_get_pk)
                         if air_track_pk:
                             air_track.update(air_track_pk)
