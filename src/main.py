@@ -41,7 +41,8 @@ if __name__ == "__main__":
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ #
         for primary_mark in frame_handler.primary_mark():
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
-            get_pk_pm = {'BeamTask': 'BeamTask', 'primaryMarkId': 'id'}
+            get_pk_pm = {'BeamTask': 'BeamTask', 'primaryMarkId': 'id',
+                         'scanTime': 'processingTime', 'markType': 'type'}
             dict_for_get_pk = data_base.map_table_fields_to_table(primary_mark, get_pk_bt)
             pk_name = 'BeamTask'
             beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
@@ -64,7 +65,6 @@ if __name__ == "__main__":
                 get_pk_pm = {'BeamTask': 'BeamTask'}
                 get_pk_candidate = {'id': 'id'}
                 get_pk_candidate_hist = {'BeamTask': 'BeamTask', 'PrimaryMark': 'PrimaryMark',
-                                         # 'Candidate': 'Candidate',
                                          'nextTimeUpdate': 'creationTimeSeconds',
                                          }
                 pk_name = 'BeamTask'
