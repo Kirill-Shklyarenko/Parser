@@ -39,7 +39,7 @@ if __name__ == "__main__":
                 beam_task = data_base.map_bin_fields_to_table('BeamTasks', beam_task)
                 data_base.insert_to_table('BeamTasks', beam_task)
             else:
-                log.warning(f'{pk_name} : {beam_task_pk} : already exists')
+                log.warning(f'{pk_name} : already exists')
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ # 643 5283
         for primary_mark in frame_handler.primary_mark():
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
@@ -57,7 +57,7 @@ if __name__ == "__main__":
                     primary_mark = data_base.map_bin_fields_to_table('PrimaryMarks', primary_mark)
                     data_base.insert_to_table('PrimaryMarks', primary_mark)
                 else:
-                    log.warning(f'{pk_name} : {primary_mark_pk} : already exists')
+                    log.warning(f'{pk_name} : already exists')
         # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_handler.candidate():
             if candidate['state'] != 0 and candidate['state'] != 3 \
@@ -96,7 +96,7 @@ if __name__ == "__main__":
                             candidate = data_base.map_bin_fields_to_table('CandidatesHistory', candidate)
                             data_base.insert_to_table('CandidatesHistory', candidate)
                         else:
-                            log.warning(f'{pk_name} : {candidates_history_pk} : already exists')
+                            log.warning(f'{pk_name} : already exists')
         # ------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- #
         for air_track in frame_handler.air_track():
             get_pk_bt = {'trackId': 'id', 'taskType': 3, 'antennaId': 'antennaId'}
@@ -137,7 +137,7 @@ if __name__ == "__main__":
                                 air_track = data_base.map_bin_fields_to_table('AirTracksHistory', air_track)
                                 data_base.insert_to_table('AirTracksHistory', air_track)
                             else:
-                                log.warning(f'{pk_name} : {air_track_history_pk} : already exists')
+                                log.warning(f'{pk_name} : already exists')
         # --------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------------- #
 
         time_sec = "{:7.4f}".format(time.time() - start_time)
