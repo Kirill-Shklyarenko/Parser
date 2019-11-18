@@ -251,6 +251,8 @@ class FrameHandler:
 
     def forbidden_sector(self):
         pass
+    # rad_forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
+    # rad_forbidden_count = 0
 
     #     elif re.search(r'\bRadiationForbiddenSectors\b', frame[0]):
     #         frame.pop(0)

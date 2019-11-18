@@ -22,8 +22,6 @@ if __name__ == "__main__":
     telemetry = TelemetryReader(planner_rsf, data_structure)
     data_base = DataBase(dsn)
     for frame in telemetry:  # (2237, 2838 - airTracks)
-        # rad_forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
-        # rad_forbidden_count = 0
         start_time = time.time()
         frame_handler = FrameHandler(frame)
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
