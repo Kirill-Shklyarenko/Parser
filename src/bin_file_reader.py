@@ -34,7 +34,7 @@ class TelemetryReader:
         except ZeroDivisionError as e:
             log.exception(f'{e} , {frames_count}')
         finally:
-            log.debug(f'frames_count = {int(frames_count)}')
+            log.info(f'frames_count = {int(frames_count)}')
             return int(frames_count)
 
     def create_serialize_string(self) -> str:

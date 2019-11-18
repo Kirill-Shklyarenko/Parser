@@ -18,7 +18,7 @@ class DataBase:
         finally:
             conn.autocommit = True
             cur = conn.cursor()
-            log.debug(f'DataBase connection complete')
+            log.info(f'DataBase connection complete')
         return cur
 
     def insert_to_table(self, table_name: str, data: dict):
