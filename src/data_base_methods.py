@@ -14,11 +14,14 @@ class DataBase:
             conn = psycopg2.connect(self.dsn)
         except Exception as e:
             log.exception(f'{e}')
-            return None
-        finally:
-            conn.autocommit = True
-            cur = conn.cursor()
-            log.info(f'DataBase connection complete')
+            # print(f'Do you want restore DataBase?')
+            # print(f'y/n')
+            # i = input()
+            # if i == 'y':
+            # self.data_base_restore()
+        conn.autocommit = True
+        cur = conn.cursor()
+        log.info(f'DataBase connection complete')
         return cur
 
     def insert_to_table(self, table_name: str, data: dict):
@@ -61,7 +64,7 @@ class DataBase:
 
     def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:
         # Для того чтобы узнать имена полей таблицы
-        self.cur.execute(f'SELECT * FROM "{table_name}";')
+        self.cur.execute(f'SELECT * FROM "{table_name}"')
         col_names = []
         for elt in self.cur.description:
             col_names.append(elt[0])
@@ -80,11 +83,10 @@ class DataBase:
         formatter_dict.update(result)
         return formatter_dict
 
-    # def nullify_the_sequences(self, table_name: str, seq_name: str):
-    #     query = f'ALTER SEQUENCE "{table_name}_{seq_name}_seq" restart with 1'
-    #     try:
-    #         self.cur.execute(query)
-    #     except Exception as e:
-    #         log.exception(f'\r\nException: {e}')
-    #     finally:
-    #         log.warning(f'ALTER SEQUENCE "{table_name}_{seq_name}_seq" restart with 1')
+    def rename_table_column(self, table_name: str, data: dict):
+        k, v = data.items()
+        query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
+        try:
+            self.cur.execute(query)
+        except Exception as e:
+            log.exception(f'\r\nException: {e}')

@@ -99,55 +99,69 @@ class FrameHandler:
     def __init__(self, frame):
         self.frame = frame
 
-    def beam_task(self):
+    @staticmethod
+    def map_fields(dict_from_telemetry: dict, formatter_dict: dict) -> dict:
+        result = {}
+        for fk, fv in dict_from_telemetry.items():
+            if 'isFake' in fk:
+                dict_from_telemetry[fk] = bool(dict_from_telemetry[fk])
+            for sk, sv in formatter_dict.items():
+                if fk == sv:
+                    result.update({sk: fv})
+        formatter_dict.update(result)
+        return formatter_dict
+
+    def beam_tasks(self, map_fields=None):
         container = []
         task = {}
+        beam_task = {}
         for index, group in enumerate(self.frame):
             if re.search(r'\bTask\b', group[0]):
                 for c in group[1:]:
                     task.update(c)
                 self.frame = self.frame[1:]
             elif re.search(r'beamTask', group[0]):
-                beam_task = {}
                 beam_task.update(task)
                 for c in group[1:]:
                     beam_task.update(c)
-                # log.info(f'TaskType = {beam_task["taskType"]}')
+                if map_fields:
+                    result = self.map_fields(beam_task, map_fields)
+                    beam_task.update(result)
                 container.append(beam_task)
                 self.frame = self.frame[1:]
                 if len(container) == 4:
                     break
         return container
 
-    def primary_mark(self):
+    def primary_marks(self, map_fields=None):
         container = []
+        primary_mark = {}
         scan_data = {'primaryMarksCount': 0}
         primary_marks_count = 0
         for index, group in enumerate(self.frame):
             if re.search(r'scanData', group[0]):
-                scan_data = {}
                 for c in group[1:]:
                     scan_data.update(c)
-                # if scan_data["primaryMarksCount"] == 0:
-                #     log.info(f'primaryMarksCount = {scan_data["primaryMarksCount"]}')
-                # self.frame = self.frame[1:]
-                # scan_data = {'primaryMarksCount': 10}
             elif primary_marks_count < scan_data['primaryMarksCount']:
                 if re.search(r'primaryMark', group[0]):
-                    primary_mark = {}
                     for c in group[1:]:
                         primary_mark.update(c)
                     primary_mark.update(scan_data)
+                    if map_fields:
+                        result = self.map_fields(primary_mark, map_fields)
+                        primary_mark.update(result)
                     container.append(primary_mark)
                     primary_marks_count += 1
-                    log.info(f'PrimaryMarks == {primary_marks_count} / {scan_data["primaryMarksCount"]}')
-                    log.info(f'PrimaryMark type = {primary_mark["type"]}')
+                    # log.info(f'PrimaryMarks == {primary_marks_count} / {scan_data["primaryMarksCount"]}')
+                    # log.info(f'PrimaryMark type = {primary_mark["type"]}')
                     self.frame = self.frame[index + 1:]
-            elif re.search(r'TrackCandidates', group[0]):
-                break
+                    if primary_marks_count == scan_data['primaryMarksCount']:
+                        self.frame = self.frame[1:]
+                        break
+                self.frame = self.frame[1:]
         return container
 
-    def candidate(self):
+    def candidates(self, map_fields=None):
         container = []
         track_candidate = {'state': 0}
         candidate_q = {'candidatesQueueSize': 0}
@@ -157,26 +171,24 @@ class FrameHandler:
                 candidate_q = {}
                 for c in group[1:]:
                     candidate_q.update(c)
-                # if candidate_q["candidatesQueueSize"] != 0:
-                #     log.warning(f'candidatesQueueSize = {candidate_q["candidatesQueueSize"]}')
                 self.frame = self.frame[index:]
-                # candidate_q = {'candidatesQueueSize': 4}
             elif candidates_count < candidate_q['candidatesQueueSize']:
                 if re.search(r'trackCandidate', group[0]):
-                    track_candidate = {}
                     for c in group[1:]:
                         track_candidate.update(c)
-
                 elif track_candidate['state'] == 1:
                     if re.search(r'viewSpot', group[0]):
                         view_spot = {}
                         for c in group[1:]:
                             view_spot.update(c)
                         track_candidate.update(view_spot)
+                        if map_fields:
+                            result = self.map_fields(track_candidate, map_fields)
+                            track_candidate.update(result)
                         container.append(track_candidate)
                         candidates_count += 1
-                        log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'Candidate state = {track_candidate["state"]}')
+                        # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
+                        # log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.frame = self.frame[1:]
                             break
@@ -186,10 +198,18 @@ class FrameHandler:
                         for c in group[1:]:
                             distance_res_spot.update(c)
                         track_candidate.update(distance_res_spot)
+                        if map_fields:
+                            result = self.map_fields(track_candidate, map_fields)
+                            track_candidate.update(result)
+                        track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
+                                                                      track_candidate['distance']) / track_candidate[
+                                                                         'distancePeriod']})
+                        track_candidate.update({'numDistanceZone': round(track_candidate['resolvedDistance'] /
+                                                                         track_candidate['distancePeriod'])})
                         container.append(track_candidate)
                         candidates_count += 1
-                        log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'Candidate state = {track_candidate["state"]}')
+                        # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
+                        # log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.frame = self.frame[1:]
                             break
@@ -199,25 +219,39 @@ class FrameHandler:
                         for c in group[1:]:
                             velocity_res_spot.update(c)
                         track_candidate.update(velocity_res_spot)
+                        if map_fields:
+                            result = self.map_fields(track_candidate, map_fields)
+                            track_candidate.update(result)
+                        track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
+                                                                      track_candidate['distance']) / track_candidate[
+                                                                         'distancePeriod']})
+                        track_candidate.update({'numDistanceZone': round(track_candidate['resolvedDistance'] /
+                                                                         track_candidate['distancePeriod'])})
+                        track_candidate.update({'velocityZoneWidth': (track_candidate['resolvedVelocity'] -
+                                                                      track_candidate['velocity']) / track_candidate[
+                                                                         'velocityPeriod']})
+                        track_candidate.update({'numVelocityZone': round(track_candidate['resolvedVelocity'] /
+                                                                         track_candidate['velocityPeriod'])})
                         container.append(track_candidate)
                         candidates_count += 1
-                        log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        log.info(f'Candidate state = {track_candidate["state"]}')
+                        # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
+                        # log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.frame = self.frame[1:]
                             break
                 else:
                     candidates_count += 1
-                    log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                    log.info(f'Candidate state = {track_candidate["state"]}')
+                    # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
+                    # log.info(f'Candidate state = {track_candidate["state"]}')
                     if candidates_count == candidate_q['candidatesQueueSize']:
                         self.frame = self.frame[1:]
                         break
                 self.frame = self.frame[1:]
         return container
 
-    def air_track(self):
+    def air_tracks(self, map_fields=None):
         container = []
+        track = {}
         tracks_q = {'tracksQueuesSize': 0}
         tracks_count = 0
         for index, group in enumerate(self.frame):
@@ -232,12 +266,13 @@ class FrameHandler:
                 # else:
                 #     log.info(f'tracksQueuesSize = {tracks_q["tracksQueuesSize"]}')
                 self.frame = self.frame[index:]
-                # tracks_q = {'tracksQueuesSize': 4}
             elif tracks_count < tracks_q['tracksQueuesSize']:
                 if re.search('track_', group[0]):
-                    track = {}
                     for c in group[1:]:
                         track.update(c)
+                    if map_fields:
+                        result = self.map_fields(track, map_fields)
+                        track.update(result)
                     container.append(track)
                     tracks_count += 1
                     log.info(f'Tracks = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
@@ -249,31 +284,22 @@ class FrameHandler:
             self.frame = self.frame[1:]
         return container
 
-    def forbidden_sector(self):
-        pass
-    # rad_forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
-    # rad_forbidden_count = 0
-
-    #     elif re.search(r'\bRadiationForbiddenSectors\b', frame[0]):
-    #         frame.pop(0)
-    #         rad_forbidden_sector = {}
-    #         for c in frame:
-    #             rad_forbidden_sector.update(c)
-    #
-    #     elif rad_forbidden_count < rad_forbidden_sector['RadiationForbiddenSectorsCount']:
-    #         rad_forbidden_size = rad_forbidden_sector['RadiationForbiddenSectorsCount']
-    #         rad_forbidden_count += 1
-    #         print(f'primaryMarksCount == {rad_forbidden_count} / {rad_forbidden_size}')
-    #
-    #         if re.search(r'RadiationForbiddenSector', frame[0]):
-    #             for c in frame:
-    #                 rad_forbidden_sector.update(c)
-    #
-    #             # Проверка существует ли запись с такими параметрами
-    #             rad_forbidden_sector = data_base.prepare_data_for_db('ForbiddenSectors', rad_forbidden_sector)
-    #             rad_fs_pk = data_base.read_from('ForbiddenSectors', rad_forbidden_sector,
-    #                                   ['azimuthBeginNSSK', 'azimuthEndNSSK',
-    #                                    'elevationBeginNSSK', 'elevationEndNSSK'
-    #                                    ])
-    #             if rad_fs_pk is None:
-    #                 data_base.insert_to('ForbiddenSectors', rad_forbidden_sector)
+    def forbidden_sectors(self, map_fields=None):
+        container = []
+        forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
+        rad_forbidden_count = 0
+        for index, group in enumerate(self.frame):
+            if re.search(r'\bRadiationForbiddenSectors\b', group[0]):
+                for c in group[1:]:
+                    forbidden_sector.update(c)
+                self.frame = self.frame[index:]
+            elif rad_forbidden_count < forbidden_sector['RadiationForbiddenSectorsCount']:
+                if re.search(r'RadiationForbiddenSector', group[0]):
+                    for c in group:
+                        forbidden_sector.update(c)
+                    if map_fields:
+                        result = self.map_fields(forbidden_sector, map_fields)
+                        forbidden_sector.update(result)
+                    container.append(forbidden_sector)
+                    rad_forbidden_count += 1
+                    self.frame = self.frame[index + 1:]

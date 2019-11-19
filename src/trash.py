@@ -1,49 +1,49 @@
-# # ALTER SEQUENCE "Candidates_Candidate_seq" restart with 1;
-#
-#
-# # ALTER
-# # SEQUENCE
-# # "PrimaryMarks_PrimaryMark_seq"
-# # restart
-# # with 1;
-# #
-# # ALTER
-# # SEQUENCE
-# # "Candidates_Candidate_seq"
-# # restart
-# # with 1;
-#
-#
-#
-# # SELECT DISTINCT "taskId", "taskType", "antennaId"
-# # FROM public."BeamTasks"
-# # ORDER BY "taskId"
-# # ;
-#
-#
-# # SELECT "BeamTask", "taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
-# # threshold, "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim", "upperDistanceTrim", "betaBSK",
-# # "epsilonBSK"
-# # FROM public."BeamTasks"
-# # where "trackId" != 0
-# # ;
-#
-#
-# # SELECT "BeamTask", "taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId",
-# # "pulsePeriod", threshold, "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
-# # "upperDistanceTrim", "betaBSK", "epsilonBSK"
-# # FROM public."BeamTasks"
-# # where "taskType" != 0
-# # and "taskType" != 1
-# # ;
-#
-#
-# # def insert_to(self, table_name: str, dict_to_insert: dict):
-# #     # формирование строки запроса
-# #     columns = ','.join([f'"{x[0]}"' for x in data])
-# #     param_values = tuple(x[1] for x in data)
-#
-#
+# ALTER SEQUENCE "Candidates_Candidate_seq" restart with 1;
+
+
+# ALTER
+# SEQUENCE
+# "PrimaryMarks_PrimaryMark_seq"
+# restart
+# with 1;
+
+
+# ALTER
+# SEQUENCE
+# "Candidates_Candidate_seq"
+# restart
+# with 1;
+
+
+# SELECT DISTINCT "taskId", "taskType", "antennaId"
+# FROM public."BeamTasks"
+# ORDER BY "taskId"
+# ;
+
+
+# SELECT "BeamTask", "taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
+# threshold, "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim", "upperDistanceTrim", "betaBSK",
+# "epsilonBSK"
+# FROM public."BeamTasks"
+# where "trackId" != 0
+# ;
+
+
+# SELECT "BeamTask", "taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId",
+# "pulsePeriod", threshold, "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
+# "upperDistanceTrim", "betaBSK", "epsilonBSK"
+# FROM public."BeamTasks"
+# where "taskType" != 0
+# and "taskType" != 1
+# ;
+
+
+# def insert_to(self, table_name: str, dict_to_insert: dict):
+#     # формирование строки запроса
+#     columns = ','.join([f'"{x[0]}"' for x in data])
+#     param_values = tuple(x[1] for x in data)
+
+
 # class TelemetryReader:
 #     def __init__(self, file_name_str: str, data_struct: list, frame_size: int, frame_rate_file: str):
 #         self.file_name_str = file_name_str
@@ -92,35 +92,7 @@
 #         return result
 #
 #     return wrapper
-#
-#
-# def adjust_to_col_names(func: funcfunction) -> function:
-#     def wrapper(*args, **kwargs):
-#         data = {}
-#         res = []
-#         result = func(*args, **kwargs)
-#         columns_names = ["taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
-#                          "threshold", "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
-#                          "upperDistanceTrim", "beamAzimuth", "beamElevation"]
-#         for i in result:
-#             data.update({key: value for key, value in i.items() if key in columns_names})
-#             res.append(data)
-#         return res
-#
-#     return wrapper
 
-
-# def __iter__(self):
-#     return self.container[self.i]
-#
-# def __next__(self):
-#
-#     try:
-#         result = self.container[self.i]
-#     except IndexError:
-#         raise StopIteration
-#     self.i += 1
-#     return result
 
 # @staticmethod
 # def map_values(data: dict) -> dict:
@@ -158,7 +130,142 @@
 #
 #     if len(z) == 6:
 #         returned_data.update({'possiblePeriods': z})
-#     data.pop('betaBSK')
-#     data.pop('epsilonBSK')
-#     returned_data.update(data)
-#     return returned_data
+
+
+#     def data_base_restore(self):
+#         dsn = self.dsn.split()[1:]
+#         conn = psycopg2.connect(dsn)
+#         conn.autocommit = True
+#         cur = conn.cursor()
+#         queryies = ("""CREATE TABLE public."BeamTasks"
+#         (
+#         "BeamTask" serial PRIMARY KEY,
+#         "taskId" integer,
+#         "isFake" boolean,
+#         "trackId" integer,
+#         "taskType" integer,
+#         "viewDirectionId" integer,
+#         "antennaId" integer,
+#         "pulsePeriod" real,
+#         threshold real,
+#         "lowerVelocityTrim" real,
+#         "upperVelocityTrim" real,
+#         "lowerDistanceTrim" real,
+#         "upperDistanceTrim" real,
+#         "beamAzimuth" real,
+#         "beamElevation" real
+# )
+#         """,
+#                     """CREATE TABLE public."PrimaryMarks"
+#         (
+#         "PrimaryMark" serial PRIMARY KEY,
+#         "BeamTask" serial,
+#         "primaryMarkId" integer,
+#         "scanTime" real,
+#         azimuth real,
+#         elevation real,
+#         "markType" integer,
+#         distance real,
+#         "dopplerSpeed" real,
+#         "signalLevel" real,
+#         "reflectedEnergy" real,
+#         "taskType" integer,
+#         CONSTRAINT "PrimaryMarks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
+#             REFERENCES public."BeamTasks" ("BeamTask") MATCH SIMPLE
+#
+# )
+#         """,
+#                     """CREATE TABLE public."CandidatesHistory"
+# (
+#     "CandidatesHistory" serial PRIMARY KEY,
+#     "BeamTask" serial,
+#     "PrimaryMark" serial,
+#     "Candidate" serial,
+#     azimuth real,
+#     elevation real,
+#     state integer,
+#     "distanceZoneWeight" real,
+#     "velocityZoneWeight" real,
+#     "numDistanceZone" real,
+#     "numVelocityZone" real,
+#     "antennaId" integer,
+#     "nextTimeUpdate" real,
+#     CONSTRAINT "CandidatesHistory_pkey" PRIMARY KEY ("CandidatesHistory"),
+#     CONSTRAINT "Candidates_BeamTask_fkey" FOREIGN KEY ("BeamTask")
+#         REFERENCES public."BeamTasks" ("BeamTask") MATCH SIMPLE,
+#     CONSTRAINT "Candidates_CandidatesIds_fkey" FOREIGN KEY ("Candidate")
+#         REFERENCES public."Candidates" ("Candidate") MATCH SIMPLE,
+#     CONSTRAINT "Candidates_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
+#         REFERENCES public."PrimaryMarks" ("PrimaryMark") MATCH SIMPLE
+# )
+#
+#         """,
+#                     """CREATE TABLE public."Candidates"
+# (
+#     "Candidate" serial PRIMARY KEY,
+#     id integer)
+#
+#
+#         """,
+#                     """CREATE TABLE public."AirTracksHistory"
+# (
+#     "AirTracksHistory" serial PRIMARY KEY,
+#     "PrimaryMark" serial,
+#     "CandidatesHistory" serial,
+#     "AirTrack" serial,
+#     type integer,
+#     priority integer,
+#     "antennaId" integer,
+#     azimuth real,
+#     elevation real,
+#     distance real,
+#     "radialVelocity" real,
+#     "pulsePeriod" real,
+#     "missesCount" real,
+#     "possiblePeriods" real[],
+#     "nextTimeUpdate" integer,
+#     "scanPeriod" real,
+#     "sigmaAzimuth" real,
+#     "sigmaElevation" real,
+#     "sigmaDistance" real,
+#     "sigmaRadialVelocity" real,
+#     "minDistance" real,
+#     "maxDistance" real,
+#     "minRadialVelocity" real,
+#     "maxRadialVelocity" real,
+#     CONSTRAINT "AirTracks_pkey" PRIMARY KEY ("AirTracksHistory"),
+#     CONSTRAINT "AirTracksHistory_AirTrack_fkey" FOREIGN KEY ("AirTrack")
+#         REFERENCES public."AirTracks" ("AirTrack") MATCH SIMPLE,
+#     CONSTRAINT "AirTracks_Candidate_fkey" FOREIGN KEY ("CandidatesHistory")
+#         REFERENCES public."CandidatesHistory" ("CandidatesHistory") MATCH SIMPLE,
+#     CONSTRAINT "AirTracks_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
+#         REFERENCES public."PrimaryMarks" ("PrimaryMark") MATCH SIMPLE)
+#
+#         """,
+#                     """CREATE TABLE public."AirTracks"
+# (
+#     "AirTrack" serial PRIMARY KEY),
+#     id integer)
+#
+#         """,
+#                     """CREATE TABLE public."ForbiddenSectors"
+# (
+#     "ForbiddenSector" serial PRIMARY KEY,
+#     "azimuthBeginNSSK" real,
+#     "azimuthEndNSSK" real,
+#     "elevationBeginNSSK" real,
+#     "elevationEndNSSK" real,
+#     "nextTimeUpdate" integer,
+#     "isActive" boolean)
+#         """)
+#         for query in queryies:
+#             cur.execute(query)
+#         print('s')
+# def nullify_the_sequences(self, table_name: str, seq_name: str):
+#     query = f'ALTER SEQUENCE "{table_name}_{seq_name}_seq" restart with 1'
+#     try:
+#         self.cur.execute(query)
+#     except Exception as e:
+#         log.exception(f'\r\nException: {e}')
+#     finally:
+#         log.warning(f'ALTER SEQUENCE "{table_name}_{seq_name}_seq" restart with 1')
