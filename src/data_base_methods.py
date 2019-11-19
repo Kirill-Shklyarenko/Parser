@@ -83,10 +83,10 @@ class DataBase:
         formatter_dict.update(result)
         return formatter_dict
 
-    def rename_table_column(self, table_name: str, data: dict):
-        k, v = data.items()
-        query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
-        try:
-            self.cur.execute(query)
-        except Exception as e:
-            log.exception(f'\r\nException: {e}')
+    # def rename_table_column(self, table_name: str, data: dict):
+    #     k, v = data.items()
+    #     query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
+    #     try:
+    #         self.cur.execute(query)
+    #     except Exception as e:
+    #         log.exception(f'\r\nException: {e}')

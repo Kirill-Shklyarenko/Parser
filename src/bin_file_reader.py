@@ -4,6 +4,7 @@ import os
 import re
 from struct import *
 
+from decorators import mapper
 from main import frame_number
 
 
@@ -113,6 +114,7 @@ class FrameHandler:
         formatter_dict.update(result)
         return formatter_dict
 
+    @mapper
     def beam_tasks(self, map_fields=None):
         container = []
         task = {}
@@ -126,6 +128,8 @@ class FrameHandler:
                 beam_task.update(task)
                 for c in group[1:]:
                     beam_task.update(c)
+                c = {k: bool(v) for k, v in beam_task.items() if k == 'isFake'}
+                beam_task.update(c)
                 if map_fields:
                     result = self.map_fields(beam_task, map_fields)
                     beam_task.update(result)
@@ -135,6 +139,7 @@ class FrameHandler:
                     break
         return container
 
+    @mapper
     def primary_marks(self, map_fields=None):
         container = []
         primary_mark = {}
@@ -163,6 +168,7 @@ class FrameHandler:
                 self.frame = self.frame[1:]
         return container
 
+    @mapper
     def candidates(self, map_fields=None):
         container = []
         track_candidate = {'state': 0}
@@ -251,6 +257,7 @@ class FrameHandler:
                 self.frame = self.frame[1:]
         return container
 
+    @mapper
     def air_tracks(self, map_fields=None):
         container = []
         track = {}
@@ -286,6 +293,7 @@ class FrameHandler:
             self.frame = self.frame[1:]
         return container
 
+    @mapper
     def forbidden_sectors(self, map_fields=None):
         container = []
         forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
