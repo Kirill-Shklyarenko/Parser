@@ -59,7 +59,7 @@ class DataBase:
             dict_for_get_pk.update({pk_name: data_with_pk[0]})
             return {pk_name: data_with_pk[0]}
         else:
-            log.debug(f'{pk_name} : {table_name} : doesnt exists : {dict_for_get_pk} ')
+            log.warning(f'{pk_name} : {table_name} : doesnt exists : {dict_for_get_pk} ')
             return None
 
     def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:

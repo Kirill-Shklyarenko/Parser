@@ -56,7 +56,7 @@ if __name__ == "__main__":
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ #
         map_fields = {'primaryMarkId': 'id', 'markType': 'type', 'scanTime': 'processingTime'}
         for primary_mark in frame_handler.primary_marks(map_fields):
-            log.info(f'PrimaryMarks == {primary_marks_count}')
+            log.info(f'PrimaryMarks = {primary_marks_count}')
             log.info(f'PrimaryMark type = {primary_mark["type"]}')
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
             get_pk_pm = {'BeamTask': 'BeamTask',
