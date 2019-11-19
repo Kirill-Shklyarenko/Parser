@@ -13,6 +13,17 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 frame_number = 0
 
 if __name__ == "__main__":
+    """
+    reg expr for Ideolog:
+    message pattern:         ^(\d{2}:\d{2}:\d{2})\s(.*)\s\d{2}\s\s\w*\s\s(.*)$
+    message start pattern:   ^\d
+    time format:             HH:mm:SS
+    groups: 
+                             1
+                             3
+                             2
+    
+    """
     log.basicConfig(level=log.DEBUG,
                     format='%(asctime)s %(levelname)-7s %(lineno)-3s %(funcName)-16s %(message)s',
                     datefmt='%H:%m:%S',
@@ -25,6 +36,9 @@ if __name__ == "__main__":
     for frame in telemetry:  # (2237, 2838 - airTracks)
         start_frame_time = time.time()
         frame_handler = FrameHandler(frame)
+        primary_marks_count = 1
+        candidates_count = 1
+        forbidden_sectors_count = 1
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         map_fields = {'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK'}
         for beam_task in frame_handler.beam_tasks(map_fields):
@@ -42,7 +56,6 @@ if __name__ == "__main__":
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ #
         map_fields = {'primaryMarkId': 'id', 'markType': 'type', 'scanTime': 'processingTime'}
         for primary_mark in frame_handler.primary_marks(map_fields):
-            primary_marks_count = 1
             log.info(f'PrimaryMarks == {primary_marks_count}')
             log.info(f'PrimaryMark type = {primary_mark["type"]}')
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
@@ -67,7 +80,6 @@ if __name__ == "__main__":
         # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         map_fields = {'trackId': 'id', 'timeUpdated': 'creationTimeSeconds'}
         for candidate in frame_handler.candidates(map_fields):
-            candidates_count = 1
             log.info(f'Candidates = {candidates_count}')
             log.info(f'Candidate state = {candidate["state"]}')
             if candidate['state'] != 0 and candidate['state'] != 3 \
@@ -155,7 +167,6 @@ if __name__ == "__main__":
         map_fields = {'azimuthBeginNSSK': 'minAzimuth', 'azimuthEndNSSK': 'maxAzimuth',
                       'elevationBeginNSSK': 'minElevation', 'elevationEndNSSK': 'maxElevation', }
         for forbidden_sector in frame_handler.forbidden_sectors(map_fields):
-            forbidden_sectors_count = 1
             log.info(f'PrimaryMarks == {forbidden_sectors_count}')
             get_pk_fs = {'azimuthBeginNSSK': 'azimuthBeginNSSK', 'azimuthEndNSSK': 'azimuthEndNSSK',
                          'elevationBeginNSSK': 'elevationBeginNSSK', 'elevationEndNSSK': 'elevationEndNSSK',
@@ -168,7 +179,7 @@ if __name__ == "__main__":
                 data_base.insert_to_table('ForbiddenSectors', forbidden_sector)
             else:
                 log.warning(f'{pk_name} : already exists')
-
+        # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN --- #
         time_sec = "{:7.4f}".format(time.time() - start_frame_time)
         log.info(f"--------------------{time_sec} seconds -----------------\r\n\r\n")
 
