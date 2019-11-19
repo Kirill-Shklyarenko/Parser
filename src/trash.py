@@ -137,8 +137,9 @@
 #         conn = psycopg2.connect(dsn)
 #         conn.autocommit = True
 #         cur = conn.cursor()
-#         queryies = ("""CREATE TABLE public."BeamTasks"
-#         (
+#         queryies = ("""
+#                       CREATE TABLE public."BeamTasks"
+# (
 #         "BeamTask" serial PRIMARY KEY,
 #         "taskId" integer,
 #         "isFake" boolean,
@@ -156,23 +157,24 @@
 #         "beamElevation" real
 # )
 #         """,
-#                     """CREATE TABLE public."PrimaryMarks"
-#         (
-#         "PrimaryMark" serial PRIMARY KEY,
-#         "BeamTask" serial,
-#         "primaryMarkId" integer,
-#         "scanTime" real,
-#         azimuth real,
-#         elevation real,
-#         "markType" integer,
-#         distance real,
-#         "dopplerSpeed" real,
-#         "signalLevel" real,
-#         "reflectedEnergy" real,
-#         "taskType" integer,
-#         CONSTRAINT "PrimaryMarks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
-#             REFERENCES public."BeamTasks" ("BeamTask") MATCH SIMPLE
-#
+#                     CREATE TABLE public."PrimaryMarks"
+# (
+#     "PrimaryMark" serial,
+#     "BeamTask" serial,
+#     "primaryMarkId" serial,
+#     "scanTime" real,
+# 	  "antennaId" integer,
+# 	  "beamAzimuth" real,
+#     "beamElevation" real,
+#     "azimuth" real,
+#     "elevation" real,
+#     "markType" integer,
+#     "distance" real,
+#     "dopplerSpeed" real,
+#     "signalLevel" real,
+#     "reflectedEnergy" real,
+#     CONSTRAINT "PrimaryMarks_pkey" PRIMARY KEY ("PrimaryMark"),
+#     CONSTRAINT "PrimaryMarks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
 # )
 #         """,
 #                     """CREATE TABLE public."CandidatesHistory"
@@ -192,11 +194,8 @@
 #     "nextTimeUpdate" real,
 #     CONSTRAINT "CandidatesHistory_pkey" PRIMARY KEY ("CandidatesHistory"),
 #     CONSTRAINT "Candidates_BeamTask_fkey" FOREIGN KEY ("BeamTask")
-#         REFERENCES public."BeamTasks" ("BeamTask") MATCH SIMPLE,
 #     CONSTRAINT "Candidates_CandidatesIds_fkey" FOREIGN KEY ("Candidate")
-#         REFERENCES public."Candidates" ("Candidate") MATCH SIMPLE,
 #     CONSTRAINT "Candidates_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
-#         REFERENCES public."PrimaryMarks" ("PrimaryMark") MATCH SIMPLE
 # )
 #
 #         """,
@@ -235,11 +234,8 @@
 #     "maxRadialVelocity" real,
 #     CONSTRAINT "AirTracks_pkey" PRIMARY KEY ("AirTracksHistory"),
 #     CONSTRAINT "AirTracksHistory_AirTrack_fkey" FOREIGN KEY ("AirTrack")
-#         REFERENCES public."AirTracks" ("AirTrack") MATCH SIMPLE,
 #     CONSTRAINT "AirTracks_Candidate_fkey" FOREIGN KEY ("CandidatesHistory")
-#         REFERENCES public."CandidatesHistory" ("CandidatesHistory") MATCH SIMPLE,
 #     CONSTRAINT "AirTracks_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
-#         REFERENCES public."PrimaryMarks" ("PrimaryMark") MATCH SIMPLE)
 #
 #         """,
 #                     """CREATE TABLE public."AirTracks"

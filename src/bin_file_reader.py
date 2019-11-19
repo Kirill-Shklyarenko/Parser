@@ -68,13 +68,13 @@ class TelemetryReader:
             group_names = []
             for number, line in enumerate(frame):
                 group_names.append(line[0])
-                for cursor in line:
-                    if type(cursor) is dict:
-                        key = cursor.get('name')
-                        cursor.clear()
+                for c in line:
+                    if type(c) is dict:
+                        key = c.get('name')
+                        c.clear()
                         value = frame_values[0]
                         frame_values.pop(0)
-                        cursor.update({key: value})
+                        c.update({key: value})
             # formatted = pformat(frame, width=105, compact=True)
             # for line in formatted.splitlines():
             #     log.info(line.rstrip())
@@ -84,8 +84,10 @@ class TelemetryReader:
         return self
 
     def __next__(self):
+        result = None
         try:
-            result = self.read_frame()
+            if self.frame_number < self.frames_range:
+                result = self.read_frame()
         except IndexError:
             raise StopIteration
         self.frame_number += 1
@@ -275,8 +277,8 @@ class FrameHandler:
                         track.update(result)
                     container.append(track)
                     tracks_count += 1
-                    log.info(f'Tracks = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
-                    log.info(f'Track type  = {track["type"]}')
+                    # log.info(f'Tracks = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
+                    # log.info(f'Track type  = {track["type"]}')
                     if track["type"] != 0:
                         log.warning(f'type  = {track["type"]}')
                     if tracks_count == tracks_q['tracksQueuesSize']:
