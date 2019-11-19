@@ -103,7 +103,7 @@ class FrameHandler:
         self.frame = frame
 
     @mapper
-    def beam_tasks(self, map_fields=None):
+    def beam_tasks(self):
         container = []
         task = {}
         beam_task = {}
@@ -125,7 +125,7 @@ class FrameHandler:
         return container
 
     @mapper
-    def primary_marks(self, map_fields=None):
+    def primary_marks(self):
         container = []
         primary_mark = {}
         scan_data = {'primaryMarksCount': 0}
@@ -151,7 +151,7 @@ class FrameHandler:
         return container
 
     @mapper
-    def candidates(self, map_fields=None):
+    def candidates(self):
         container = []
         track_candidate = {'state': 0}
         candidate_q = {'candidatesQueueSize': 0}
@@ -231,7 +231,7 @@ class FrameHandler:
         return container
 
     @mapper
-    def air_tracks(self, map_fields=None):
+    def air_tracks(self):
         container = []
         track = {}
         tracks_q = {'tracksQueuesSize': 0}
@@ -264,7 +264,7 @@ class FrameHandler:
         return container
 
     @mapper
-    def forbidden_sectors(self, map_fields=None):
+    def forbidden_sectors(self):
         container = []
         forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
         rad_forbidden_count = 0
