@@ -10,7 +10,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 451
+frame_number = 0
 
 if __name__ == "__main__":
     log.basicConfig(level=log.DEBUG,

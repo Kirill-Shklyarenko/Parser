@@ -303,3 +303,8 @@ class FrameHandler:
                     container.append(forbidden_sector)
                     rad_forbidden_count += 1
                     self.frame = self.frame[index + 1:]
+                    if rad_forbidden_count == forbidden_sector['RadiationForbiddenSectorsCount']:
+                        self.frame = self.frame[1:]
+                        break
+            self.frame = self.frame[1:]
+        return container
