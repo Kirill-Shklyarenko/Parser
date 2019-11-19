@@ -10,7 +10,8 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 299
+frame_number = 0
+
 
 if __name__ == "__main__":
     """
@@ -40,11 +41,8 @@ if __name__ == "__main__":
         candidates_count = 1
         forbidden_sectors_count = 1
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
-        map_fields = {'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK'}
-        for beam_task in frame_handler.beam_tasks(map_fields):
-            get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId',
-                         # 'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK',
-                         }
+        for beam_task in frame_handler.beam_tasks():
+            get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
             dict_for_get_pk = data_base.map_table_fields_to_table(beam_task, get_pk_bt)
             pk_name = 'BeamTask'
             beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
@@ -54,14 +52,11 @@ if __name__ == "__main__":
             else:
                 log.warning(f'{pk_name} : already exists')
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ #
-        map_fields = {'primaryMarkId': 'id', 'markType': 'type', 'scanTime': 'processingTime'}
-        for primary_mark in frame_handler.primary_marks(map_fields):
+        for primary_mark in frame_handler.primary_marks():
             log.info(f'PrimaryMark № {primary_marks_count}')
-            log.info(f'PrimaryMark type = {primary_mark["type"]}')
+            log.info(f'PrimaryMark type = {primary_mark["markType"]}')
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
-            get_pk_pm = {'BeamTask': 'BeamTask',
-                         # 'primaryMarkId': 'id', 'scanTime': 'processingTime', 'markType': 'type'
-                         }
+            get_pk_pm = {'BeamTask': 'BeamTask'}
             dict_for_get_pk = data_base.map_table_fields_to_table(primary_mark, get_pk_bt)
             pk_name = 'BeamTask'
             beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
@@ -78,20 +73,18 @@ if __name__ == "__main__":
                     log.warning(f'{pk_name} : already exists')
             primary_marks_count += 1
         # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
-        map_fields = {'trackId': 'id', 'timeUpdated': 'creationTimeSeconds'}
-        for candidate in frame_handler.candidates(map_fields):
+        for candidate in frame_handler.candidates():
             log.info(f'Candidate № {candidates_count}')
             log.info(f'Candidate state = {candidate["state"]}')
             if candidate['state'] != 0 and candidate['state'] != 3 \
                     and candidate['state'] != 5 and candidate['state'] != 6:
-                get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'
-                             # 'taskType': 2, 'trackId': 'id'
+                get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId',
+                             'trackId': 'id',
+                             # 'taskType': 2,
                              }
-                get_pk_pm = {'BeamTask': 'BeamTask'}
+                get_pk_pm = {'BeamTask': 'BeamTask', 'primaryMarkId': 'primaryMarkId'}
                 get_pk_candidate = {'id': 'id'}
-                get_pk_candidate_hist = {'BeamTask': 'BeamTask', 'PrimaryMark': 'PrimaryMark',
-                                         # 'timeUpdated': 'creationTimeSeconds',
-                                         }
+                get_pk_candidate_hist = {'BeamTask': 'BeamTask', 'PrimaryMark': 'PrimaryMark'}
                 pk_name = 'BeamTask'
                 dict_for_get_pk = data_base.map_table_fields_to_table(candidate, get_pk_bt)
                 beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
@@ -103,9 +96,9 @@ if __name__ == "__main__":
                     if pm_pk:
                         candidate.update(pm_pk)
                         pk_name = 'Candidate'
-                        candidate.update({'taskType': 2})
                         dict_for_get_pk = data_base.map_table_fields_to_table(candidate, get_pk_candidate)
                         candidates_pk = data_base.get_pk('Candidates', pk_name, dict_for_get_pk)
+                        # if dict_for_get_pk['id'] != 0:
                         if candidates_pk is None:
                             data_base.insert_to_table('Candidates', dict_for_get_pk)
                             candidates_pk = data_base.get_pk('Candidates', pk_name, dict_for_get_pk)
@@ -123,7 +116,6 @@ if __name__ == "__main__":
                             log.warning(f'{pk_name} : already exists')
                 candidates_count += 1
         # ------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- #
-        map_fields = {'timeUpdated': 'nextUpdateTimeSeconds', 'scanPeriod': 'scanPeriodSeconds', }
         for air_track in frame_handler.air_tracks():
             if air_track['antennaId'] != 0:
                 get_pk_bt = {'trackId': 'id', 'taskType': 3, 'antennaId': 'antennaId'}
@@ -166,9 +158,7 @@ if __name__ == "__main__":
                                 else:
                                     log.warning(f'{pk_name} : already exists')
         # --------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------------- #
-        map_fields = {'azimuthBeginNSSK': 'minAzimuth', 'azimuthEndNSSK': 'maxAzimuth',
-                      'elevationBeginNSSK': 'minElevation', 'elevationEndNSSK': 'maxElevation', }
-        for forbidden_sector in frame_handler.forbidden_sectors(map_fields):
+        for forbidden_sector in frame_handler.forbidden_sectors():
             log.info(f'PrimaryMark № {forbidden_sectors_count}')
             get_pk_fs = {'azimuthBeginNSSK': 'azimuthBeginNSSK', 'azimuthEndNSSK': 'azimuthEndNSSK',
                          'elevationBeginNSSK': 'elevationBeginNSSK', 'elevationEndNSSK': 'elevationEndNSSK',

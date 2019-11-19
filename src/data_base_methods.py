@@ -50,7 +50,7 @@ class DataBase:
             if db_values:
                 return db_values[0]
             else:
-                return None
+                return
 
     def get_pk(self, table_name: str, pk_name: str, dict_for_get_pk: dict) -> any:
         data_with_pk = self.read_from_table(table_name, dict_for_get_pk)
@@ -60,7 +60,7 @@ class DataBase:
             return {pk_name: data_with_pk[0]}
         else:
             log.warning(f'{pk_name} : {table_name} : doesnt exists : {dict_for_get_pk} ')
-            return None
+            return
 
     def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:
         # Для того чтобы узнать имена полей таблицы
@@ -83,10 +83,10 @@ class DataBase:
         formatter_dict.update(result)
         return formatter_dict
 
-    def rename_table_column(self, table_name: str, data: dict):
-        k, v = data.items()
-        query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
-        try:
-            self.cur.execute(query)
-        except Exception as e:
-            log.exception(f'\r\nException: {e}')
+    # def rename_table_column(self, table_name: str, data: dict):
+    #     k, v = data.items()
+    #     query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
+    #     try:
+    #         self.cur.execute(query)
+    #     except Exception as e:
+    #         log.exception(f'\r\nException: {e}')

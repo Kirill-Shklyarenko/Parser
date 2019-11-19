@@ -4,6 +4,7 @@ import os
 import re
 from struct import *
 
+from decorators import mapper
 from main import frame_number
 
 
@@ -101,18 +102,7 @@ class FrameHandler:
     def __init__(self, frame):
         self.frame = frame
 
-    @staticmethod
-    def map_fields(dict_from_telemetry: dict, formatter_dict: dict) -> dict:
-        result = {}
-        for fk, fv in dict_from_telemetry.items():
-            if 'isFake' in fk:
-                dict_from_telemetry[fk] = bool(dict_from_telemetry[fk])
-            for sk, sv in formatter_dict.items():
-                if fk == sv:
-                    result.update({sk: fv})
-        formatter_dict.update(result)
-        return formatter_dict
-
+    @mapper
     def beam_tasks(self, map_fields=None):
         container = []
         task = {}
@@ -126,15 +116,15 @@ class FrameHandler:
                 beam_task.update(task)
                 for c in group[1:]:
                     beam_task.update(c)
-                if map_fields:
-                    result = self.map_fields(beam_task, map_fields)
-                    beam_task.update(result)
+                c = {k: bool(v) for k, v in beam_task.items() if k == 'isFake'}
+                beam_task.update(c)
                 container.append(beam_task)
                 self.frame = self.frame[1:]
                 if len(container) == 4:
                     break
         return container
 
+    @mapper
     def primary_marks(self, map_fields=None):
         container = []
         primary_mark = {}
@@ -149,9 +139,6 @@ class FrameHandler:
                     for c in group[1:]:
                         primary_mark.update(c)
                     primary_mark.update(scan_data)
-                    if map_fields:
-                        result = self.map_fields(primary_mark, map_fields)
-                        primary_mark.update(result)
                     container.append(primary_mark)
                     primary_marks_count += 1
                     # log.info(f'PrimaryMarks == {primary_marks_count} / {scan_data["primaryMarksCount"]}')
@@ -163,6 +150,7 @@ class FrameHandler:
                 self.frame = self.frame[1:]
         return container
 
+    @mapper
     def candidates(self, map_fields=None):
         container = []
         track_candidate = {'state': 0}
@@ -184,9 +172,6 @@ class FrameHandler:
                         for c in group[1:]:
                             view_spot.update(c)
                         track_candidate.update(view_spot)
-                        if map_fields:
-                            result = self.map_fields(track_candidate, map_fields)
-                            track_candidate.update(result)
                         container.append(track_candidate)
                         candidates_count += 1
                         # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
@@ -200,9 +185,6 @@ class FrameHandler:
                         for c in group[1:]:
                             distance_res_spot.update(c)
                         track_candidate.update(distance_res_spot)
-                        if map_fields:
-                            result = self.map_fields(track_candidate, map_fields)
-                            track_candidate.update(result)
                         track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
                                                                       track_candidate['distance']) / track_candidate[
                                                                          'distancePeriod']})
@@ -221,9 +203,6 @@ class FrameHandler:
                         for c in group[1:]:
                             velocity_res_spot.update(c)
                         track_candidate.update(velocity_res_spot)
-                        if map_fields:
-                            result = self.map_fields(track_candidate, map_fields)
-                            track_candidate.update(result)
                         track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
                                                                       track_candidate['distance']) / track_candidate[
                                                                          'distancePeriod']})
@@ -251,6 +230,7 @@ class FrameHandler:
                 self.frame = self.frame[1:]
         return container
 
+    @mapper
     def air_tracks(self, map_fields=None):
         container = []
         track = {}
@@ -272,9 +252,6 @@ class FrameHandler:
                 if re.search('track_', group[0]):
                     for c in group[1:]:
                         track.update(c)
-                    if map_fields:
-                        result = self.map_fields(track, map_fields)
-                        track.update(result)
                     container.append(track)
                     tracks_count += 1
                     # log.info(f'Tracks = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
@@ -286,6 +263,7 @@ class FrameHandler:
             self.frame = self.frame[1:]
         return container
 
+    @mapper
     def forbidden_sectors(self, map_fields=None):
         container = []
         forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
@@ -299,9 +277,6 @@ class FrameHandler:
                 if re.search(r'RadiationForbiddenSector', group[0]):
                     for c in group:
                         forbidden_sector.update(c)
-                    if map_fields:
-                        result = self.map_fields(forbidden_sector, map_fields)
-                        forbidden_sector.update(result)
                     container.append(forbidden_sector)
                     rad_forbidden_count += 1
                     self.frame = self.frame[index + 1:]
