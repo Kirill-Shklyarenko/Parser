@@ -2,7 +2,7 @@ import functools
 
 
 def mapper(func):
-    @functools.wraps(func)
+    # @functools.wraps(func)
     def wrapper_decorator(*args, **kwargs):
         map_fields = {}
         func_name = func.__name__
@@ -26,4 +26,24 @@ def mapper(func):
                         dicts.update({sk: fv})
                         del dicts[fk]
         return value
+
+    return wrapper_decorator
+
+
+def pk(func):
+    # @functools.wraps(func)
+    def wrapper_decorator(*args, **kwargs):
+        data = {}
+
+        if args[1] == 'BeamTasks' and args[2] == 'BeamTask':
+            get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
+
+        for fk, fv in args[3].items():
+            for sk, sv in get_pk_bt.items():
+                if fk == sv:
+                    data.update({sk: fv})
+
+        func(data, *args, **kwargs)
+        return func(data, * args)
+
     return wrapper_decorator

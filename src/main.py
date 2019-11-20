@@ -10,7 +10,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 22000
+frame_number = 0
 
 
 if __name__ == "__main__":
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     telemetry = TelemetryReader(planner_rsf, data_structure)
     data_base = DataBase(dsn)
     start_time_of_parsing = time.time()
-    for frame in telemetry:  # (2237, 2838 - airTracks)
+    for frame in telemetry:
         start_frame_time = time.time()
         frame_handler = FrameHandler(frame)
         primary_marks_count = 1
@@ -42,15 +42,12 @@ if __name__ == "__main__":
         forbidden_sectors_count = 1
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam_task in frame_handler.beam_tasks():
-            get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
-            dict_for_get_pk = data_base.map_table_fields_to_table(beam_task, get_pk_bt)
-            pk_name = 'BeamTask'
-            beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
-            if beam_task_pk is None:
+            beam_task_pk = data_base.get_pk('BeamTasks', 'BeamTask', beam_task)
+            if beam_task_pk[0] is None:
                 beam_task = data_base.map_bin_fields_to_table('BeamTasks', beam_task)
                 data_base.insert_to_table('BeamTasks', beam_task)
             else:
-                log.warning(f'{pk_name} : already exists')
+                log.warning(f'BeamTask : already exists')
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ #
         for primary_mark in frame_handler.primary_marks():
             log.info(f'PrimaryMark № {primary_marks_count}')
