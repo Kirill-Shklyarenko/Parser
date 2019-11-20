@@ -1,8 +1,7 @@
-import functools
+import inspect
 
 
 def mapper(func):
-    # @functools.wraps(func)
     def wrapper_decorator(*args, **kwargs):
         map_fields = {}
         func_name = func.__name__
@@ -31,7 +30,6 @@ def mapper(func):
 
 
 def pk(func):
-    # @functools.wraps(func)
     def wrapper_decorator(*args, **kwargs):
         data = {}
 
@@ -43,7 +41,9 @@ def pk(func):
                 if fk == sv:
                     data.update({sk: fv})
 
-        func(data, *args, **kwargs)
-        return func(data, * args)
+        if 'data' not in inspect.getfullargspec(func).args:
+            kwargs['data'] = data
+        func(*args, **kwargs)
+        return func(*args, **kwargs)
 
     return wrapper_decorator

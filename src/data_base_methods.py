@@ -55,13 +55,12 @@ class DataBase:
                 return
 
     @pk
-    def get_pk(data ,self, *args, **kwargs) -> any:
-        data_with_pk = self.read_from_table(args[0], data)
+    def get_pk(self, *args, **kwargs) -> any:
+        data_with_pk = self.read_from_table(args[0], kwargs['data'])
         if data_with_pk:
             log.debug(f'{args[1]} : {args[0]} : {data_with_pk[0]}')
-            data.clear()
-            data.update({args[1]: data_with_pk[0]})
-            return (data, *args)
+            # data.update({args[1]: data_with_pk[0]})
+            return data_with_pk[0]
         else:
             log.warning(f'{args[1]} : {args[0]} : doesnt exists : {data} ')
             return
