@@ -1,4 +1,5 @@
 import logging as log
+import textwrap
 
 import psycopg2
 
@@ -34,7 +35,8 @@ class DataBase:
         except Exception as e:
             log.exception(f'\r\nException: {e}')
         finally:
-            log.warning(f'INSERT INTO "{table_name}" {data}\r')
+            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 100,
+                                      subsequent_indent='                                      '))
 
     def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> any:
         columns = ','.join([f'"{x}"' for x in dict_for_get_pk])
