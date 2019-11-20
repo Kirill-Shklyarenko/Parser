@@ -10,7 +10,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 0
+frame_number = 299
 
 
 if __name__ == "__main__":
@@ -43,35 +43,28 @@ if __name__ == "__main__":
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam_task in frame_handler.beam_tasks():
             beam_task_pk = data_base.get_pk('BeamTasks', 'BeamTask', beam_task)
-            if beam_task_pk[0] is None:
+            if beam_task_pk is None:
                 beam_task = data_base.map_bin_fields_to_table('BeamTasks', beam_task)
                 data_base.insert_to_table('BeamTasks', beam_task)
             else:
                 log.warning(f'BeamTask : already exists')
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ #
         for primary_mark in frame_handler.primary_marks():
-            log.info(f'PrimaryMark № {primary_marks_count}')
+            log.info(f'PrimaryMark {primary_marks_count}')
             log.info(f'PrimaryMark type = {primary_mark["markType"]}')
-            get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
-            get_pk_pm = {'BeamTask': 'BeamTask'}
-            dict_for_get_pk = data_base.map_table_fields_to_table(primary_mark, get_pk_bt)
-            pk_name = 'BeamTask'
-            beam_task_pk = data_base.get_pk('BeamTasks', pk_name, dict_for_get_pk)
+            beam_task_pk = data_base.get_pk('BeamTasks', 'BeamTask', primary_mark)
             if beam_task_pk:
-                primary_mark.update(beam_task_pk)
-                dict_for_get_pk = data_base.map_table_fields_to_table(primary_mark, get_pk_pm)
-                # primary_mark.update(dict_for_get_pk)
-                pk_name = 'PrimaryMark'
-                primary_mark_pk = data_base.get_pk('PrimaryMarks', pk_name, dict_for_get_pk)
+                primary_mark.update({'BeamTask': beam_task_pk})
+                primary_mark_pk = data_base.get_pk('PrimaryMarks', 'PrimaryMark', primary_mark)
                 if primary_mark_pk is None:
                     primary_mark = data_base.map_bin_fields_to_table('PrimaryMarks', primary_mark)
                     data_base.insert_to_table('PrimaryMarks', primary_mark)
                 else:
-                    log.warning(f'{pk_name} : already exists')
+                    log.warning(f'PrimaryMark : already exists')
             primary_marks_count += 1
         # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_handler.candidates():
-            log.info(f'Candidate № {candidates_count}')
+            log.info(f'Candidate {candidates_count}')
             log.info(f'Candidate state = {candidate["state"]}')
             if candidate['state'] != 0 and candidate['state'] != 3 \
                     and candidate['state'] != 5 and candidate['state'] != 6:
@@ -156,7 +149,7 @@ if __name__ == "__main__":
                                     log.warning(f'{pk_name} : already exists')
         # --------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------------- #
         for forbidden_sector in frame_handler.forbidden_sectors():
-            log.info(f'PrimaryMark № {forbidden_sectors_count}')
+            log.info(f'PrimaryMark {forbidden_sectors_count}')
             get_pk_fs = {'azimuthBeginNSSK': 'azimuthBeginNSSK', 'azimuthEndNSSK': 'azimuthEndNSSK',
                          'elevationBeginNSSK': 'elevationBeginNSSK', 'elevationEndNSSK': 'elevationEndNSSK',
                          }

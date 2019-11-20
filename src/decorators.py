@@ -35,9 +35,13 @@ def pk(func):
 
         if args[1] == 'BeamTasks' and args[2] == 'BeamTask':
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
+            fields_for_get_pk = get_pk_bt
+        if args[1] == 'PrimaryMarks' and args[2] == 'PrimaryMark':
+            get_pk_pm = {'BeamTask': 'BeamTask'}
+            fields_for_get_pk = get_pk_pm
 
         for fk, fv in args[3].items():
-            for sk, sv in get_pk_bt.items():
+            for sk, sv in fields_for_get_pk.items():
                 if fk == sv:
                     data.update({sk: fv})
 
