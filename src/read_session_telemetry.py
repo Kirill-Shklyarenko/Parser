@@ -253,8 +253,6 @@ class FrameReader:
         tracks_q = {'tracksQueuesSize': 0}
         tracks_count = 0
         for index, group in enumerate(self.frame):
-            if type(group[0]) is not str:
-                breakpoint()
             if re.search(r'\bTracks\b', group[0]):
                 tracks_q = {}
                 for c in group[1:]:
@@ -275,6 +273,27 @@ class FrameReader:
                     if track["type"] != 0:
                         log.warning(f'type  = {track["type"]}')
                     if tracks_count == tracks_q['tracksQueuesSize']:
+                        break
+            self.frame = self.frame[1:]
+        return container
+
+    def air_marks_misses(self):
+        container = []
+        air_marks = {}
+        misses_count = {'AirMarksMissesCount': 0}
+        marks_misses_count = 0
+        for index, group in enumerate(self.frame):
+            if re.search(r'AirMarksMisses', group[0]):
+                for c in group[1:]:
+                    misses_count.update(c)
+                self.frame = self.frame[index:]
+            elif marks_misses_count < misses_count['AirMarksMissesCount']:
+                if re.search('AirMarkMiss', group[0]):
+                    for c in group[1:]:
+                        air_marks.update(c)
+                    container.append(air_marks)
+                    marks_misses_count += 1
+                    if marks_misses_count == misses_count['AirMarksMissesCount']:
                         break
             self.frame = self.frame[1:]
         return container
