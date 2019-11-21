@@ -10,25 +10,24 @@ from decorators import mapper
 class TelemetryFrameIterator:
     def __init__(self, file_name: str, structure):
         self.__data_struct = structure.structure
-        self.__frame_size_in_words = structure.frame_size
+        self.__frame_size_in_bytes = (structure.frame_size * 2) - 6  # need 16072 bytes
 
         self.frame_number = 0
-        self.__frame_size_in_bytes = (self.__frame_size_in_words * 2) - 6  # need 16072 bytes
         self.__raw_binary_stream = read_raw_binary_stream(file_name)
         self.__serialize_string = create_serialize_string(self.__data_struct)
-        self.__frames_count = frame_counter(file_name, self.__frame_size_in_words)
+        self.__frames_count = frame_counter(file_name, structure.frame_size)
 
-    def read_frame_bytes(self) -> bytes:
-        frame_rate = self.frame_number * (self.__frame_size_in_words * 2)
-        frame_bytes = self.__raw_binary_stream.read(self.__frame_size_in_bytes + frame_rate)
-        frame_bytes = frame_bytes[frame_rate:]
-        frame_bytes = frame_bytes[:self.__frame_size_in_bytes]
-        frame_bytes = frame_bytes[14:]
-        return frame_bytes
+    def create_buffer(self) -> bytes:
+        frame_rate = self.frame_number * self.__frame_size_in_bytes
+        buffer = self.__raw_binary_stream.read(self.__frame_size_in_bytes + frame_rate)
+        buffer = buffer[frame_rate:]
+        buffer = buffer[:self.__frame_size_in_bytes]
+        buffer = buffer[14:]
+        return buffer
 
     def convert_frame_bytes_to_frame_values(self) -> list:
         try:
-            frame_values = list(unpack(self.__serialize_string, self.read_frame_bytes()))
+            frame_values = list(unpack(self.__serialize_string, self.create_buffer()))
             return frame_values
         except Exception as e:
             log.exception(f'Exception: {e}')
@@ -64,6 +63,15 @@ class TelemetryFrameIterator:
             raise StopIteration
 
 
+# def read_session_telemetry(file_name, structure):
+#     raw_binary_stream = read_raw_binary_stream(file_name)
+#     telemetry = TelemetryFrameIterator()
+#     serialize_string = create_serialize_string(structure.structure)
+#     frame_size_in_words = structure.frame_size
+#     frame_size_in_bytes = (frame_size_in_words * 2) - 6  # need 16072 bytes
+#     frames_count = frame_counter(file_name, frame_size_in_words)
+
+
 def read_raw_binary_stream(file_name: str):
     raw_binary_stream = open(file_name, 'rb', buffering=0)
     return raw_binary_stream
@@ -82,7 +90,7 @@ def frame_counter(file_name, frame_size) -> int:
 
 
 def create_serialize_string(data_struct) -> str:
-    serialize_string = '='
+    serialize_string = '<'
     for line in data_struct:
         for c in line:
             if type(c) is dict:

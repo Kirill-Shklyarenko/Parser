@@ -2,8 +2,8 @@ import time
 from pathlib import Path
 
 from data_base_methods import *
-from read_session_frames import *
 from read_session_structure import *
+from read_session_telemetry import *
 
 data_folder = Path(r'../data/session_01/')
 planner = data_folder / r'Planner'
@@ -31,8 +31,9 @@ if __name__ == "__main__":
                     filemode='w')
     structure = read_session_structure(planner)
     telemetry = TelemetryFrameIterator(planner_rsf, structure)
+    # telemetry = TelemetryFrameIterator(planner_rsf, structure)
     data_base = DataBase(dsn)
-    start_time_of_parsing = time.time()
+    start_parsing_time = time.time()
     for frame in telemetry:
         start_frame_time = time.time()
         frame_handler = FrameReader(frame)
@@ -164,5 +165,5 @@ if __name__ == "__main__":
         time_sec = "{:7.4f}".format(time.time() - start_frame_time)
         log.info(f"--------------------{time_sec} seconds -----------------\r\n\r\n")
 
-    time_sec = "{:7.4f}".format(time.time() - start_time_of_parsing)
+    time_sec = "{:7.4f}".format(time.time() - start_parsing_time)
     log.info(f"--------------------{time_sec} seconds -----------------\r\n\r\n")
