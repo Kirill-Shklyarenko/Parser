@@ -1,6 +1,8 @@
 import logging as log
 import textwrap
+
 import psycopg2
+
 from decorators import pk
 
 
@@ -62,7 +64,7 @@ class DataBase:
             # data.update({args[1]: data_with_pk[0]})
             return data_with_pk[0]
         else:
-            log.warning(f'{args[1]} : {args[0]} : doesnt exists : {data} ')
+            log.warning(f'{args[1]} : {args[0]} : doesnt exists : {kwargs["data"]}')
             return
 
     def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:
