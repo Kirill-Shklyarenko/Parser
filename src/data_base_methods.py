@@ -56,8 +56,16 @@ class DataBase:
             else:
                 return
 
+    def rename_table_column(self, table_name: str, data: dict):
+        k, v = data.items()
+        query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
+        try:
+            self.cur.execute(query)
+        except Exception as e:
+            log.exception(f'\r\nException: {e}')
+
     @pk
-    def get_pk(self, *args, **kwargs) -> any:
+    def get_pk(self, *args, **kwargs) -> int:
         data_with_pk = self.read_from_table(args[0], kwargs['data'])
         if data_with_pk:
             log.debug(f'{args[1]} : {args[0]} : {data_with_pk[0]}')
@@ -65,7 +73,6 @@ class DataBase:
             return data_with_pk[0]
         else:
             log.warning(f'{args[1]} : {args[0]} : doesnt exists : {kwargs["data"]}')
-            return
 
     def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:
         # Для того чтобы узнать имена полей таблицы
@@ -75,12 +82,3 @@ class DataBase:
             col_names.append(elt[0])
         data = {k: v for k, v in data.items() if k in col_names}
         return data
-
-
-    # def rename_table_column(self, table_name: str, data: dict):
-    #     k, v = data.items()
-    #     query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
-    #     try:
-    #         self.cur.execute(query)
-    #     except Exception as e:
-    #         log.exception(f'\r\nException: {e}')

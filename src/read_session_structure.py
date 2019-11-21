@@ -2,7 +2,7 @@ import copy
 
 
 class StructureSessionContainer:
-    __slots__ = ['frame_size', 'structure']
+    __slots__ = ('frame_size', 'structure')
 
     def __init__(self):
         self.frame_size: int = 0

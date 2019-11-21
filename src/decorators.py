@@ -32,13 +32,19 @@ def mapper(func):
 def pk(func):
     def wrapper_decorator(*args, **kwargs):
         data = {}
-
+        fields_for_get_pk = {}
         if args[1] == 'BeamTasks' and args[2] == 'BeamTask':
             get_pk_bt = {'taskId': 'taskId', 'antennaId': 'antennaId'}
             fields_for_get_pk = get_pk_bt
         if args[1] == 'PrimaryMarks' and args[2] == 'PrimaryMark':
             get_pk_pm = {'BeamTask': 'BeamTask'}
             fields_for_get_pk = get_pk_pm
+        if args[1] == 'Candidates' and args[2] == 'Candidate':
+            get_pk_candidate = {'id': 'id'}
+            fields_for_get_pk = get_pk_candidate
+        if args[1] == 'CandidatesHistory' and args[2] == 'CandidateHistory':
+            get_pk_candidate_hist = {'BeamTask': 'BeamTask', 'PrimaryMark': 'PrimaryMark'}
+            fields_for_get_pk = get_pk_candidate_hist
 
         for fk, fv in args[3].items():
             for sk, sv in fields_for_get_pk.items():

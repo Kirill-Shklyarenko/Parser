@@ -7,71 +7,6 @@ from struct import *
 from decorators import mapper
 
 
-class TelemetryFrameIterator:
-    def __init__(self, file_name: str, structure):
-        self.__data_struct = structure.structure
-        self.__frame_size_in_bytes = (structure.frame_size * 2) - 6  # need 16072 bytes
-
-        self.frame_number = 0
-        self.__raw_binary_stream = read_raw_binary_stream(file_name)
-        self.__serialize_string = create_serialize_string(self.__data_struct)
-        self.__frames_count = frame_counter(file_name, structure.frame_size)
-
-    def create_buffer(self) -> bytes:
-        frame_rate = self.frame_number * self.__frame_size_in_bytes
-        buffer = self.__raw_binary_stream.read(self.__frame_size_in_bytes + frame_rate)
-        buffer = buffer[frame_rate:]
-        buffer = buffer[:self.__frame_size_in_bytes]
-        buffer = buffer[14:]
-        return buffer
-
-    def convert_frame_bytes_to_frame_values(self) -> list:
-        try:
-            frame_values = list(unpack(self.__serialize_string, self.create_buffer()))
-            return frame_values
-        except Exception as e:
-            log.exception(f'Exception: {e}')
-
-    def fill_session_structure_frame_values(self) -> list:
-        frame_values = self.convert_frame_bytes_to_frame_values()
-        log.info(f'----------------------- FRAME {self.frame_number} ------------------')
-        filled_frame = copy.deepcopy(self.__data_struct)
-        group_names = []
-        for number, line in enumerate(filled_frame):
-            group_names.append(line[0])
-            for c in line:
-                if type(c) is dict:
-                    key = c.get('name')
-                    c.clear()
-                    value = frame_values[0]
-                    frame_values.pop(0)
-                    c.update({key: value})
-        return filled_frame[2:]
-
-    def __iter__(self):
-        return self
-
-    def __next__(self):
-        try:
-            if self.frame_number < self.__frames_count:
-                result = self.fill_session_structure_frame_values()
-                self.frame_number += 1
-                return result
-            else:
-                self.__raw_binary_stream.close()
-        except IndexError:
-            raise StopIteration
-
-
-# def read_session_telemetry(file_name, structure):
-#     raw_binary_stream = read_raw_binary_stream(file_name)
-#     telemetry = TelemetryFrameIterator()
-#     serialize_string = create_serialize_string(structure.structure)
-#     frame_size_in_words = structure.frame_size
-#     frame_size_in_bytes = (frame_size_in_words * 2) - 6  # need 16072 bytes
-#     frames_count = frame_counter(file_name, frame_size_in_words)
-
-
 def read_raw_binary_stream(file_name: str):
     raw_binary_stream = open(file_name, 'rb', buffering=0)
     return raw_binary_stream
@@ -109,12 +44,78 @@ def create_serialize_string(data_struct) -> str:
     return serialize_string
 
 
+class TelemetryFrameIterator:
+    def __init__(self, file_name: str, structure):
+        self.__data_struct = structure.structure
+        self.__frame_size_in_words = structure.frame_size
+        self.__frame_size_in_bytes = (structure.frame_size * 2) - 6  # need 16072 bytes
+
+        self.__frame_number = 311
+        self.__raw_binary_stream = read_raw_binary_stream(file_name)
+        self.__serialize_string = create_serialize_string(self.__data_struct)
+        self.__frames_count = frame_counter(file_name, structure.frame_size)
+
+    def create_buffer(self) -> bytes:
+        frame_rate = self.__frame_size_in_words * 2 * self.__frame_number
+        buffer = self.__raw_binary_stream.read(self.__frame_size_in_bytes + frame_rate)
+        buffer = buffer[frame_rate:]
+        buffer = buffer[:self.__frame_size_in_bytes]
+        buffer = buffer[14:]
+        return buffer
+
+    def convert_buffer_to_values(self) -> list:
+        try:
+            frame_values = list(unpack(self.__serialize_string, self.create_buffer()))
+            return frame_values
+        except Exception as e:
+            log.exception(f'Exception: {e}')
+
+    def fill_session_structure(self) -> list:
+        frame_values = self.convert_buffer_to_values()
+        filled_frame = copy.deepcopy(self.__data_struct)
+        group_names = []
+        for number, line in enumerate(filled_frame):
+            group_names.append(line[0])
+            for c in line:
+                if type(c) is dict:
+                    key = c.get('name')
+                    c.clear()
+                    value = frame_values[0]
+                    frame_values.pop(0)
+                    c.update({key: value})
+        return filled_frame[2:]
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        try:
+            if self.__frame_number < self.__frames_count:
+                log.info(f'----------------------- FRAME {self.__frame_number} ------------------')
+                result = self.fill_session_structure()
+                self.__frame_number += 1
+                return result
+            else:
+                self.__raw_binary_stream.close()
+        except IndexError:
+            raise StopIteration
+
+
+# def read_session_telemetry(file_name, structure):
+#     raw_binary_stream = read_raw_binary_stream(file_name)
+#     telemetry = TelemetryFrameIterator()
+#     serialize_string = create_serialize_string(structure.structure)
+#     frame_size_in_words = structure.frame_size
+#     frame_size_in_bytes = (frame_size_in_words * 2) - 6  # need 16072 bytes
+#     frames_count = frame_counter(file_name, frame_size_in_words)
+
+
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 
 
-class FrameReader:
+class DataBlocksReader:
     def __init__(self, frame):
         self.frame = frame
 
