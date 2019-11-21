@@ -10,7 +10,6 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 299
 
 
 if __name__ == "__main__":

@@ -1,11 +1,11 @@
 import copy
+import io
 import logging as log
 import os
 import re
 from struct import *
 
 from decorators import mapper
-from main import frame_number
 
 
 class TelemetryReader:
@@ -13,19 +13,16 @@ class TelemetryReader:
         self.file_name = file_name
         self.data_struct = data_struct.__dict__['data_struct']
         self.frame_size = data_struct.__dict__['frame_size']
+        self.frame_number = 0
+
         self.buff_size = (self.frame_size * 2) - 6  # need 16072 bytes
-        self.frame_number = frame_number
         self.frames_range = self.frame_counter()
         self.serialize_string = self.create_serialize_string()
+        self.file_obj = self.open()
 
-    def open(self) -> bytes:
-        with open(self.file_name, 'rb') as file:
-            frame_rate = self.frame_number * (self.frame_size * 2)
-            buffer = file.read(self.buff_size + frame_rate)
-            buffer = buffer[frame_rate:]
-            buffer = buffer[:self.buff_size]
-            buffer = buffer[14:]
-        return buffer
+    def open(self):
+        file = io.open(self.file_name, 'rb', buffering=0)
+        return file
 
     def frame_counter(self) -> int:
         file_size = os.path.getsize(self.file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
@@ -59,8 +56,13 @@ class TelemetryReader:
 
     def read_frame(self) -> list:
         frame_values = None
+        frame_rate = self.frame_number * (self.frame_size * 2)
+        buffer = self.file_obj.read(self.buff_size + frame_rate)
+        buffer = buffer[frame_rate:]
+        buffer = buffer[:self.buff_size]
+        buffer = buffer[14:]
         try:
-            frame_values = list(unpack(self.serialize_string, self.open()))
+            frame_values = list(unpack(self.serialize_string, buffer))
         except Exception as e:
             log.exception(f'Exception: {e}')
         finally:
@@ -89,6 +91,8 @@ class TelemetryReader:
         try:
             if self.frame_number < self.frames_range:
                 result = self.read_frame()
+            else:
+                self.file_obj.close()
         except IndexError:
             raise StopIteration
         self.frame_number += 1
