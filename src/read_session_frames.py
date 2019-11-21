@@ -33,7 +33,7 @@ class TelemetryFrameIterator:
         except Exception as e:
             log.exception(f'Exception: {e}')
 
-    def fill_session_structure_frame_values(self):
+    def fill_session_structure_frame_values(self) -> list:
         frame_values = self.convert_frame_bytes_to_frame_values()
         log.info(f'----------------------- FRAME {self.frame_number} ------------------')
         filled_frame = copy.deepcopy(self.__data_struct)
