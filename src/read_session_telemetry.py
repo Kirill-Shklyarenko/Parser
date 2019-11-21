@@ -1,10 +1,9 @@
 import copy
 import logging as log
 import os
-import re
 from struct import *
 
-from decorators import mapper
+from decorators import *
 
 
 def read_raw_binary_stream(file_name: str):
@@ -45,6 +44,9 @@ def create_serialize_string(data_struct) -> str:
 
 
 class TelemetryFrameIterator:
+    __slots__ = ('__data_struct', '__frame_size_in_words', '__frame_size_in_bytes', '__frame_number',
+                 '__raw_binary_stream', '__serialize_string', '__frames_count',)
+
     def __init__(self, file_name: str, structure):
         self.__data_struct = structure.structure
         self.__frame_size_in_words = structure.frame_size
@@ -116,11 +118,13 @@ class TelemetryFrameIterator:
 
 
 class DataBlocksReader:
+    # __slots__ = ('frame',)
+
     def __init__(self, frame):
         self.frame = frame
 
     @mapper
-    def beam_tasks(self):
+    def beam_tasks(self) -> list:
         container = []
         task = {}
         beam_task = {}
@@ -142,7 +146,7 @@ class DataBlocksReader:
         return container
 
     @mapper
-    def primary_marks(self):
+    def primary_marks(self) -> list:
         container = []
         primary_mark = {}
         scan_data = {'primaryMarksCount': 0}
@@ -168,7 +172,7 @@ class DataBlocksReader:
         return container
 
     @mapper
-    def candidates(self):
+    def candidates(self) -> list:
         container = []
         track_candidate = {'state': 0}
         candidate_q = {'candidatesQueueSize': 0}
@@ -248,7 +252,7 @@ class DataBlocksReader:
         return container
 
     @mapper
-    def air_tracks(self):
+    def air_tracks(self) -> list:
         container = []
         track = {}
         tracks_q = {'tracksQueuesSize': 0}
@@ -278,7 +282,7 @@ class DataBlocksReader:
             self.frame = self.frame[1:]
         return container
 
-    def air_marks_misses(self):
+    def air_marks_misses(self) -> list:
         container = []
         air_marks = {}
         misses_count = {'AirMarksMissesCount': 0}
@@ -300,7 +304,7 @@ class DataBlocksReader:
         return container
 
     @mapper
-    def forbidden_sectors(self):
+    def forbidden_sectors(self) -> list:
         container = []
         forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
         rad_forbidden_count = 0

@@ -6,7 +6,7 @@ import psycopg2
 from decorators import pk
 
 
-class DataBase:
+class DataBaseMain:
     def __init__(self, dsn: str):
         self.dsn = dsn
         self.cur = self.connection()
@@ -63,6 +63,11 @@ class DataBase:
             self.cur.execute(query)
         except Exception as e:
             log.exception(f'\r\nException: {e}')
+
+
+class DataBase(DataBaseMain):
+    def __init__(self, dsn: str):
+        super().__init__(dsn)
 
     @pk
     def get_pk(self, *args, **kwargs) -> int:
