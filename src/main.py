@@ -1,9 +1,9 @@
 import time
 from pathlib import Path
 
-from bin_file_reader import *
 from data_base_methods import *
-from text_file_reader import *
+from read_session_frames import *
+from read_session_structure import *
 
 data_folder = Path(r'../data/session_01/')
 planner = data_folder / r'Planner'
@@ -29,13 +29,13 @@ if __name__ == "__main__":
                     datefmt='%H:%m:%S',
                     filename=logger,
                     filemode='w')
-    data_structure = StructureReader(planner)
-    telemetry = TelemetryReader(planner_rsf, data_structure)
+    structure = read_session_structure(planner)
+    telemetry = TelemetryFrameIterator(planner_rsf, structure)
     data_base = DataBase(dsn)
     start_time_of_parsing = time.time()
     for frame in telemetry:
         start_frame_time = time.time()
-        frame_handler = FrameHandler(frame)
+        frame_handler = FrameReader(frame)
         primary_marks_count = 1
         candidates_count = 1
         forbidden_sectors_count = 1

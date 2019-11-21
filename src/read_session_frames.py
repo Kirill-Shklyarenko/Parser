@@ -1,5 +1,4 @@
 import copy
-import io
 import logging as log
 import os
 import re
@@ -8,101 +7,106 @@ from struct import *
 from decorators import mapper
 
 
-class TelemetryReader:
-    def __init__(self, file_name: str, data_struct: object):
-        self.file_name = file_name
-        self.data_struct = data_struct.__dict__['data_struct']
-        self.frame_size = data_struct.__dict__['frame_size']
+class TelemetryFrameIterator:
+    def __init__(self, file_name: str, structure):
+        self.__data_struct = structure.structure
+        self.__frame_size_in_words = structure.frame_size
+
         self.frame_number = 0
+        self.__frame_size_in_bytes = (self.__frame_size_in_words * 2) - 6  # need 16072 bytes
+        self.__raw_binary_stream = read_raw_binary_stream(file_name)
+        self.__serialize_string = create_serialize_string(self.__data_struct)
+        self.__frames_count = frame_counter(file_name, self.__frame_size_in_words)
 
-        self.buff_size = (self.frame_size * 2) - 6  # need 16072 bytes
-        self.frames_range = self.frame_counter()
-        self.serialize_string = self.create_serialize_string()
-        self.file_obj = self.open()
+    def read_frame_bytes(self) -> bytes:
+        frame_rate = self.frame_number * (self.__frame_size_in_words * 2)
+        frame_bytes = self.__raw_binary_stream.read(self.__frame_size_in_bytes + frame_rate)
+        frame_bytes = frame_bytes[frame_rate:]
+        frame_bytes = frame_bytes[:self.__frame_size_in_bytes]
+        frame_bytes = frame_bytes[14:]
+        return frame_bytes
 
-    def open(self):
-        file = io.open(self.file_name, 'rb', buffering=0)
-        return file
-
-    def frame_counter(self) -> int:
-        file_size = os.path.getsize(self.file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
-        frames_count = 0
+    def convert_frame_bytes_to_frame_values(self) -> list:
         try:
-            frames_count = file_size / (self.frame_size * 2)
-        except ZeroDivisionError as e:
-            log.exception(f'{e} , {frames_count}')
-        finally:
-            log.info(f'frames_count = {int(frames_count)}')
-            return int(frames_count)
-
-    def create_serialize_string(self) -> str:
-        serialize_string = '='
-        for line in self.data_struct:
-            for c in line:
-                if type(c) is dict:
-                    if 'WW' in c['type']:  # UINT_2 # "<"  little-endian
-                        serialize_string += 'H'
-                    elif 'SS' in c['type']:  # INT_2
-                        serialize_string += 'h'
-                    elif 'UU' in c['type']:  # INT_4
-                        serialize_string += 'i'
-                    elif 'LL' in c['type']:  # INT_4
-                        serialize_string += 'i'
-                    elif 'RR' in c['type']:  # char
-                        serialize_string += 'c'
-                    elif 'FF' in c['type']:
-                        serialize_string += 'f'  # float_4
-        return serialize_string
-
-    def read_frame(self) -> list:
-        frame_values = None
-        frame_rate = self.frame_number * (self.frame_size * 2)
-        buffer = self.file_obj.read(self.buff_size + frame_rate)
-        buffer = buffer[frame_rate:]
-        buffer = buffer[:self.buff_size]
-        buffer = buffer[14:]
-        try:
-            frame_values = list(unpack(self.serialize_string, buffer))
+            frame_values = list(unpack(self.__serialize_string, self.read_frame_bytes()))
+            return frame_values
         except Exception as e:
             log.exception(f'Exception: {e}')
-        finally:
-            log.info(f'----------------------- FRAME {self.frame_number} ------------------')
-            frame = copy.deepcopy(self.data_struct)
-            group_names = []
-            for number, line in enumerate(frame):
-                group_names.append(line[0])
-                for c in line:
-                    if type(c) is dict:
-                        key = c.get('name')
-                        c.clear()
-                        value = frame_values[0]
-                        frame_values.pop(0)
-                        c.update({key: value})
-            # formatted = pformat(frame, width=105, compact=True)
-            # for line in formatted.splitlines():
-            #     log.info(line.rstrip())
-        return frame[2:]
+
+    def fill_session_structure_frame_values(self):
+        frame_values = self.convert_frame_bytes_to_frame_values()
+        log.info(f'----------------------- FRAME {self.frame_number} ------------------')
+        filled_frame = copy.deepcopy(self.__data_struct)
+        group_names = []
+        for number, line in enumerate(filled_frame):
+            group_names.append(line[0])
+            for c in line:
+                if type(c) is dict:
+                    key = c.get('name')
+                    c.clear()
+                    value = frame_values[0]
+                    frame_values.pop(0)
+                    c.update({key: value})
+        return filled_frame[2:]
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        result = None
         try:
-            if self.frame_number < self.frames_range:
-                result = self.read_frame()
+            if self.frame_number < self.__frames_count:
+                result = self.fill_session_structure_frame_values()
+                self.frame_number += 1
+                return result
             else:
-                self.file_obj.close()
+                self.__raw_binary_stream.close()
         except IndexError:
             raise StopIteration
-        self.frame_number += 1
-        return result
+
+
+def read_raw_binary_stream(file_name: str):
+    raw_binary_stream = open(file_name, 'rb', buffering=0)
+    return raw_binary_stream
+
+
+def frame_counter(file_name, frame_size) -> int:
+    file_size = os.path.getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
+    frames_count = 0
+    try:
+        frames_count = file_size / (frame_size * 2)
+    except ZeroDivisionError as e:
+        log.exception(f'{e} , {frames_count}')
+    finally:
+        log.info(f'frames_count = {int(frames_count)}')
+        return int(frames_count)
+
+
+def create_serialize_string(data_struct) -> str:
+    serialize_string = '='
+    for line in data_struct:
+        for c in line:
+            if type(c) is dict:
+                if 'WW' in c['type']:  # UINT_2 # "<"  little-endian
+                    serialize_string += 'H'
+                elif 'SS' in c['type']:  # INT_2
+                    serialize_string += 'h'
+                elif 'UU' in c['type']:  # INT_4
+                    serialize_string += 'i'
+                elif 'LL' in c['type']:  # INT_4
+                    serialize_string += 'i'
+                elif 'RR' in c['type']:  # char
+                    serialize_string += 'c'
+                elif 'FF' in c['type']:  # float_4
+                    serialize_string += 'f'
+    return serialize_string
 
 
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
-class FrameHandler:
+
+
+class FrameReader:
     def __init__(self, frame):
         self.frame = frame
 
