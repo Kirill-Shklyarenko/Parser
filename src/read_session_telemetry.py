@@ -1,18 +1,23 @@
 import copy
 import logging as log
-import os
+from functools import partial
+from os.path import getsize
 from struct import *
 
 from decorators import *
 
 
-def read_raw_binary_stream(file_name: str):
-    raw_binary_stream = open(file_name, 'rb', buffering=0)
-    return raw_binary_stream
+def binary_stream_generator(file_name, blksize):
+    # raw_binary_stream = open(file_name, 'rb', 0)
+    with file_name.open('rb') as raw_binary_stream:
+        reader = partial(raw_binary_stream.read1, blksize)
+        file_iterator = iter(reader, bytes())
+        for chunk in file_iterator:
+            yield chunk
 
 
 def frame_counter(file_name, frame_size) -> int:
-    file_size = os.path.getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
+    file_size = getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
     frames_count = 0
     try:
         frames_count = file_size / (frame_size * 2)
@@ -24,7 +29,7 @@ def frame_counter(file_name, frame_size) -> int:
 
 
 def create_serialize_string(data_struct) -> str:
-    serialize_string = '<'
+    serialize_string = '='
     for line in data_struct:
         for c in line:
             if type(c) is dict:
@@ -44,36 +49,46 @@ def create_serialize_string(data_struct) -> str:
 
 
 class TelemetryFrameIterator:
-    __slots__ = ('__data_struct', '__frame_size_in_words', '__frame_size_in_bytes', '__frame_number',
-                 '__raw_binary_stream', '__serialize_string', '__frames_count',)
+    __slots__ = ('__data_struct', '__frame_size_in_bytes', '__frame_number', '__raw_binary_generator',
+                 '__raw_buffer', '__serialize_string', '__frames_count',)
 
     def __init__(self, file_name: str, structure):
         self.__data_struct = structure.structure
-        self.__frame_size_in_words = structure.frame_size
-        self.__frame_size_in_bytes = (structure.frame_size * 2) - 6  # need 16072 bytes
+        self.__frame_size_in_bytes = (structure.frame_size * 2)  # need 16072 bytes
 
-        self.__frame_number = 311
-        self.__raw_binary_stream = read_raw_binary_stream(file_name)
-        self.__serialize_string = create_serialize_string(self.__data_struct)
+        self.__frame_number = 0
+        self.__raw_binary_generator = binary_stream_generator(file_name, self.__frame_size_in_bytes)
+        self.__raw_buffer = self.__create_buffer()
+        self.__serialize_string = create_serialize_string(structure.structure)
         self.__frames_count = frame_counter(file_name, structure.frame_size)
 
-    def create_buffer(self) -> bytes:
-        frame_rate = self.__frame_size_in_words * 2 * self.__frame_number
-        buffer = self.__raw_binary_stream.read(self.__frame_size_in_bytes + frame_rate)
-        buffer = buffer[frame_rate:]
-        buffer = buffer[:self.__frame_size_in_bytes]
+    def __create_buffer(self) -> list:
+        buffer = list(self.__raw_binary_generator)
+        res = []
+        for i, c in enumerate(buffer):
+            if i % 2 == 0:
+                k = c
+            else:
+                b = k + c
+                res.append(b)
+        return res
+
+    def __slice_buffer(self):
+        buffer = self.__raw_buffer[self.__frame_number]
+        buffer = buffer[:self.__frame_size_in_bytes - 6]
         buffer = buffer[14:]
         return buffer
 
-    def convert_buffer_to_values(self) -> list:
+    def __convert_buffer_to_values(self) -> list:
         try:
-            frame_values = list(unpack(self.__serialize_string, self.create_buffer()))
+            buffer = self.__slice_buffer()
+            frame_values = list(unpack(self.__serialize_string, buffer))
             return frame_values
         except Exception as e:
             log.exception(f'Exception: {e}')
 
-    def fill_session_structure(self) -> list:
-        frame_values = self.convert_buffer_to_values()
+    def __fill_session_structure(self) -> list:
+        frame_values = self.__convert_buffer_to_values()
         filled_frame = copy.deepcopy(self.__data_struct)
         group_names = []
         for number, line in enumerate(filled_frame):
@@ -94,11 +109,9 @@ class TelemetryFrameIterator:
         try:
             if self.__frame_number < self.__frames_count:
                 log.info(f'----------------------- FRAME {self.__frame_number} ------------------')
-                result = self.fill_session_structure()
+                result = self.__fill_session_structure()
                 self.__frame_number += 1
                 return result
-            else:
-                self.__raw_binary_stream.close()
         except IndexError:
             raise StopIteration
 
