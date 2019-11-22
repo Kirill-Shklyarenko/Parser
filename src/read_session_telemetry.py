@@ -7,8 +7,7 @@ from struct import *
 from decorators import *
 
 
-def binary_stream_generator(file_name: str, blksize: int) -> bytes:
-    # raw_binary_stream = open(file_name, 'rb', 0)
+def binary_stream_generator(file_name, blksize: int) -> bytes:
     with file_name.open('rb') as raw_binary_stream:
         reader = partial(raw_binary_stream.read1, blksize)
         file_iterator = iter(reader, bytes())
@@ -16,7 +15,7 @@ def binary_stream_generator(file_name: str, blksize: int) -> bytes:
             yield chunk
 
 
-def create_buffer(file_name: str, blksize: int) -> list:
+def create_buffer(file_name, blksize: int) -> list:
     buffer = list(binary_stream_generator(file_name, blksize))
     res = []
     k = None
