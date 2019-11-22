@@ -1,119 +1,134 @@
 import copy
 import logging as log
 import os
-import re
+from functools import partial
 from struct import *
 
-from main import frame_number
+from decorators import *
 
 
-class TelemetryReader:
-    def __init__(self, file_name: str, data_struct: object):
-        self.file_name = file_name
-        self.data_struct = data_struct.__dict__['data_struct']
-        self.frame_size = data_struct.__dict__['frame_size']
-        self.buff_size = (self.frame_size * 2) - 6  # need 16072 bytes
-        self.frame_number = frame_number
-        self.frames_range = self.frame_counter()
-        self.serialize_string = self.create_serialize_string()
+def binary_stream_generator(file_name: str, blksize: int) -> bytes:
+    # raw_binary_stream = open(file_name, 'rb', 0)
+    with file_name.open('rb') as raw_binary_stream:
+        reader = partial(raw_binary_stream.read1, blksize)
+        file_iterator = iter(reader, bytes())
+        for chunk in file_iterator:
+            yield chunk
 
-    def open(self) -> bytes:
-        with open(self.file_name, 'rb') as file:
-            frame_rate = self.frame_number * (self.frame_size * 2)
-            buffer = file.read(self.buff_size + frame_rate)
-            buffer = buffer[frame_rate:]
-            buffer = buffer[:self.buff_size]
-            buffer = buffer[14:]
+
+def create_buffer(file_name: str, blksize: int) -> list:
+    buffer = list(binary_stream_generator(file_name, blksize))
+    res = []
+    k = None
+    for i, c in enumerate(buffer):
+        if i % 2 == 0:
+            k = c
+        else:
+            b = k + c
+            res.append(b)
+    return res
+
+
+def frame_counter(file_name: str, frame_size_in_bytes: int) -> int:
+    file_size = os.path.getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
+    frames_count = 0
+    try:
+        frames_count = file_size / frame_size_in_bytes
+    except ZeroDivisionError as e:
+        log.exception(f'{e} , {frames_count}')
+    finally:
+        log.info(f'frames_count = {int(frames_count)}')
+        return int(frames_count)
+
+
+def create_serialize_string(data_struct: list) -> str:
+    serialize_string = '='
+    for line in data_struct:
+        for c in line:
+            if type(c) is dict:
+                if 'WW' in c['type']:  # UINT_2 # "<"  little-endian
+                    serialize_string += 'H'
+                elif 'SS' in c['type']:  # INT_2
+                    serialize_string += 'h'
+                elif 'UU' in c['type']:  # INT_4
+                    serialize_string += 'i'
+                elif 'LL' in c['type']:  # INT_4
+                    serialize_string += 'i'
+                elif 'RR' in c['type']:  # char
+                    serialize_string += 'c'
+                elif 'FF' in c['type']:  # float_4
+                    serialize_string += 'f'
+    return serialize_string
+
+
+class TelemetryFrameIterator:
+    __slots__ = ('__data_struct', '__frame_size_in_bytes', '__frame_number',
+                 '__raw_buffer', '__serialize_string', '__frames_count',)
+
+    def __init__(self, file_name, structure):
+        self.__data_struct = structure.structure
+        self.__frame_size_in_bytes = (structure.frame_size * 2)  # need 16072 bytes
+
+        self.__frame_number = 0
+        self.__raw_buffer = create_buffer(file_name, self.__frame_size_in_bytes)
+        self.__serialize_string = create_serialize_string(structure.structure)
+        self.__frames_count = frame_counter(file_name, self.__frame_size_in_bytes)
+
+    def __slice_buffer(self) -> bytes:
+        buffer = self.__raw_buffer[self.__frame_number]
+        buffer = buffer[:self.__frame_size_in_bytes - 6]
+        buffer = buffer[14:]
         return buffer
 
-    def frame_counter(self) -> int:
-        file_size = os.path.getsize(self.file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
-        frames_count = 0
+    def __convert_buffer_to_values(self) -> list:
         try:
-            frames_count = file_size / (self.frame_size * 2)
-        except ZeroDivisionError as e:
-            log.exception(f'{e} , {frames_count}')
-        finally:
-            log.info(f'frames_count = {int(frames_count)}')
-            return int(frames_count)
-
-    def create_serialize_string(self) -> str:
-        serialize_string = '='
-        for line in self.data_struct:
-            for c in line:
-                if type(c) is dict:
-                    if 'WW' in c['type']:  # UINT_2 # "<"  little-endian
-                        serialize_string += 'H'
-                    elif 'SS' in c['type']:  # INT_2
-                        serialize_string += 'h'
-                    elif 'UU' in c['type']:  # INT_4
-                        serialize_string += 'i'
-                    elif 'LL' in c['type']:  # INT_4
-                        serialize_string += 'i'
-                    elif 'RR' in c['type']:  # char
-                        serialize_string += 'c'
-                    elif 'FF' in c['type']:
-                        serialize_string += 'f'  # float_4
-        return serialize_string
-
-    def read_frame(self) -> list:
-        frame_values = None
-        try:
-            frame_values = list(unpack(self.serialize_string, self.open()))
+            buffer = self.__slice_buffer()
+            frame_values = list(unpack(self.__serialize_string, buffer))
+            return frame_values
         except Exception as e:
             log.exception(f'Exception: {e}')
-        finally:
-            log.info(f'----------------------- FRAME {self.frame_number} ------------------')
-            frame = copy.deepcopy(self.data_struct)
-            group_names = []
-            for number, line in enumerate(frame):
-                group_names.append(line[0])
-                for c in line:
-                    if type(c) is dict:
-                        key = c.get('name')
-                        c.clear()
-                        value = frame_values[0]
-                        frame_values.pop(0)
-                        c.update({key: value})
-            # formatted = pformat(frame, width=105, compact=True)
-            # for line in formatted.splitlines():
-            #     log.info(line.rstrip())
-        return frame[2:]
+
+    def __fill_session_structure(self) -> list:
+        frame_values = self.__convert_buffer_to_values()
+        filled_frame = copy.deepcopy(self.__data_struct)
+        group_names = []
+        for number, line in enumerate(filled_frame):
+            group_names.append(line[0])
+            for c in line:
+                if type(c) is dict:
+                    key = c.get('name')
+                    c.clear()
+                    value = frame_values[0]
+                    frame_values.pop(0)
+                    c.update({key: value})
+        return filled_frame[2:]
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        result = None
         try:
-            if self.frame_number < self.frames_range:
-                result = self.read_frame()
+            if self.__frame_number < self.__frames_count:
+                log.info(f'----------------------- FRAME {self.__frame_number} ------------------')
+                result = self.__fill_session_structure()
+                self.__frame_number += 1
+                return result
         except IndexError:
             raise StopIteration
-        self.frame_number += 1
-        return result
 
 
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
-class FrameHandler:
+# ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
+class DataBlocksReader:
+    __slots__ = ('frame',)
+
     def __init__(self, frame):
         self.frame = frame
 
-    @staticmethod
-    def map_fields(dict_from_telemetry: dict, formatter_dict: dict) -> dict:
-        result = {}
-        for fk, fv in dict_from_telemetry.items():
-            if 'isFake' in fk:
-                dict_from_telemetry[fk] = bool(dict_from_telemetry[fk])
-            for sk, sv in formatter_dict.items():
-                if fk == sv:
-                    result.update({sk: fv})
-        formatter_dict.update(result)
-        return formatter_dict
-
-    def beam_tasks(self, map_fields=None):
+    @mapper
+    def beam_tasks(self) -> list:
         container = []
         task = {}
         beam_task = {}
@@ -126,16 +141,16 @@ class FrameHandler:
                 beam_task.update(task)
                 for c in group[1:]:
                     beam_task.update(c)
-                if map_fields:
-                    result = self.map_fields(beam_task, map_fields)
-                    beam_task.update(result)
+                c = {k: bool(v) for k, v in beam_task.items() if k == 'isFake'}
+                beam_task.update(c)
                 container.append(beam_task)
                 self.frame = self.frame[1:]
                 if len(container) == 4:
                     break
         return container
 
-    def primary_marks(self, map_fields=None):
+    @mapper
+    def primary_marks(self) -> list:
         container = []
         primary_mark = {}
         scan_data = {'primaryMarksCount': 0}
@@ -149,9 +164,6 @@ class FrameHandler:
                     for c in group[1:]:
                         primary_mark.update(c)
                     primary_mark.update(scan_data)
-                    if map_fields:
-                        result = self.map_fields(primary_mark, map_fields)
-                        primary_mark.update(result)
                     container.append(primary_mark)
                     primary_marks_count += 1
                     # log.info(f'PrimaryMarks == {primary_marks_count} / {scan_data["primaryMarksCount"]}')
@@ -163,7 +175,8 @@ class FrameHandler:
                 self.frame = self.frame[1:]
         return container
 
-    def candidates(self, map_fields=None):
+    @mapper
+    def candidates(self) -> list:
         container = []
         track_candidate = {'state': 0}
         candidate_q = {'candidatesQueueSize': 0}
@@ -184,9 +197,6 @@ class FrameHandler:
                         for c in group[1:]:
                             view_spot.update(c)
                         track_candidate.update(view_spot)
-                        if map_fields:
-                            result = self.map_fields(track_candidate, map_fields)
-                            track_candidate.update(result)
                         container.append(track_candidate)
                         candidates_count += 1
                         # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
@@ -200,9 +210,6 @@ class FrameHandler:
                         for c in group[1:]:
                             distance_res_spot.update(c)
                         track_candidate.update(distance_res_spot)
-                        if map_fields:
-                            result = self.map_fields(track_candidate, map_fields)
-                            track_candidate.update(result)
                         track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
                                                                       track_candidate['distance']) / track_candidate[
                                                                          'distancePeriod']})
@@ -221,9 +228,6 @@ class FrameHandler:
                         for c in group[1:]:
                             velocity_res_spot.update(c)
                         track_candidate.update(velocity_res_spot)
-                        if map_fields:
-                            result = self.map_fields(track_candidate, map_fields)
-                            track_candidate.update(result)
                         track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
                                                                       track_candidate['distance']) / track_candidate[
                                                                          'distancePeriod']})
@@ -251,14 +255,13 @@ class FrameHandler:
                 self.frame = self.frame[1:]
         return container
 
-    def air_tracks(self, map_fields=None):
+    @mapper
+    def air_tracks(self) -> list:
         container = []
         track = {}
         tracks_q = {'tracksQueuesSize': 0}
         tracks_count = 0
         for index, group in enumerate(self.frame):
-            if type(group[0]) is not str:
-                breakpoint()
             if re.search(r'\bTracks\b', group[0]):
                 tracks_q = {}
                 for c in group[1:]:
@@ -272,9 +275,6 @@ class FrameHandler:
                 if re.search('track_', group[0]):
                     for c in group[1:]:
                         track.update(c)
-                    if map_fields:
-                        result = self.map_fields(track, map_fields)
-                        track.update(result)
                     container.append(track)
                     tracks_count += 1
                     # log.info(f'Tracks = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
@@ -286,7 +286,29 @@ class FrameHandler:
             self.frame = self.frame[1:]
         return container
 
-    def forbidden_sectors(self, map_fields=None):
+    def air_marks_misses(self) -> list:
+        container = []
+        air_marks = {}
+        misses_count = {'AirMarksMissesCount': 0}
+        marks_misses_count = 0
+        for index, group in enumerate(self.frame):
+            if re.search(r'AirMarksMisses', group[0]):
+                for c in group[1:]:
+                    misses_count.update(c)
+                self.frame = self.frame[index:]
+            elif marks_misses_count < misses_count['AirMarksMissesCount']:
+                if re.search('AirMarkMiss', group[0]):
+                    for c in group[1:]:
+                        air_marks.update(c)
+                    container.append(air_marks)
+                    marks_misses_count += 1
+                    if marks_misses_count == misses_count['AirMarksMissesCount']:
+                        break
+            self.frame = self.frame[1:]
+        return container
+
+    @mapper
+    def forbidden_sectors(self) -> list:
         container = []
         forbidden_sector = {'RadiationForbiddenSectorsCount': 0}
         rad_forbidden_count = 0
@@ -299,9 +321,6 @@ class FrameHandler:
                 if re.search(r'RadiationForbiddenSector', group[0]):
                     for c in group:
                         forbidden_sector.update(c)
-                    if map_fields:
-                        result = self.map_fields(forbidden_sector, map_fields)
-                        forbidden_sector.update(result)
                     container.append(forbidden_sector)
                     rad_forbidden_count += 1
                     self.frame = self.frame[index + 1:]
