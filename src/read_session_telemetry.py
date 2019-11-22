@@ -65,7 +65,7 @@ class TelemetryFrameIterator:
     __slots__ = ('__data_struct', '__frame_size_in_bytes', '__frame_number',
                  '__raw_buffer', '__serialize_string', '__frames_count',)
 
-    def __init__(self, file_name: str, structure):
+    def __init__(self, file_name, structure):
         self.__data_struct = structure.structure
         self.__frame_size_in_bytes = (structure.frame_size * 2)  # need 16072 bytes
 
@@ -74,7 +74,7 @@ class TelemetryFrameIterator:
         self.__serialize_string = create_serialize_string(structure.structure)
         self.__frames_count = frame_counter(file_name, self.__frame_size_in_bytes)
 
-    def __slice_buffer(self) -> list:
+    def __slice_buffer(self) -> bytes:
         buffer = self.__raw_buffer[self.__frame_number]
         buffer = buffer[:self.__frame_size_in_bytes - 6]
         buffer = buffer[14:]
