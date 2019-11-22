@@ -1,7 +1,7 @@
 import copy
 import logging as log
+import os
 from functools import partial
-from os.path import getsize
 from struct import *
 
 from decorators import *
@@ -17,7 +17,7 @@ def binary_stream_generator(file_name, blksize):
 
 
 def frame_counter(file_name, frame_size) -> int:
-    file_size = getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
+    file_size = os.path.getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
     frames_count = 0
     try:
         frames_count = file_size / (frame_size * 2)
@@ -65,6 +65,7 @@ class TelemetryFrameIterator:
     def __create_buffer(self) -> list:
         buffer = list(self.__raw_binary_generator)
         res = []
+        k = None
         for i, c in enumerate(buffer):
             if i % 2 == 0:
                 k = c
