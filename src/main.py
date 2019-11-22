@@ -32,7 +32,7 @@ if __name__ == "__main__":
                     filename=logger,
                     filemode='w')
     structure = read_session_structure(planner)
-    telemetry = TelemetryFrameIterator(planner_rsf, structure, 23452)
+    telemetry = TelemetryFrameIterator(planner_rsf, structure)
     data_base = DataBase(dsn)
     start_parsing_time = time.time()
     for frame in telemetry:

@@ -7,21 +7,21 @@ from struct import unpack
 class BinFrameReader:
     __slots__ = ('__file_obj', '__frame_rate', '__frame_size', '__header_size', '__frame_buffer')
 
-    def __init__(self, file_name, frame_rate, frame_size, header_size=14):
+    def __init__(self, file_name: str, frame_rate: int, frame_size: int, header_size=14):
         self.__file_obj = open(file_name, 'rb', 1)
         self.__frame_rate = frame_rate
         self.__frame_size = frame_size
         self.__header_size = header_size
         self.__frame_buffer = None
 
-    def header_seeker(self):
+    def header_seeker(self) -> bytes:
         return self.__frame_buffer[self.__header_size:]
 
-    def init_to_start(self):
+    def init_to_start(self) -> bytes:
         # обрезаем от конца(10) по сайзу -> # до 5 получаем фрейм № 2
         return self.__frame_buffer[self.__frame_rate:]
 
-    def read_next_frame(self):
+    def read_next_frame(self) -> bytes:
         # например сайз=1, # текущий фрейм № 0 -> читаем до конца 1 * 0 + 1 = 1 -> фрейм рейт (может быть = 0)
         self.__frame_buffer = self.__file_obj.read(self.__frame_rate + self.__frame_size)
         self.__frame_buffer = self.init_to_start()
@@ -33,7 +33,7 @@ class TelemetryFrameIterator(BinFrameReader):
     __slots__ = ('__data_struct', '__frame_size_in_bytes', '__frame_index', '__frame_rate',
                  '__frame_buffer', '__serialize_string', '__frames_count')
 
-    def __init__(self, file_name, structure, frame_index=0):
+    def __init__(self, file_name: str, structure, frame_index=0):
         self.__data_struct = structure.structure
         self.__frame_size_in_bytes = structure.frame_size * 2  # need 16072 bytes
         self.__frame_index = frame_index
