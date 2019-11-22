@@ -1,6 +1,7 @@
 import inspect
 import re
 
+
 def mapper(func):
     def wrapper_decorator(*args, **kwargs):
         map_fields = {}
@@ -66,4 +67,3 @@ def pk(func):
         return func(*args, **kwargs)
 
     return wrapper_decorator
-
