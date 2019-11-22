@@ -265,3 +265,31 @@
 #         log.exception(f'\r\nException: {e}')
 #     finally:
 #         log.warning(f'ALTER SEQUENCE "{table_name}_{seq_name}_seq" restart with 1')
+
+
+# def binary_stream_generator(file_name, blksize: int) -> bytes:
+#     with file_name.open('rb') as raw_binary_stream:
+#         reader = partial(raw_binary_stream.read1, blksize)
+#         file_iterator = iter(reader, bytes())
+#         for chunk in file_iterator:
+#             yield chunk
+#
+#
+# def create_buffer(file_name, blksize: int) -> list:
+#     buffer = list(binary_stream_generator(file_name, blksize))
+#     res = []
+#     k = None
+#     for i, c in enumerate(buffer):
+#         if i % 2 == 0:
+#             k = c
+#         else:
+#             b = k + c
+#             res.append(b)
+#     return res
+
+
+# def __slice_buffer(self) -> bytes:
+#     buffer = self.__raw_buffer[self.__frame_number]
+#     buffer = buffer[:self.__frame_size_in_bytes - 6]
+#     buffer = buffer[14:]
+#     return buffer
