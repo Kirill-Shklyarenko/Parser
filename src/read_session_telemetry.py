@@ -29,11 +29,11 @@ def create_buffer(file_name, blksize) -> list:
     return res
 
 
-def frame_counter(file_name, frame_size) -> int:
+def frame_counter(file_name, frame_size_in_bytes) -> int:
     file_size = os.path.getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
     frames_count = 0
     try:
-        frames_count = file_size / (frame_size * 2)
+        frames_count = file_size / frame_size_in_bytes
     except ZeroDivisionError as e:
         log.exception(f'{e} , {frames_count}')
     finally:
@@ -72,7 +72,7 @@ class TelemetryFrameIterator:
         self.__frame_number = 0
         self.__raw_buffer = create_buffer(file_name, self.__frame_size_in_bytes)
         self.__serialize_string = create_serialize_string(structure.structure)
-        self.__frames_count = frame_counter(file_name, structure.frame_size)
+        self.__frames_count = frame_counter(file_name, self.__frame_size_in_bytes)
 
     def __slice_buffer(self):
         buffer = self.__raw_buffer[self.__frame_number]
@@ -117,20 +117,10 @@ class TelemetryFrameIterator:
             raise StopIteration
 
 
-# def read_session_telemetry(file_name, structure):
-#     raw_binary_stream = read_raw_binary_stream(file_name)
-#     telemetry = TelemetryFrameIterator()
-#     serialize_string = create_serialize_string(structure.structure)
-#     frame_size_in_words = structure.frame_size
-#     frame_size_in_bytes = (frame_size_in_words * 2) - 6  # need 16072 bytes
-#     frames_count = frame_counter(file_name, frame_size_in_words)
-
-
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
-
-
+# ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 class DataBlocksReader:
     # __slots__ = ('frame',)
 
