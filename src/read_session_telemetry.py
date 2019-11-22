@@ -16,6 +16,19 @@ def binary_stream_generator(file_name, blksize):
             yield chunk
 
 
+def create_buffer(file_name, blksize) -> list:
+    buffer = list(binary_stream_generator(file_name, blksize))
+    res = []
+    k = None
+    for i, c in enumerate(buffer):
+        if i % 2 == 0:
+            k = c
+        else:
+            b = k + c
+            res.append(b)
+    return res
+
+
 def frame_counter(file_name, frame_size) -> int:
     file_size = os.path.getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
     frames_count = 0
@@ -49,7 +62,7 @@ def create_serialize_string(data_struct) -> str:
 
 
 class TelemetryFrameIterator:
-    __slots__ = ('__data_struct', '__frame_size_in_bytes', '__frame_number', '__raw_binary_generator',
+    __slots__ = ('__data_struct', '__frame_size_in_bytes', '__frame_number',
                  '__raw_buffer', '__serialize_string', '__frames_count',)
 
     def __init__(self, file_name: str, structure):
@@ -57,22 +70,9 @@ class TelemetryFrameIterator:
         self.__frame_size_in_bytes = (structure.frame_size * 2)  # need 16072 bytes
 
         self.__frame_number = 0
-        self.__raw_binary_generator = binary_stream_generator(file_name, self.__frame_size_in_bytes)
-        self.__raw_buffer = self.__create_buffer()
+        self.__raw_buffer = create_buffer(file_name, self.__frame_size_in_bytes)
         self.__serialize_string = create_serialize_string(structure.structure)
         self.__frames_count = frame_counter(file_name, structure.frame_size)
-
-    def __create_buffer(self) -> list:
-        buffer = list(self.__raw_binary_generator)
-        res = []
-        k = None
-        for i, c in enumerate(buffer):
-            if i % 2 == 0:
-                k = c
-            else:
-                b = k + c
-                res.append(b)
-        return res
 
     def __slice_buffer(self):
         buffer = self.__raw_buffer[self.__frame_number]
