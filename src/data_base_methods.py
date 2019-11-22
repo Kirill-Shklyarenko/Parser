@@ -40,7 +40,7 @@ class DataBaseMain:
             log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 100,
                                       subsequent_indent='                                      '))
 
-    def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> any:
+    def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> int:
         columns = ','.join([f'"{x}"' for x in dict_for_get_pk])
         param_placeholders = ','.join(['%s' for x in range(len(dict_for_get_pk))])
         query = f'SELECT * FROM "{table_name}" WHERE ({columns}) = ({param_placeholders})'
@@ -53,8 +53,6 @@ class DataBaseMain:
             db_values = self.cur.fetchall()
             if db_values:
                 return db_values[0]
-            else:
-                return
 
     def rename_table_column(self, table_name: str, data: dict):
         k, v = data.items()
