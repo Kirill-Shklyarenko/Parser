@@ -7,7 +7,7 @@ from struct import *
 from decorators import *
 
 
-def binary_stream_generator(file_name, blksize):
+def binary_stream_generator(file_name: str, blksize: int) -> bytes:
     # raw_binary_stream = open(file_name, 'rb', 0)
     with file_name.open('rb') as raw_binary_stream:
         reader = partial(raw_binary_stream.read1, blksize)
@@ -16,7 +16,7 @@ def binary_stream_generator(file_name, blksize):
             yield chunk
 
 
-def create_buffer(file_name, blksize) -> list:
+def create_buffer(file_name: str, blksize: int) -> list:
     buffer = list(binary_stream_generator(file_name, blksize))
     res = []
     k = None
@@ -29,7 +29,7 @@ def create_buffer(file_name, blksize) -> list:
     return res
 
 
-def frame_counter(file_name, frame_size_in_bytes) -> int:
+def frame_counter(file_name: str, frame_size_in_bytes: int) -> int:
     file_size = os.path.getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
     frames_count = 0
     try:
@@ -41,7 +41,7 @@ def frame_counter(file_name, frame_size_in_bytes) -> int:
         return int(frames_count)
 
 
-def create_serialize_string(data_struct) -> str:
+def create_serialize_string(data_struct: list) -> str:
     serialize_string = '='
     for line in data_struct:
         for c in line:
@@ -74,7 +74,7 @@ class TelemetryFrameIterator:
         self.__serialize_string = create_serialize_string(structure.structure)
         self.__frames_count = frame_counter(file_name, self.__frame_size_in_bytes)
 
-    def __slice_buffer(self):
+    def __slice_buffer(self) -> list:
         buffer = self.__raw_buffer[self.__frame_number]
         buffer = buffer[:self.__frame_size_in_bytes - 6]
         buffer = buffer[14:]
@@ -122,7 +122,7 @@ class TelemetryFrameIterator:
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 # ----------------------- #  ----------------------- # ----------------------- # ---------------------- #
 class DataBlocksReader:
-    # __slots__ = ('frame',)
+    __slots__ = ('frame',)
 
     def __init__(self, frame):
         self.frame = frame
