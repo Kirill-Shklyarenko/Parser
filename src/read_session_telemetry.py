@@ -21,8 +21,8 @@ class BinFrameReader:
 
     def init_to_start(self, frame_index):
         # обрезаем от конца(10) по сайзу -> # до 5 получаем фрейм № 2
-        frame_rate = self.__frame_size * frame_index
-        return self.__file_obj.seek(frame_rate)
+        __frame_rate = self.__frame_size * frame_index
+        return self.__file_obj.seek(__frame_rate)
 
     def read_next_frame(self, frame_index) -> bytes:
         # например сайз=1, # текущий фрейм № 0 -> читаем до конца 1 * 0 + 1 = 1 -> фрейм рейт (может быть = 0)
