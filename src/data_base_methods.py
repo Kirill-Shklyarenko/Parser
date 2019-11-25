@@ -1,9 +1,10 @@
-import logging as log
 import textwrap
-
 import psycopg2
-
 from decorators import pk
+import logging as log
+import logging.config
+from logging_config import DEFAULT_LOGGING
+logging.config.dictConfig(DEFAULT_LOGGING)
 
 
 class DataBaseMain:

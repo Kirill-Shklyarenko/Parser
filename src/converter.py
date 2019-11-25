@@ -1,7 +1,11 @@
-import logging as log
 import re
-
 from decorators import mapper
+
+import logging.config
+from logging_config import DEFAULT_LOGGING
+logging.config.dictConfig(DEFAULT_LOGGING)
+
+
 
 
 class DataBlocksReader:
