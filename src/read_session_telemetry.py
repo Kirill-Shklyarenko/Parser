@@ -1,7 +1,10 @@
 import copy
-import logging as log
 import os
 from struct import unpack
+import logging as log
+import logging.config
+from logging_config import DEFAULT_LOGGING
+logging.config.dictConfig(DEFAULT_LOGGING)
 
 
 class BinFrameReader:
