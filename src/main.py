@@ -29,11 +29,6 @@ if __name__ == "__main__":
                              2
     
     """
-    # log.basicConfig(level=log.DEBUG,
-    #                 format='%(asctime)s %(levelname)-7s %(lineno)-3s %(funcName)-16s %(message)s',
-    #                 datefmt='%H:%m:%S',
-    #                 filename=logger,
-    #                 filemode='w')
     structure = read_session_structure(planner)
     telemetry = TelemetryFrameIterator(planner_rsf, structure)
     data_base = DataBase(dsn)
