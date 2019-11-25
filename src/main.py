@@ -14,21 +14,10 @@ logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 logging.config.fileConfig('logging.conf')
-
 log = logging.getLogger('simpleExample')
 
+
 if __name__ == "__main__":
-    """
-    reg expr for Ideolog:
-    message pattern:         ^(\d{2}:\d{2}:\d{2})\s(.*)\s\d{2}\s\s\w*\s\s(.*)$
-    message start pattern:   ^\d
-    time format:             HH:mm:SS
-    groups: 
-                             1
-                             3
-                             2
-    
-    """
     structure = read_session_structure(planner)
     telemetry = TelemetryFrameIterator(planner_rsf, structure)
     data_base = DataBase(dsn)
@@ -127,7 +116,7 @@ if __name__ == "__main__":
                                     data_base.insert_to_table('AirTracksHistory', air_track)
                                 else:
                                     log.warning(f'{pk_name} : already exists')
-        # # --------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------------- #
+        # # -----------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"---------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
             log.info(f'PrimaryMark {forbidden_sectors_count}')
             get_pk_fs = {'azimuthBeginNSSK': 'azimuthBeginNSSK', 'azimuthEndNSSK': 'azimuthEndNSSK',
@@ -146,3 +135,14 @@ if __name__ == "__main__":
 
     time_sec = "{:7.4f}".format(time.time() - start_parsing_time)
     log.info(f"--------------------{time_sec} seconds -----------------\r\n\r\n")
+    """
+    reg expr for Ideolog:
+    message pattern:         ^(\d{2}:\d{2}:\d{2})\s(.*)\s\d{2}\s\s\w*\s\s(.*)$
+    message start pattern:   ^\d
+    time format:             HH:mm:SS
+    groups: 
+                             1
+                             3
+                             2
+
+    """

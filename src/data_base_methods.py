@@ -3,7 +3,6 @@ import psycopg2
 from decorators import pk
 import logging.config
 logging.config.fileConfig('logging.conf')
-
 log = logging.getLogger('simpleExample')
 
 

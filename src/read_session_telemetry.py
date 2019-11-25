@@ -2,9 +2,7 @@ import copy
 import os
 from struct import unpack
 import logging.config
-
 logging.config.fileConfig('logging.conf')
-
 log = logging.getLogger('simpleExample')
 
 
