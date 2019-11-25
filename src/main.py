@@ -1,10 +1,7 @@
 import time
-from pathlib import Path
-
-import logging as log
 import logging.config
-from logging_config import DEFAULT_LOGGING
 
+from pathlib import Path
 from converter import DataBlocksReader
 from data_base_methods import DataBase
 from read_session_structure import read_session_structure
@@ -15,8 +12,10 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-logging.config.dictConfig(DEFAULT_LOGGING)
 
+logging.config.fileConfig('logging.conf')
+
+log = logging.getLogger('simpleExample')
 
 if __name__ == "__main__":
     """

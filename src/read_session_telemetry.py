@@ -1,10 +1,11 @@
 import copy
 import os
 from struct import unpack
-import logging as log
 import logging.config
-from logging_config import DEFAULT_LOGGING
-logging.config.dictConfig(DEFAULT_LOGGING)
+
+logging.config.fileConfig('logging.conf')
+
+log = logging.getLogger('simpleExample')
 
 
 class BinFrameReader:
@@ -97,6 +98,7 @@ class TelemetryFrameIterator(BinFrameReader):
                     value = frame_values[0]
                     frame_values.pop(0)
                     c.update({key: value})
+        # log.debug(f'{filled_frame}')
         return filled_frame[2:]
 
     def __iter__(self):

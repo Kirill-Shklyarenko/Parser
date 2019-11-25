@@ -1,9 +1,9 @@
 import re
 from decorators import mapper
-import logging as log
 import logging.config
-from logging_config import DEFAULT_LOGGING
-logging.config.dictConfig(DEFAULT_LOGGING)
+logging.config.fileConfig('logging.conf')
+
+log = logging.getLogger('simpleExample')
 
 
 class DataBlocksReader:
