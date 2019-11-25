@@ -20,14 +20,15 @@ class BinFrameReader:
     def header_seeker(self) -> bytes:
         return self.__frame_buffer[self.__header_size:]
 
-    def init_to_start(self) -> bytes:
+    def init_to_start(self):
         # обрезаем от конца(10) по сайзу -> # до 5 получаем фрейм № 2
-        return self.__frame_buffer[self.__frame_rate:]
+        # return self.__frame_buffer[self.__frame_rate:]
+        return self.__file_obj.seek(self.__frame_rate)
 
     def read_next_frame(self) -> bytes:
         # например сайз=1, # текущий фрейм № 0 -> читаем до конца 1 * 0 + 1 = 1 -> фрейм рейт (может быть = 0)
-        self.__frame_buffer = self.__file_obj.read(self.__frame_rate + self.__frame_size)
         self.__frame_buffer = self.init_to_start()
+        self.__frame_buffer = self.__file_obj.read(self.__frame_rate + self.__frame_size)
         self.__frame_buffer = self.header_seeker()
         return self.__frame_buffer
 
