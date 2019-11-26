@@ -1,7 +1,10 @@
-import textwrap
-import psycopg2
-from decorators import pk
 import logging.config
+import textwrap
+
+import psycopg2
+
+from decorators import pk
+
 logging.config.fileConfig('logging.conf')
 log = logging.getLogger('simpleExample')
 
@@ -72,7 +75,6 @@ class DataBase(DataBaseMain):
         data_with_pk = self.read_from_table(args[0], kwargs['data'])
         if data_with_pk:
             log.debug(f'{args[1]} : {args[0]} : {data_with_pk[0]}')
-            # data.update({args[1]: data_with_pk[0]})
             return data_with_pk[0]
         else:
             log.warning(f'{args[1]} : {args[0]} : doesnt exists : {kwargs["data"]}')

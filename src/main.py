@@ -1,7 +1,7 @@
-import time
 import logging.config
-
+import time
 from pathlib import Path
+
 from converter import DataBlocksReader
 from data_base_methods import DataBase
 from read_session_structure import read_session_structure
@@ -116,7 +116,7 @@ if __name__ == "__main__":
                                     data_base.insert_to_table('AirTracksHistory', air_track)
                                 else:
                                     log.warning(f'{pk_name} : already exists')
-        # # -----------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"---------------------------------- #
+        # ------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
             log.info(f'PrimaryMark {forbidden_sectors_count}')
             get_pk_fs = {'azimuthBeginNSSK': 'azimuthBeginNSSK', 'azimuthEndNSSK': 'azimuthEndNSSK',

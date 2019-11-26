@@ -12,8 +12,7 @@ class StructureSessionContainer:
 def read_session_structure(file_name: str) -> StructureSessionContainer:
     lines = read_lines(file_name)
     structure = StructureSessionContainer()
-    structure.frame_size = find_frame_size(lines)
-    structure.structure = parse_text_file(lines)
+    structure.structure, structure.frame_size = parse_text_file(lines)
     return structure
 
 
@@ -23,18 +22,9 @@ def read_lines(file_name: str) -> list:
     return data
 
 
-def find_frame_size(lines) -> int:
+def parse_text_file(lines):
     frame_size = 0
-    # Поиск размера блока данных
-    for i, line in enumerate(lines):
-        line = line.split()
-        if i == 0:
-            frame_size = int(line[0])
-            break
-    return frame_size
-
-
-def parse_text_file(lines) -> list:
+    index = 0
     group = []  # список элементов [0, 1, 2]
     substring = []  # элемент содержит str "NavigationData"[0] & dict "Parameters"[1]
 
@@ -59,28 +49,34 @@ def parse_text_file(lines) -> list:
             else:
                 group.append(copy.copy(substring))
                 substring.clear()
-
         # Поиск описания переменных
-        elif len(line) > 3:
+        elif len(line) > 4:
             if 'UU' in line[5]:
                 params = {
                     'name': line[0],
                     'type': line[5],
-                    'offset': int(line[1]) - 1
+                    'offset': int(line[1]) - 1,
+                    'index': index
                 }
+                index += 1
                 substring.append(params)
             elif 'LL' in line[5]:
                 params = {
                     'name': line[0],
                     'type': line[5],
-                    'offset': int(line[1]) - 1
+                    'offset': int(line[1]) - 1,
+                    'index': index
                 }
+                index += 1
                 substring.append(params)
             else:
                 params = {
                     'name': line[0],
                     'type': line[5],
-                    'offset': int(line[1])
+                    'offset': int(line[1]),
+                    'index': index
                 }
+                index += 1
                 substring.append(params)
-    return group
+    group.append(substring)
+    return group, frame_size

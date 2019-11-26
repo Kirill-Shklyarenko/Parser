@@ -1,50 +1,95 @@
-import copy
+import logging.config
 import os
 from struct import unpack
-import logging.config
-logging.config.fileConfig('logging.conf')
+
 log = logging.getLogger('simpleExample')
 
 
 class BinFrameReader:
-    __slots__ = ('__file_obj', '__frame_size', '__header_size', '__frame_buffer')
+    __slots__ = ('__frame_index', '__file_name', '__file_obj', '__frame_size', '__header_size',
+                 '__frame_buffer', '__frame_size_in_bytes', '__frames_count', '__frame_rate')
 
-    def __init__(self, file_name: str, frame_size: int, header_size=14):
-        self.__file_obj = open(file_name, 'rb', 1)
-        self.__frame_size = frame_size
+    def __init__(self, file_name: str, structure, header_size=14):
+        self.__file_name = file_name
+        self.__frame_size = structure.frame_size
         self.__header_size = header_size
+        self.__frame_rate = 0
         self.__frame_buffer = None
+        self.__file_obj = open(self.__file_name, 'rb', 1)
+        self.__frame_size_in_bytes = self.__frame_size * 2
+        self.__frames_count = self.__frame_counter()
 
-    def header_seeker(self) -> bytes:
-        return self.__frame_buffer[self.__header_size:]
-
-    def init_to_start(self, frame_index):
-        # обрезаем от конца(10) по сайзу -> # до 5 получаем фрейм № 2
-        __frame_rate = self.__frame_size * frame_index
-        return self.__file_obj.seek(__frame_rate)
+    def init_to_start(self):
+        return self.__file_obj.seek(self.__frame_rate)
 
     def read_next_frame(self, frame_index) -> bytes:
-        # например сайз=1, # текущий фрейм № 0 -> читаем до конца 1 * 0 + 1 = 1 -> фрейм рейт (может быть = 0)
-        self.__frame_buffer = self.init_to_start(frame_index)
-        self.__frame_buffer = self.__file_obj.read(self.__frame_size)
-        self.__frame_buffer = self.header_seeker()
+        self.__frame_rate = self.__frame_size_in_bytes * frame_index + self.__header_size
+        self.__frame_buffer = self.init_to_start()
+        self.__frame_buffer = self.__file_obj.read(self.__frame_size_in_bytes)
         return self.__frame_buffer
+
+    def __frame_counter(self) -> int:
+        file_size = os.path.getsize(self.__file_name) - self.__header_size
+        frames_count = 0
+        try:
+            frames_count = file_size / self.__frame_size_in_bytes
+        except ZeroDivisionError as e:
+            log.exception(f'{e} , {frames_count}')
+        finally:
+            log.info(f'frames_count = {int(frames_count)}')
+            return int(frames_count)
 
 
 class TelemetryFrameIterator(BinFrameReader):
-    __slots__ = ('__data_struct', '__frame_size_in_bytes', '__frame_index',
-                 '__frame_buffer', '__serialize_string', '__frames_count')
+    __slots__ = ('__data_struct', '__frame_index', '__serialize_string', '__frame_buffer')
 
     def __init__(self, file_name: str, structure, frame_index=0):
+        super().__init__(file_name, structure)
         self.__data_struct = structure.structure
-        self.__frame_size_in_bytes = structure.frame_size * 2  # need 16072 bytes
         self.__frame_index = frame_index
         self.__frame_buffer = None
-        self.__serialize_string = self.create_serialize_string()
-        self.__frames_count = self.frame_counter(file_name)
-        super().__init__(file_name, self.__frame_size_in_bytes)
+        self.__serialize_string = self.__create_serialize_string()
 
-    def create_serialize_string(self) -> str:
+    def __convert_buffer_to_values(self) -> tuple:
+        try:
+            frame_values = unpack(self.__serialize_string, self.__frame_buffer)
+            return frame_values
+        except Exception as e:
+            log.exception(f'Exception: {e}')
+
+    def __fill_session_structure(self) -> list:
+        frame_values = self.__convert_buffer_to_values()
+        index = 0
+        filled_frame = []
+        block = []
+        params = {}
+        for line in self.__data_struct:
+            block.append(line[0])
+            for c in line:
+                if type(c) is dict:
+                    key = c.get('name')
+                    value = frame_values[index]
+                    index += 1
+                    params.update({key: value})
+            params_to = params.copy()
+            block.append(params_to)
+            params.clear()
+            block_to = block.copy()
+            filled_frame.append(block_to)
+            block.clear()
+        log.debug(f'{filled_frame}')
+        # filled_frame = [
+        #     [
+        #         {c.get('name'): frame_values[c.get('index', 0)]}
+        #         for c in line
+        #         if type(c) is dict
+        #
+        #     ]
+        #     for line in self.__data_struct
+        # ]
+        return filled_frame
+
+    def __create_serialize_string(self) -> str:
         serialize_string = '='
         for line in self.__data_struct:
             for c in line:
@@ -63,47 +108,16 @@ class TelemetryFrameIterator(BinFrameReader):
                         serialize_string += 'f'
         return serialize_string
 
-    def frame_counter(self, file_name: str) -> int:
-        file_size = os.path.getsize(file_name) - 14  # Размер файла в байтах # отсекаем 14 байт заголовка
-        frames_count = 0
-        try:
-            frames_count = file_size / self.__frame_size_in_bytes
-        except ZeroDivisionError as e:
-            log.exception(f'{e} , {frames_count}')
-        finally:
-            log.info(f'frames_count = {int(frames_count)}')
-            return int(frames_count)
-
-    def __convert_buffer_to_values(self) -> list:
-        try:
-            self.__frame_buffer = self.__frame_buffer[:len(self.__frame_buffer) - 6]  # "странная" коррекция
-            frame_values = list(unpack(self.__serialize_string, self.__frame_buffer))  # need 16072 bytes
-            return frame_values
-        except Exception as e:
-            log.exception(f'Exception: {e}')
-            exit()
-
-    def __fill_session_structure(self) -> list:
-        frame_values = self.__convert_buffer_to_values()
-        filled_frame = copy.deepcopy(self.__data_struct)
-        group_names = []
-        for number, line in enumerate(filled_frame):
-            group_names.append(line[0])
-            for c in line:
-                if type(c) is dict:
-                    key = c.get('name')
-                    c.clear()
-                    value = frame_values[0]
-                    frame_values.pop(0)
-                    c.update({key: value})
-        # log.debug(f'{filled_frame}')
-        return filled_frame[2:]
-
     def __iter__(self):
+        self.init_to_start()
         return self
 
     def __next__(self):
         self.__frame_buffer = self.read_next_frame(self.__frame_index)
+
+        if len(self.__frame_buffer) == 0:
+            raise StopIteration
+
         try:
             log.info(f'----------------------- FRAME {self.__frame_index} ------------------')
             result = self.__fill_session_structure()
