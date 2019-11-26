@@ -2,7 +2,7 @@ import logging.config
 import os
 from struct import unpack
 
-log = logging.getLogger('simpleExample')
+log = logging.getLogger('FrameLogger')
 
 
 class BinFrameReader:
@@ -77,7 +77,7 @@ class TelemetryFrameIterator(BinFrameReader):
             block_to = block.copy()
             filled_frame.append(block_to)
             block.clear()
-        log.debug(f'{filled_frame}')
+        log.debug('\n'.join(map(str, filled_frame)))
         # filled_frame = [
         #     [
         #         {c.get('name'): frame_values[c.get('index', 0)]}

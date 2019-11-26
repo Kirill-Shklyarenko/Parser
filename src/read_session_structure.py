@@ -1,5 +1,9 @@
 import copy
 
+import logging.config
+
+log = logging.getLogger('simpleExample')
+
 
 class StructureSessionContainer:
     __slots__ = ('frame_size', 'structure')

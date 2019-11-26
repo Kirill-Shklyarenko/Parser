@@ -5,7 +5,6 @@ import psycopg2
 
 from decorators import pk
 
-logging.config.fileConfig('logging.conf')
 log = logging.getLogger('simpleExample')
 
 

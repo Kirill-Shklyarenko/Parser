@@ -1,7 +1,8 @@
-import re
-from decorators import mapper
 import logging.config
-logging.config.fileConfig('logging.conf')
+import re
+
+from decorators import mapper
+
 log = logging.getLogger('simpleExample')
 
 
