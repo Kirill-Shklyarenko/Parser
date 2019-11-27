@@ -2,7 +2,7 @@ import copy
 
 import logging.config
 
-log = logging.getLogger('simpleExample')
+log = logging.getLogger('StructureLogger')
 
 
 class StructureSessionContainer:
@@ -29,7 +29,7 @@ def read_lines(file_name: str) -> list:
 def parse_text_file(lines):
     frame_size = 0
     index = 0
-    group = []  # список элементов [0, 1, 2]
+    structure = []  # список элементов [0, 1, 2]
     substring = []  # элемент содержит str "NavigationData"[0] & dict "Parameters"[1]
 
     for i, line in enumerate(lines):
@@ -45,13 +45,13 @@ def parse_text_file(lines):
             next_line = lines[i + 1].split()
             if ';' not in next_line[0]:
                 if substring:
-                    group.append(copy.copy(substring))
+                    structure.append(copy.copy(substring))
                     substring.clear()
                 line.remove(';')
                 newline = ''.join(line)
                 substring.append(newline)
             else:
-                group.append(copy.copy(substring))
+                structure.append(copy.copy(substring))
                 substring.clear()
         # Поиск описания переменных
         elif len(line) > 4:
@@ -82,5 +82,6 @@ def parse_text_file(lines):
                 }
                 index += 1
                 substring.append(params)
-    group.append(substring)
-    return group, frame_size
+    structure.append(substring)
+    log.debug('\r'.join(map(str, structure)))
+    return structure, frame_size

@@ -26,6 +26,9 @@ class BinFrameReader:
         self.__frame_rate = self.__frame_size_in_bytes * frame_index + self.__header_size
         self.__frame_buffer = self.init_to_start()
         self.__frame_buffer = self.__file_obj.read(self.__frame_size_in_bytes)
+        if len(self.__frame_buffer) == 0:
+            log.debug(f'Last frame is reached')
+            raise StopIteration
         return self.__frame_buffer
 
     def __frame_counter(self) -> int:
@@ -77,7 +80,7 @@ class TelemetryFrameIterator(BinFrameReader):
             block_to = block.copy()
             filled_frame.append(block_to)
             block.clear()
-        log.debug('\n'.join(map(str, filled_frame)))
+        log.debug('\r'.join(map(str, filled_frame)))
         # filled_frame = [
         #     [
         #         {c.get('name'): frame_values[c.get('index', 0)]}
@@ -114,12 +117,8 @@ class TelemetryFrameIterator(BinFrameReader):
 
     def __next__(self):
         self.__frame_buffer = self.read_next_frame(self.__frame_index)
-
-        if len(self.__frame_buffer) == 0:
-            raise StopIteration
-
         try:
-            log.info(f'----------------------- FRAME {self.__frame_index} ------------------')
+            log.info(f'\r\n\r\n\r\n\r\n\r\n\r\n----------------------- FRAME {self.__frame_index} ------------------')
             result = self.__fill_session_structure()
             self.__frame_index += 1
             return result
