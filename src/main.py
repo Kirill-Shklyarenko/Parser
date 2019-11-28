@@ -22,12 +22,15 @@ if __name__ == "__main__":
     telemetry = TelemetryFrameIterator(planner_rsf, structure)
     data_base = DataBase(dsn)
     start_parsing_time = time.time()
+    frame_number = 0
     for frame in telemetry:
         start_frame_time = time.time()
         frame_reader = DataBlocksReader(frame)
         primary_marks_count = 1
         candidates_count = 1
         forbidden_sectors_count = 1
+        log.info(f'------------------------- FRAME {frame_number} -------------------------')
+        frame_number += 1
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam_task in frame_reader.beam_tasks():
             beam_task_pk = data_base.get_pk_for_BTs(beam_task)
@@ -131,10 +134,10 @@ if __name__ == "__main__":
                 log.warning(f'{pk_name} : already exists')
         # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN --- #
         time_sec = "{:7.4f}".format(time.time() - start_frame_time)
-        log.info(f"--------------------{time_sec} seconds -----------------\r\n\r\n")
+        log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
 
     time_sec = "{:7.4f}".format(time.time() - start_parsing_time)
-    log.info(f"--------------------{time_sec} seconds -----------------\r\n\r\n")
+    log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
     """
     reg expr for Ideolog:
     message pattern:         ^(\d{2}:\d{2}:\d{2})\s(.*)\s\d{2}\s\s\w*\s\s(.*)$

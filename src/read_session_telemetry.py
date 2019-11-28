@@ -118,7 +118,7 @@ class TelemetryFrameIterator(BinFrameReader):
     def __next__(self):
         self.__frame_buffer = self.read_next_frame(self.__frame_index)
         try:
-            log.info(f'\r\n\r\n\r\n\r\n\r\n\r\n----------------------- FRAME {self.__frame_index} ------------------')
+            log.info(f'\r\n\r\n\r\n\r\n\------------------------- FRAME {self.__frame_index} -------------------------')
             result = self.__fill_session_structure()
             self.__frame_index += 1
             return result

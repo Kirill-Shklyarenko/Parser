@@ -89,7 +89,12 @@ class DataBase(DataBaseMain):
 
     def get_pk_for_BTs(self, full_block_dict: dict):
         table_name = 'BeamTasks'
-        fields_for_get_pk = ['taskId', 'antennaId']
+        if 'state' in full_block_dict:  # блок = Candidate
+            fields_for_get_pk = ['trackId', 'antennaId', 'taskType', 2]
+        elif 'type' in full_block_dict:  # блок = AirTracksHistory
+            fields_for_get_pk = ['trackId', 'antennaId', 'taskType', 3]
+        else:
+            fields_for_get_pk = ['taskId', 'antennaId']   # блок = BeamTask & PrimaryMark
         result = {}
         for k, v in full_block_dict.items():
             if k in fields_for_get_pk:
