@@ -2,7 +2,7 @@ import logging.config
 import time
 from pathlib import Path
 
-from converter import DataBlocksReader
+from read_blocks_from_telemetry import DataBlocksReader
 from data_base_methods import DataBase
 from read_session_structure import read_session_structure
 from read_session_telemetry import TelemetryFrameIterator
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         forbidden_sectors_count = 1
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam_task in frame_reader.beam_tasks():
-            beam_task_pk = data_base.get_pk('BeamTasks', 'BeamTask', beam_task)
+            beam_task_pk = data_base.get_pk_for_BTs(beam_task)
             if beam_task_pk is None:
                 beam_task = data_base.map_bin_fields_to_table('BeamTasks', beam_task)
                 data_base.insert_to_table('BeamTasks', beam_task)
@@ -40,10 +40,10 @@ if __name__ == "__main__":
         for primary_mark in frame_reader.primary_marks():
             log.info(f'PrimaryMark {primary_marks_count}')
             log.info(f'PrimaryMark type = {primary_mark["markType"]}')
-            beam_task_pk = data_base.get_pk('BeamTasks', 'BeamTask', primary_mark)
+            beam_task_pk = data_base.get_pk_for_BTs(primary_mark)
             if beam_task_pk:
                 primary_mark.update({'BeamTask': beam_task_pk})
-                primary_mark_pk = data_base.get_pk('PrimaryMarks', 'PrimaryMark', primary_mark)
+                primary_mark_pk = data_base.get_pk_for_PMs(primary_mark)
                 if primary_mark_pk is None:
                     primary_mark = data_base.map_bin_fields_to_table('PrimaryMarks', primary_mark)
                     data_base.insert_to_table('PrimaryMarks', primary_mark)

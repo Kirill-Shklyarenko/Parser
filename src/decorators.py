@@ -63,7 +63,6 @@ def pk(func):
 
         if 'data' not in inspect.getfullargspec(func).args:
             kwargs['data'] = data
-        # func(*args, **kwargs)
         return func(*args, **kwargs)
 
     return wrapper_decorator

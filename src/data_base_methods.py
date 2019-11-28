@@ -69,11 +69,11 @@ class DataBase(DataBaseMain):
     def __init__(self, dsn: str):
         super().__init__(dsn)
 
-    @pk
-    def get_pk(self, *args, **kwargs) -> int:
-        data_with_pk = self.read_from_table(args[0], kwargs['data'])
+    # @pk
+    def get_pk(self, table_name: str, dict_for_get_pk: dict) -> int:
+        data_with_pk = self.read_from_table(table_name, dict_for_get_pk)
         if data_with_pk:
-            log.debug(f'{args[1]} : {args[0]} : {data_with_pk[0]}')
+            log.debug(f'succsessfull get primary key : {data_with_pk[0]}')
             return data_with_pk[0]
         else:
             log.warning(f'{args[1]} : {args[0]} : doesnt exists : {kwargs["data"]}')
@@ -86,3 +86,24 @@ class DataBase(DataBaseMain):
             col_names.append(elt[0])
         data = {k: v for k, v in data.items() if k in col_names}
         return data
+
+    def get_pk_for_BTs(self, full_block_dict: dict):
+        table_name = 'BeamTasks'
+        fields_for_get_pk = ['taskId', 'antennaId']
+        result = {}
+        for k, v in full_block_dict.items():
+            if k in fields_for_get_pk:
+                result.update({k:v})
+        pk = self.get_pk(table_name, result)
+        return pk
+
+    def get_pk_for_PMs(self, full_block_dict: dict):
+        table_name = 'PrimaryMarks'
+        fields_for_get_pk = ['BeamTask']
+        result = {}
+        for k, v in full_block_dict.items():
+            if k in fields_for_get_pk:
+                result.update({k:v})
+        pk = self.get_pk(table_name, result)
+        return pk
+
