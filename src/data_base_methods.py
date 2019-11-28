@@ -69,14 +69,13 @@ class DataBase(DataBaseMain):
     def __init__(self, dsn: str):
         super().__init__(dsn)
 
-    # @pk
     def get_pk(self, table_name: str, dict_for_get_pk: dict) -> int:
         data_with_pk = self.read_from_table(table_name, dict_for_get_pk)
         if data_with_pk:
             log.debug(f'succsessfull get primary key : {data_with_pk[0]}')
             return data_with_pk[0]
         else:
-            log.warning(f'{args[1]} : {args[0]} : doesnt exists : {kwargs["data"]}')
+            log.warning(f'In {table_name} : PK : doesnt exists : {dict_for_get_pk}')
 
     def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:
         # Для того чтобы узнать имена полей таблицы
@@ -89,32 +88,34 @@ class DataBase(DataBaseMain):
 
     def get_pk_for_BTs(self, full_block_dict: dict):
         table_name = 'BeamTasks'
+        result = {}
         if 'state' in full_block_dict:  # блок = Candidate
-            fields_for_get_pk = ['trackId', 'antennaId', 'taskType', 2]
+            fields_for_get_pk = ['taskId', 'antennaId']
+            for k, v in full_block_dict.items():
+                if k in fields_for_get_pk:
+                    result.update({k:v})
+                if k == 'id':
+                    result.update({'trackId': v})
+                result.update({'taskType': 2})
         elif 'type' in full_block_dict:  # блок = AirTracksHistory
-            fields_for_get_pk = ['trackId', 'antennaId', 'taskType', 3]
+            fields_for_get_pk = ['antennaId']
+            for k, v in full_block_dict.items():
+                if k in fields_for_get_pk:
+                    result.update({k:v})
+                if k == 'id':
+                    result.update({'trackId': v})
+                result.update({'taskType': 3})
         else:
             fields_for_get_pk = ['taskId', 'antennaId']   # блок = BeamTask & PrimaryMark
-        result = {}
-        for k, v in full_block_dict.items():
-            if k in fields_for_get_pk:
-                result.update({k:v})
+            for k, v in full_block_dict.items():
+                if k in fields_for_get_pk:
+                    result.update({k:v})
         pk = self.get_pk(table_name, result)
         return pk
 
     def get_pk_for_PMs(self, full_block_dict: dict):
         table_name = 'PrimaryMarks'
         fields_for_get_pk = ['BeamTask']
-        result = {}
-        for k, v in full_block_dict.items():
-            if k in fields_for_get_pk:
-                result.update({k:v})
-        pk = self.get_pk(table_name, result)
-        return pk
-
-    def get_pk_for_Cs(self, full_block_dict: dict):
-        table_name = 'Candidates'
-        fields_for_get_pk = ['id']
         result = {}
         for k, v in full_block_dict.items():
             if k in fields_for_get_pk:
