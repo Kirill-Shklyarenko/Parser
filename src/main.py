@@ -75,7 +75,6 @@ if __name__ == "__main__":
                         else:
                             log.warning(f'Candidate : already exists')
                         candidate.update({'Candidate': candidates_pk})
-                        # candidate.update(dict_for_get_pk)
                         candidates_history_pk = data_base.get_pk_for_CHs(candidate)
                         if candidates_history_pk is None:
                             candidate = data_base.map_bin_fields_to_table('CandidatesHistory', candidate)
@@ -103,7 +102,7 @@ if __name__ == "__main__":
                                 data_base.insert_to_table('AirTracks', airs)
                                 air_track_pk = data_base.get_pk_for_As(air_track)
                             else:
-                                log.warning(f'AirTrack: already exists')
+                                log.warning(f'AirTrack : already exists')
                             air_track.update(air_track_pk)
                             air_track_history_pk = data_base.get_pk_for_AHs(air_track)
                             if air_track_history_pk is None:
@@ -114,17 +113,14 @@ if __name__ == "__main__":
                 air_track_count += 1
         # ------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
-            log.info(f'PrimaryMark {forbidden_sectors_count}')
-            get_pk_fs = {'azimuthBeginNSSK': 'azimuthBeginNSSK', 'azimuthEndNSSK': 'azimuthEndNSSK',
-                         'elevationBeginNSSK': 'elevationBeginNSSK', 'elevationEndNSSK': 'elevationEndNSSK',
-                         }
-            pk_name = 'ForbiddenSector'
-            fs_pk = data_base.get_pk('ForbiddenSectors', pk_name, forbidden_sector)
+            log.info(f'forbiddenSector {forbidden_sectors_count}')
+            fs_pk = data_base.get_pk_for_Fs(forbidden_sector)
             if fs_pk is None:
                 forbidden_sector = data_base.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
                 data_base.insert_to_table('ForbiddenSectors', forbidden_sector)
             else:
-                log.warning(f'{pk_name} : already exists')
+                log.warning(f'ForbiddenSector : already exists')
+            forbidden_sectors_count += 1
         # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN --- #
         time_sec = "{:7.4f}".format(time.time() - start_frame_time)
         log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")

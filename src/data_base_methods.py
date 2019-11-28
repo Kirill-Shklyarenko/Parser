@@ -165,4 +165,14 @@ class DataBase(DataBaseMain):
         pk = self.get_pk(table_name, result)
         return pk
 
+    def get_pk_for_Fs(self, full_block_dict: dict):
+        table_name = 'ForbiddenSectors'
+        fields_for_get_pk = ['azimuthBeginNSSK', 'azimuthEndNSSK','elevationBeginNSSK','elevationEndNSSK']
+        result = {}
+        for k, v in full_block_dict.items():
+            if k in fields_for_get_pk:
+                result.update({k:v})
+        pk = self.get_pk(table_name, result)
+        return pk
+
 
