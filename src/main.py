@@ -56,23 +56,23 @@ if __name__ == "__main__":
             log.info(f'Candidate state = {candidate["state"]}')
             if candidate['state'] != 0 and candidate['state'] != 3 \
                     and candidate['state'] != 5 and candidate['state'] != 6:
-                beam_task_pk = data_base.get_pk('BeamTasks', 'BeamTask', candidate)
+                beam_task_pk = data_base.get_pk_for_BTs(candidate)
                 if beam_task_pk:
                     candidate.update({'BeamTask': beam_task_pk})
-                    pm_pk = data_base.get_pk('PrimaryMarks', 'PrimaryMark', candidate)
+                    pm_pk = data_base.get_pk_for_PMs(candidate)
                     if pm_pk:
                         candidate.update({'PrimaryMark': pm_pk})
-                        candidates_pk = data_base.get_pk('Candidates', 'Candidate', candidate)
+                        candidates_pk = data_base.get_pk_for_Cs(candidate)
                         # if dict_for_get_pk['id'] != 0:
                         if candidates_pk is None:
                             cand = data_base.map_bin_fields_to_table('Candidates', candidate)
                             data_base.insert_to_table('Candidates', cand)
-                            candidates_pk = data_base.get_pk('Candidates', 'Candidate', candidate)
+                            candidates_pk = data_base.get_pk_for_Cs(candidate)
                         else:
                             log.warning(f'Candidate : already exists')
                         candidate.update({'Candidate': candidates_pk})
                         # candidate.update(dict_for_get_pk)
-                        candidates_history_pk = data_base.get_pk('CandidatesHistory', 'CandidateHistory', candidate)
+                        candidates_history_pk = data_base.get_pk_for_CHs(candidate)
                         if candidates_history_pk is None:
                             candidate = data_base.map_bin_fields_to_table('CandidatesHistory', candidate)
                             data_base.insert_to_table('CandidatesHistory', candidate)

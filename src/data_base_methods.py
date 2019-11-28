@@ -107,3 +107,34 @@ class DataBase(DataBaseMain):
         pk = self.get_pk(table_name, result)
         return pk
 
+    def get_pk_for_Cs(self, full_block_dict: dict):
+        table_name = 'Candidates'
+        fields_for_get_pk = ['id']
+        result = {}
+        for k, v in full_block_dict.items():
+            if k in fields_for_get_pk:
+                result.update({k:v})
+        pk = self.get_pk(table_name, result)
+        return pk
+
+    def get_pk_for_Cs(self, full_block_dict: dict):
+        table_name = 'Candidates'
+        fields_for_get_pk = ['id']
+        result = {}
+        for k, v in full_block_dict.items():
+            if k in fields_for_get_pk:
+                result.update({k:v})
+        pk = self.get_pk(table_name, result)
+        return pk
+
+    def get_pk_for_CHs(self, full_block_dict: dict):
+        table_name = 'CandidatesHistory'
+        fields_for_get_pk = ['BeamTask', 'PrimaryMark']
+        result = {}
+        for k, v in full_block_dict.items():
+            if k in fields_for_get_pk:
+                result.update({k:v})
+        pk = self.get_pk(table_name, result)
+        return pk
+
+
