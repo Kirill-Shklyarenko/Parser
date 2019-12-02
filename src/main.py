@@ -19,10 +19,9 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
-    telemetry = TelemetryFrameIterator(planner_rsf, structure)
+    telemetry = TelemetryFrameIterator(planner_rsf, structure, 299)   # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
     data_base = DataBase(dsn)
     start_parsing_time = time.time()
-    frame_number = 0
     for frame in telemetry:
         start_frame_time = time.time()
         frame_reader = DataBlocksReader(frame)
@@ -30,11 +29,12 @@ if __name__ == "__main__":
         candidates_count = 1
         air_track_count = 1
         forbidden_sectors_count = 1
-        log.info(f'------------------------- FRAME {frame_number} -------------------------')
-        frame_number += 1
+        log.info(f'------------------------- FRAME {telemetry.frame_index - 1} -------------------------')
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam_task in frame_reader.beam_tasks():
-            beam_task_pk = data_base.get_pk_for_beam_tasks(beam_task)
+            # beam_task_pk = data_base.get_pk_for_beam_tasks(beam_task)
+            beam_task_pk = data_base.get_pk_for_beam_tasks(beam_task['taskId'], beam_task['antennaId'],
+                                                           beam_task['taskType'])
             if beam_task_pk is None:
                 beam_task = data_base.map_bin_fields_to_table('BeamTasks', beam_task)
                 data_base.insert_to_table('BeamTasks', beam_task)
@@ -44,7 +44,9 @@ if __name__ == "__main__":
         for primary_mark in frame_reader.primary_marks():
             log.info(f'PrimaryMark {primary_marks_count}')
             log.info(f'PrimaryMark type = {primary_mark["markType"]}')
-            beam_task_pk = data_base.get_pk_for_beam_tasks(primary_mark)
+            # beam_task_pk = data_base.get_pk_for_beam_tasks(primary_mark)
+            beam_task_pk = data_base.get_pk_for_beam_tasks(primary_mark['taskId'], primary_mark['antennaId'],
+                                                           primary_mark['taskType'])
             if beam_task_pk:
                 primary_mark.update({'BeamTask': beam_task_pk})
                 primary_mark_pk = data_base.get_pk_for_primary_marks(primary_mark)
@@ -60,7 +62,8 @@ if __name__ == "__main__":
                     and candidate['state'] != 5 and candidate['state'] != 6:
                 log.info(f'Candidate {candidates_count}')
                 log.info(f'Candidate state = {candidate["state"]}')
-                beam_task_pk = data_base.get_pk_for_beam_tasks(candidate)
+                # beam_task_pk = data_base.get_pk_for_beam_tasks(candidate)
+                beam_task_pk = data_base.get_pk_for_beam_tasks(candidate['task_id'], candidate['antenna_id'], 2, id)
                 if beam_task_pk:
                     candidate.update({'BeamTask': beam_task_pk})
                     pm_pk = data_base.get_pk_for_primary_marks(candidate)

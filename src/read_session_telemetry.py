@@ -6,30 +6,20 @@ log = logging.getLogger('FrameLogger')
 
 
 class BinFrameReader:
-    __slots__ = ('__frame_index', '__file_name', '__file_obj', '__frame_size', '__header_size',
-                 '__frame_buffer', '__frame_size_in_bytes', '__frames_count', '__frame_rate')
+    __slots__ = ('__file_name', '__frame_size_in_bytes', '__header_size', '__file_obj', '__frames_count')
 
     def __init__(self, file_name: str, structure, header_size=14):
         self.__file_name = file_name
-        self.__frame_size = structure.frame_size
+        self.__frame_size_in_bytes = structure.frame_size * 2
         self.__header_size = header_size
-        self.__frame_rate = 0
-        self.__frame_buffer = None
         self.__file_obj = open(self.__file_name, 'rb', 1)
-        self.__frame_size_in_bytes = self.__frame_size * 2
         self.__frames_count = self.__frame_counter()
 
-    def init_to_start(self):
-        return self.__file_obj.seek(self.__frame_rate)
+    def init_to_start(self, frame_index):
+        self.__file_obj.seek(self.__frame_size_in_bytes * frame_index + self.__header_size)
 
-    def read_next_frame(self, frame_index) -> bytes:
-        self.__frame_rate = self.__frame_size_in_bytes * frame_index + self.__header_size
-        self.__frame_buffer = self.init_to_start()
-        self.__frame_buffer = self.__file_obj.read(self.__frame_size_in_bytes)
-        if len(self.__frame_buffer) == 0:
-            log.debug(f'Last frame is reached')
-            raise StopIteration
-        return self.__frame_buffer
+    def read_next_frame(self) -> bytes:
+        return self.__file_obj.read(self.__frame_size_in_bytes)
 
     def __frame_counter(self) -> int:
         file_size = os.path.getsize(self.__file_name) - self.__header_size
@@ -44,12 +34,12 @@ class BinFrameReader:
 
 
 class TelemetryFrameIterator(BinFrameReader):
-    __slots__ = ('__data_struct', '__frame_index', '__serialize_string', '__frame_buffer')
+    __slots__ = ('__data_struct', 'frame_index', '__frame_buffer', '__serialize_string')
 
     def __init__(self, file_name: str, structure, frame_index=0):
         super().__init__(file_name, structure)
+        self.frame_index = frame_index
         self.__data_struct = structure.structure
-        self.__frame_index = frame_index
         self.__frame_buffer = None
         self.__serialize_string = self.__create_serialize_string()
 
@@ -103,15 +93,18 @@ class TelemetryFrameIterator(BinFrameReader):
         return serialize_string
 
     def __iter__(self):
-        self.init_to_start()
+        self.init_to_start(self.frame_index)
         return self
 
     def __next__(self):
-        self.__frame_buffer = self.read_next_frame(self.__frame_index)
+        self.__frame_buffer = self.read_next_frame()
+        if len(self.__frame_buffer) == 0:
+            log.debug(f'Last frame is reached')
+            raise StopIteration
         try:
-            log.info(f'\r\n\r\n\r\n\r\n\------------------------- FRAME {self.__frame_index} -------------------------')
+            log.info(f'------------------------- FRAME {self.frame_index} -------------------------')
             result = self.__fill_session_structure()
-            self.__frame_index += 1
+            self.frame_index += 1
             return result
         except IndexError:
             raise StopIteration

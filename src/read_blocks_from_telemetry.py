@@ -21,15 +21,12 @@ class DataBlocksReader:
             if re.search(r'\bTask\b', group[0]):
                 for c in group[1:]:
                     task.update(c)
-                self.frame = self.frame[1:]
             elif re.search(r'beamTask', group[0]):
                 beam_task.update(task)
                 for c in group[1:]:
                     beam_task.update(c)
-                c = {k: bool(v) for k, v in beam_task.items() if k == 'isFake'}
-                beam_task.update(c)
-                container.append(beam_task)
-                self.frame = self.frame[1:]
+                beam_task.update({k: bool(v) for k, v in beam_task.items() if k == 'isFake'})
+                container.append(beam_task.copy())
                 if len(container) == 4:
                     break
         return container

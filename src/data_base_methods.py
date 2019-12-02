@@ -13,7 +13,7 @@ class DataBaseMain:
         self.dsn = dsn
         self.cur = self.connection()
 
-    def connection(self) -> any:
+    def connection(self):
         conn = None
         try:
             conn = psycopg2.connect(self.dsn)
@@ -39,7 +39,7 @@ class DataBaseMain:
         except Exception as e:
             log.exception(f'\r\nException: {e}')
         finally:
-            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 100,
+            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 140,
                                       subsequent_indent='                                      '))
 
     def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> list:
@@ -54,7 +54,7 @@ class DataBaseMain:
         else:
             db_values = self.cur.fetchall()
             if db_values:
-                return db_values[0]
+                return db_values
 
 
 class DataBase(DataBaseMain):
@@ -64,8 +64,8 @@ class DataBase(DataBaseMain):
     def get_pk(self, table_name: str, dict_for_get_pk: dict) -> int:
         data_with_pk = self.read_from_table(table_name, dict_for_get_pk)
         if data_with_pk:
-            log.debug(f'succsessfull get primary key : {data_with_pk[0]}')
-            return data_with_pk[0]
+            log.debug(f'succsessfull get primary key {data_with_pk[0][0]}')
+            return data_with_pk[0][0]
         else:
             log.warning(f'In {table_name} : PK : doesnt exists : {dict_for_get_pk}')
 
@@ -78,10 +78,13 @@ class DataBase(DataBaseMain):
         data = {k: v for k, v in data.items() if k in col_names}
         return data
 
-    def get_pk_for_beam_tasks(self, full_block_dict: dict):
+    def get_pk_for_beam_tasks_(self, full_block_dict: dict):
         table_name = 'BeamTasks'
         result = {}
         if 'state' in full_block_dict:                         # блок = Candidate
+            return self.get_pk_for_beam_tasks(task_id=full_block_dict['taskId'],
+                                              antenna_id=full_block_dict['antennaId'], task_type=2)
+
             fields_for_get_pk = ['taskId', 'antennaId']
             result.update({'taskType': 2})
             for k, v in full_block_dict.items():
@@ -106,6 +109,10 @@ class DataBase(DataBaseMain):
                     result.update({k:v})
         pk = self.get_pk(table_name, result)
         return pk
+
+    def get_pk_for_beam_tasks(self, task_id, antenna_id, task_type) -> int:
+        table_name = 'BeamTasks'
+        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,  'taskType': task_type})
 
     def get_pk_for_primary_marks(self, full_block_dict: dict):
         table_name = 'PrimaryMarks'
@@ -189,7 +196,7 @@ class DataBaseCreator:
         print(f'Enter password of DataBase')
         self.password = input()
 
-    def connection(self) -> any:
+    def connection(self):
         con = psycopg2.connect(dbname=self.name,
                                user='postgres', host='localhost',
                                password=self.password)
@@ -326,3 +333,8 @@ class DataBaseCreator:
         "isActive" boolean)
         )"""
         self.cur.execute(query)
+
+
+
+
+
