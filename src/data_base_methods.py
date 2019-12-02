@@ -21,7 +21,7 @@ class DataBaseMain:
             print(f'y/n')
             i = input()
             if i == 'y':
-                self.create_new_data_base()
+                d = DataBaseCreator
         conn.autocommit = True
         cur = conn.cursor()
         log.info(f'DataBase connection complete')
@@ -53,14 +53,6 @@ class DataBaseMain:
             db_values = self.cur.fetchall()
             if db_values:
                 return db_values[0]
-
-    # def rename_table_column(self, table_name: str, data: dict):
-    #     k, v = data.items()
-    #     query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
-    #     try:
-    #         self.cur.execute(query)
-    #     except Exception as e:
-    #         log.exception(f'\r\nException: {e}')
 
 
 class DataBase(DataBaseMain):
@@ -180,6 +172,7 @@ class DataBaseCreator:
     def __init__(self):
         self.dsn = None
         self.cur = None
+        self.create_new_data_base()
 
     def create_new_data_base(self):
         print(f'Enter name of DataBase')
