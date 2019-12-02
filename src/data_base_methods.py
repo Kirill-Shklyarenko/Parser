@@ -69,14 +69,6 @@ class DataBase(DataBaseMain):
         else:
             log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
 
-    # def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:
-    #     # Для того чтобы узнать имена полей таблицы
-    #     self.cur.execute(f'SELECT * FROM "{table_name}"')
-    #     col_names = []
-    #     for elt in self.cur.description:
-    #         col_names.append(elt[0])
-    #     data = {k: v for k, v in data.items() if k in col_names}
-    #     return data
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
     def get_pk_beam_tasks(self, task_id: int, antenna_id: int, task_type: int) -> int:
         table_name = 'BeamTasks'
@@ -88,12 +80,10 @@ class DataBase(DataBaseMain):
         return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
                                         'taskType': task_type, 'trackId': track_id})
 
-
     def get_pk_b_tasks_air_track(self, id: int, antenna_id: int, task_type: int) -> int:
         table_name = 'BeamTasks'
         return self.get_pk(table_name, {'trackId': id, 'antennaId': antenna_id,
                                         'taskType': task_type})
-
 
     def get_pk_primary_marks(self, beam_task: int) -> int:
         table_name = 'PrimaryMarks'
@@ -117,8 +107,8 @@ class DataBase(DataBaseMain):
 
     def get_pk_forb_sectors(self, az_b_nssk: float, az_e_nssk: float, elev_b_nssk: float, elev_e_nssk: float) -> int:
         table_name = 'ForbiddenSectors'
-        return self.get_pk(table_name, {'azimuthBeginNSSK': azimuth_b_nssk, 'azimuthEndNSSK': azimuth_e_nssk,
-                                        'elevationBeginNSSK': elevation_b_nssk, 'elevationEndNSSK': elevation_e_nssk})
+        return self.get_pk(table_name, {'azimuthBeginNSSK': az_b_nssk, 'azimuthEndNSSK': az_e_nssk,
+                                        'elevationBeginNSSK': elev_b_nssk, 'elevationEndNSSK': elev_e_nssk})
 
 
 class DataBaseCreator:
@@ -279,8 +269,3 @@ class DataBaseCreator:
         "isActive" boolean)
         )"""
         self.cur.execute(query)
-
-
-
-
-
