@@ -111,10 +111,9 @@ class DataBase(DataBaseMain):
         table_name = 'CandidatesHistory'
         return self.get_pk(table_name, {'BeamTask': beam_task, 'PrimaryMark': primary_marks})
 
-    def get_pk_tracks_hists(self, air_tr_hist: int, primary_marks: int, cand_hists: int) -> int:
+    def get_pk_tracks_hists(self, primary_marks: int, cand_hists: int) -> int:
         table_name = 'AirTracksHistory'
-        return self.get_pk(table_name, {'AirTracksHistory': air_tr_hist,
-                                        'PrimaryMark': primary_marks, 'CandidateHistory': cand_hists})
+        return self.get_pk(table_name, {'PrimaryMark': primary_marks, 'CandidateHistory': cand_hists})
 
     def get_pk_forb_sectors(self, az_b_nssk: float, az_e_nssk: float, elev_b_nssk: float, elev_e_nssk: float) -> int:
         table_name = 'ForbiddenSectors'

@@ -33,8 +33,12 @@ if __name__ == "__main__":
         for beam_task in frame_reader.beam_tasks():
             beam_task_pk = db.get_pk_beam_tasks(beam_task['taskId'], beam_task['antennaId'], beam_task['taskType'])
             if beam_task_pk is None:
-                beam_task = db.map_bin_fields_to_table('BeamTasks', beam_task)
-                db.insert_to_table('BeamTasks', beam_task)
+                # beam_task = db.map_bin_fields_to_table('BeamTasks', beam_task)
+                fields = ['taskId', 'isFake', 'trackId', 'taskType', 'viewDirectionId', 'antennaId',
+                          'pulsePeriod', 'threshold', 'lowerVelocityTrim', 'upperVelocityTrim',
+                          'lowerDistanceTrim', 'upperDistanceTrim', 'beamAzimuth', 'beamElevation']
+                dict_to_insert = {k: v for k, v in beam_task.items() if k in fields}
+                db.insert_to_table('BeamTasks', dict_to_insert)
             else:
                 log.warning(f'BeamTask : already exists')
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ #
@@ -46,8 +50,12 @@ if __name__ == "__main__":
                 prim_mark.update({'BeamTask': beam_task_pk})
                 primary_mark_pk = db.get_pk_primary_marks(prim_mark['BeamTask'])
                 if primary_mark_pk is None:
-                    prim_mark = db.map_bin_fields_to_table('PrimaryMarks', prim_mark)
-                    db.insert_to_table('PrimaryMarks', prim_mark)
+                    # prim_mark = db.map_bin_fields_to_table('PrimaryMarks', prim_mark)
+                    fields = ["BeamTask", "primaryMarkId", "scanTime", "antennaId", "beamAzimuth", "beamElevation",
+                              "azimuth", "elevation", "markType", "distance", "dopplerSpeed", "signalLevel",
+                              "reflectedEnergy"]
+                    dict_to_insert = {k: v for k, v in prim_mark.items() if k in fields}
+                    db.insert_to_table('PrimaryMarks', dict_to_insert)
                 else:
                     log.warning(f'PrimaryMark : already exists')
             primary_marks_count += 1
@@ -67,16 +75,22 @@ if __name__ == "__main__":
                         candidates_pk = db.get_pk_candidates(candidate['id'])
                         # if dict_for_get_pk['id'] != 0:
                         if candidates_pk is None:
-                            cand = db.map_bin_fields_to_table('Candidates', candidate)
-                            db.insert_to_table('Candidates', cand)
+                            # cand = db.map_bin_fields_to_table('Candidates', candidate)
+                            fields = ["id"]
+                            dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
+                            db.insert_to_table('Candidates', dict_to_insert)
                             candidates_pk = db.get_pk_candidates(candidate['id'])
                         else:
                             log.warning(f'Candidate : already exists')
                         candidate.update({'Candidate': candidates_pk})
                         candidates_history_pk = db.get_pk_cand_hists(candidate['BeamTask'], candidate['PrimaryMark'])
                         if candidates_history_pk is None:
-                            candidate = db.map_bin_fields_to_table('CandidatesHistory', candidate)
-                            db.insert_to_table('CandidatesHistory', candidate)
+                            # candidate = db.map_bin_fields_to_table('CandidatesHistory', candidate)
+                            fields = ["BeamTask", "PrimaryMark", "Candidate", "azimuth", "elevation", "state",
+                                      "distanceZoneWidth", "velocityZoneWidth", "numDistanceZone", "numVelocityZone",
+                                      "antennaId", "timeUpdated"]
+                            dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
+                            db.insert_to_table('CandidatesHistory', dict_to_insert)
                         else:
                             log.warning(f'CandidateHistory : already exists')
                 candidates_count += 1
@@ -97,16 +111,26 @@ if __name__ == "__main__":
                             air_track.update(candidates_history_pk)
                             air_track_pk = db.get_pk_air_tracks(air_track)
                             if air_track_pk is None:
-                                airs = db.map_bin_fields_to_table('AirTracks', air_track)
-                                db.insert_to_table('AirTracks', airs)
+                                # airs = db.map_bin_fields_to_table('AirTracks', air_track)
+                                fields = ["id"]
+                                dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
+                                db.insert_to_table('AirTracks', dict_to_insert)
                                 air_track_pk = db.get_pk_air_tracks(air_track)
                             else:
                                 log.warning(f'AirTrack : already exists')
                             air_track.update(air_track_pk)
-                            air_track_history_pk = db.get_pk_tracks_hists(air_track)
+                            air_track_history_pk = db.get_pk_tracks_hists(air_track['PrimaryMark'],
+                                                                          air_track['CandidateHistory'])
                             if air_track_history_pk is None:
-                                air_track = db.map_bin_fields_to_table('AirTracksHistory', air_track)
-                                db.insert_to_table('AirTracksHistory', air_track)
+                                # air_track = db.map_bin_fields_to_table('AirTracksHistory', air_track)
+                                fields = ["PrimaryMark", "CandidatesHistory", "AirTrack", "type", "priority",
+                                          "antennaId", "azimuth", "elevation", "distance", "radialVelocity",
+                                          "pulsePeriod", "missesCount", "possiblePeriods", "nextTimeUpdate",
+                                          "scanPeriod", "sigmaAzimuth", "sigmaElevation", "sigmaDistance",
+                                          "sigmaRadialVelocity", "minDistance", "maxDistance", "minRadialVelocity",
+                                          "maxRadialVelocity", ]
+                                dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
+                                db.insert_to_table('AirTracksHistory', dict_to_insert)
                             else:
                                 log.warning(f'AirTracksHistory : already exists')
                 air_track_count += 1
