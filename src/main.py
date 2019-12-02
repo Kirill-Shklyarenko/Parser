@@ -67,7 +67,11 @@ if __name__ == "__main__":
                 log.info(f'Candidate state = {candidate["state"]}')
                 if candidate['state'] == 1:
                     beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
-                                                              candidate['id'])
+                                                              1, candidate['id'])
+                else:
+                    beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
+                                                              2, candidate['id'])
+
                 if beam_task_pk:
                     candidate.update({'BeamTask': beam_task_pk})
                     pm_pk = db.get_pk_primary_marks(candidate['BeamTask'])

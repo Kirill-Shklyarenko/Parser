@@ -67,26 +67,26 @@ class DataBase(DataBaseMain):
             log.debug(f'PK received successfully : {data_with_pk[0][0]}')
             return data_with_pk[0][0]
         else:
-            log.warning(f'In {table_name} : PK : doesnt exists : {dict_for_get_pk}')
+            log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
 
-    def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:
-        # Для того чтобы узнать имена полей таблицы
-        self.cur.execute(f'SELECT * FROM "{table_name}"')
-        col_names = []
-        for elt in self.cur.description:
-            col_names.append(elt[0])
-        data = {k: v for k, v in data.items() if k in col_names}
-        return data
-
+    # def map_bin_fields_to_table(self, table_name: str, data: dict) -> dict:
+    #     # Для того чтобы узнать имена полей таблицы
+    #     self.cur.execute(f'SELECT * FROM "{table_name}"')
+    #     col_names = []
+    #     for elt in self.cur.description:
+    #         col_names.append(elt[0])
+    #     data = {k: v for k, v in data.items() if k in col_names}
+    #     return data
+    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
     def get_pk_beam_tasks(self, task_id: int, antenna_id: int, task_type: int) -> int:
         table_name = 'BeamTasks'
         return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
                                         'taskType': task_type})
 
-    def get_pk_b_tasks_track_id(self, task_id: int, antenna_id: int, track_id: int) -> int:
+    def get_pk_b_tasks_track_id(self, task_id: int, antenna_id: int, task_type: int, track_id: int) -> int:
         table_name = 'BeamTasks'
         return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
-                                        'trackId': track_id})
+                                        'taskType': task_type, 'trackId': track_id})
 
 
     def get_pk_b_tasks_air_track(self, id: int, antenna_id: int, task_type: int) -> int:
