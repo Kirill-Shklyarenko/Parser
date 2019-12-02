@@ -18,7 +18,7 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
-    telemetry = TelemetryFrameIterator(planner_rsf, structure)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
+    telemetry = TelemetryFrameIterator(planner_rsf, structure, 299)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
     db = DataBase(dsn)
     start_parsing_time = time.time()
     for frame in telemetry:
@@ -61,12 +61,13 @@ if __name__ == "__main__":
             primary_marks_count += 1
         # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_reader.candidates():
-            if candidate['state'] != 0 and candidate['state'] != 3 \
-                    and candidate['state'] != 5 and candidate['state'] != 6:
+            if candidate['state'] != 0 and candidate['state'] != 3 and candidate['state'] != 5 \
+                    and candidate['state'] != 6:
                 log.info(f'Candidate_{candidates_count}')
                 log.info(f'Candidate state = {candidate["state"]}')
-                beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
-                                                          2, candidate['id'])
+                if candidate['state'] == 1:
+                    beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
+                                                              candidate['id'])
                 if beam_task_pk:
                     candidate.update({'BeamTask': beam_task_pk})
                     pm_pk = db.get_pk_primary_marks(candidate['BeamTask'])

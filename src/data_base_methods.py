@@ -83,10 +83,10 @@ class DataBase(DataBaseMain):
         return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
                                         'taskType': task_type})
 
-    def get_pk_b_tasks_track_id(self, task_id: int, antenna_id: int, task_type: int, track_id: int) -> int:
+    def get_pk_b_tasks_track_id(self, task_id: int, antenna_id: int, track_id: int) -> int:
         table_name = 'BeamTasks'
         return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
-                                        'taskType': task_type, 'trackId': track_id})
+                                        'trackId': track_id})
 
 
     def get_pk_b_tasks_air_track(self, id: int, antenna_id: int, task_type: int) -> int:
