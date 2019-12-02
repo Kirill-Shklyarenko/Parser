@@ -3,8 +3,6 @@ import textwrap
 
 import psycopg2
 
-from decorators import pk
-
 log = logging.getLogger('simpleExample')
 
 
@@ -19,11 +17,11 @@ class DataBaseMain:
             conn = psycopg2.connect(self.dsn)
         except Exception as e:
             log.exception(f'{e}')
-            # print(f'Do you want restore DataBase?')
-            # print(f'y/n')
-            # i = input()
-            # if i == 'y':
-            # self.data_base_restore()
+            print(f'Do you want to create new DataBase?')
+            print(f'y/n')
+            i = input()
+            if i == 'y':
+                self.create_new_data_base()
         conn.autocommit = True
         cur = conn.cursor()
         log.info(f'DataBase connection complete')
@@ -42,7 +40,7 @@ class DataBaseMain:
             log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 100,
                                       subsequent_indent='                                      '))
 
-    def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> int:
+    def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> list:
         columns = ','.join([f'"{x}"' for x in dict_for_get_pk])
         param_placeholders = ','.join(['%s' for x in range(len(dict_for_get_pk))])
         query = f'SELECT * FROM "{table_name}" WHERE ({columns}) = ({param_placeholders})'
@@ -56,13 +54,13 @@ class DataBaseMain:
             if db_values:
                 return db_values[0]
 
-    def rename_table_column(self, table_name: str, data: dict):
-        k, v = data.items()
-        query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
-        try:
-            self.cur.execute(query)
-        except Exception as e:
-            log.exception(f'\r\nException: {e}')
+    # def rename_table_column(self, table_name: str, data: dict):
+    #     k, v = data.items()
+    #     query = f'ALTER TABLE "{table_name}" RENAME {k} TO {v}'
+    #     try:
+    #         self.cur.execute(query)
+    #     except Exception as e:
+    #         log.exception(f'\r\nException: {e}')
 
 
 class DataBase(DataBaseMain):
@@ -86,7 +84,7 @@ class DataBase(DataBaseMain):
         data = {k: v for k, v in data.items() if k in col_names}
         return data
 
-    def get_pk_for_BTs(self, full_block_dict: dict):
+    def get_pk_for_beam_tasks(self, full_block_dict: dict):
         table_name = 'BeamTasks'
         result = {}
         if 'state' in full_block_dict:                         # блок = Candidate
@@ -115,7 +113,7 @@ class DataBase(DataBaseMain):
         pk = self.get_pk(table_name, result)
         return pk
 
-    def get_pk_for_PMs(self, full_block_dict: dict):
+    def get_pk_for_primary_marks(self, full_block_dict: dict):
         table_name = 'PrimaryMarks'
         fields_for_get_pk = ['BeamTask']
         result = {}
@@ -125,7 +123,7 @@ class DataBase(DataBaseMain):
         pk = self.get_pk(table_name, result)
         return pk
 
-    def get_pk_for_Cs(self, full_block_dict: dict):
+    def get_pk_for_candidates(self, full_block_dict: dict):
         table_name = 'Candidates'
         fields_for_get_pk = ['id']
         result = {}
@@ -135,7 +133,7 @@ class DataBase(DataBaseMain):
         pk = self.get_pk(table_name, result)
         return pk
 
-    def get_pk_for_As(self, full_block_dict: dict):
+    def get_pk_for_air_tracks(self, full_block_dict: dict):
         table_name = 'AirTracks'
         fields_for_get_pk = ['id']
         result = {}
@@ -145,7 +143,7 @@ class DataBase(DataBaseMain):
         pk = self.get_pk(table_name, result)
         return pk
 
-    def get_pk_for_CHs(self, full_block_dict: dict):
+    def get_pk_for_cand_hists(self, full_block_dict: dict):
         table_name = 'CandidatesHistory'
         fields_for_get_pk = ['BeamTask', 'PrimaryMark']
         result = {}
@@ -155,7 +153,7 @@ class DataBase(DataBaseMain):
         pk = self.get_pk(table_name, result)
         return pk
 
-    def get_pk_for_AHs(self, full_block_dict: dict):
+    def get_pk_for_tracks_hists(self, full_block_dict: dict):
         table_name = 'AirTracksHistory'
         fields_for_get_pk = ['AirTracksHistory', 'PrimaryMark', 'CandidateHistory']
         result = {}
@@ -165,7 +163,7 @@ class DataBase(DataBaseMain):
         pk = self.get_pk(table_name, result)
         return pk
 
-    def get_pk_for_Fs(self, full_block_dict: dict):
+    def get_pk_for_forb_sectors(self, full_block_dict: dict):
         table_name = 'ForbiddenSectors'
         fields_for_get_pk = ['azimuthBeginNSSK', 'azimuthEndNSSK','elevationBeginNSSK','elevationEndNSSK']
         result = {}
@@ -176,3 +174,159 @@ class DataBase(DataBaseMain):
         return pk
 
 
+class DataBaseCreator:
+    __slots__ = ('dsn', 'cur')
+
+    def __init__(self):
+        self.dsn = None
+        self.cur = None
+
+    def create_new_data_base(self):
+        print(f'Enter name of DataBase')
+        name = input()
+        print(f'Enter password of DataBase')
+        password = input()
+        print(f'Enter host or ip adress of DataBase')
+        host = input()
+
+        self.dsn = f'dbname={name} user=postgres password={password} host={host}'
+        conn = psycopg2.connect(self.dsn)
+        conn.autocommit = True
+        self.cur = conn.cursor()
+
+        self.create_table_beam_tasks()
+        self.create_table_primary_marks()
+        self.create_table_candidates_history()
+        self.create_table_candidates()
+        self.create_table_air_tracks_history()
+        self.create_table_air_tracks()
+        self.create_table_forb_sectors()
+
+    def create_table_beam_tasks(self):
+        query = """CREATE TABLE public."BeamTasks"
+        (
+        "BeamTask" serial PRIMARY KEY,
+        "taskId" integer,
+        "isFake" boolean,
+        "trackId" integer,
+        "taskType" integer,
+        "viewDirectionId" integer,
+        "antennaId" integer,
+        "pulsePeriod" real,
+        threshold real,
+        "lowerVelocityTrim" real,
+        "upperVelocityTrim" real,
+        "lowerDistanceTrim" real,
+        "upperDistanceTrim" real,
+        "beamAzimuth" real,
+        "beamElevation" real
+        )"""
+        self.cur.execute(query)
+
+    def create_table_primary_marks(self):
+        query = """CREATE TABLE public."PrimaryMarks"
+        (
+        "PrimaryMark" serial,
+        "BeamTask" serial,
+        "primaryMarkId" serial,
+        "scanTime" real,
+        "antennaId" integer,
+        "beamAzimuth" real,
+        "beamElevation" real,
+        "azimuth" real,
+        "elevation" real,
+        "markType" integer,
+        "distance" real,
+        "dopplerSpeed" real,
+        "signalLevel" real,
+        "reflectedEnergy" real,
+        CONSTRAINT "PrimaryMarks_pkey" PRIMARY KEY ("PrimaryMark"),
+        CONSTRAINT "PrimaryMarks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
+        )"""
+        self.cur.execute(query)
+
+    def create_table_candidates_history(self):
+        query = """CREATE TABLE public."CandidatesHistory"
+        (
+        "CandidatesHistory" serial PRIMARY KEY,
+        "BeamTask" serial,
+        "PrimaryMark" serial,
+        "Candidate" serial,
+        azimuth real,
+        elevation real,
+        state integer,
+        "distanceZoneWeight" real,
+        "velocityZoneWeight" real,
+        "numDistanceZone" real,
+        "numVelocityZone" real,
+        "antennaId" integer,
+        "nextTimeUpdate" real,
+        CONSTRAINT "CandidatesHistory_pkey" PRIMARY KEY ("CandidatesHistory"),
+        CONSTRAINT "Candidates_BeamTask_fkey" FOREIGN KEY ("BeamTask")
+        CONSTRAINT "Candidates_CandidatesIds_fkey" FOREIGN KEY ("Candidate")
+        CONSTRAINT "Candidates_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
+        )"""
+        self.cur.execute(query)
+
+    def create_table_candidates(self):
+        query = """CREATE TABLE public."Candidates"
+        (
+        "Candidate" serial PRIMARY KEY,
+        id integer
+        )"""
+        self.cur.execute(query)
+
+    def create_table_air_tracks_history(self):
+        query = """CREATE TABLE public."AirTracksHistory"
+        (
+        "AirTracksHistory" serial PRIMARY KEY,
+        "PrimaryMark" serial,
+        "CandidatesHistory" serial,
+        "AirTrack" serial,
+        type integer,
+        priority integer,
+        "antennaId" integer,
+        azimuth real,
+        elevation real,
+        distance real,
+        "radialVelocity" real,
+        "pulsePeriod" real,
+        "missesCount" real,
+        "possiblePeriods" real[],
+        "nextTimeUpdate" integer,
+        "scanPeriod" real,
+        "sigmaAzimuth" real,
+        "sigmaElevation" real,
+        "sigmaDistance" real,
+        "sigmaRadialVelocity" real,
+        "minDistance" real,
+        "maxDistance" real,
+        "minRadialVelocity" real,
+        "maxRadialVelocity" real,
+        CONSTRAINT "AirTracks_pkey" PRIMARY KEY ("AirTracksHistory"),
+        CONSTRAINT "AirTracksHistory_AirTrack_fkey" FOREIGN KEY ("AirTrack")
+        CONSTRAINT "AirTracks_Candidate_fkey" FOREIGN KEY ("CandidatesHistory")
+        CONSTRAINT "AirTracks_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
+        )"""
+        self.cur.execute(query)
+
+    def create_table_air_tracks(self):
+        query = """CREATE TABLE public."AirTracks"
+        (
+        "AirTrack" serial PRIMARY KEY),
+        id integer)
+        )"""
+        self.cur.execute(query)
+
+    def create_table_forb_sectors(self):
+        query = """CREATE TABLE public."ForbiddenSectors"
+        (
+        "ForbiddenSector" serial PRIMARY KEY,
+        "azimuthBeginNSSK" real,
+        "azimuthEndNSSK" real,
+        "elevationBeginNSSK" real,
+        "elevationEndNSSK" real,
+        "nextTimeUpdate" integer,
+        "isActive" boolean)
+        )"""
+        self.cur.execute(query)

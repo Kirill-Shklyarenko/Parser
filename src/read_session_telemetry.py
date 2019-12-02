@@ -81,15 +81,6 @@ class TelemetryFrameIterator(BinFrameReader):
             filled_frame.append(block_to)
             block.clear()
         log.debug('\r'.join(map(str, filled_frame)))
-        # filled_frame = [
-        #     [
-        #         {c.get('name'): frame_values[c.get('index', 0)]}
-        #         for c in line
-        #         if type(c) is dict
-        #
-        #     ]
-        #     for line in self.__data_struct
-        # ]
         return filled_frame
 
     def __create_serialize_string(self) -> str:

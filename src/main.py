@@ -2,8 +2,8 @@ import logging.config
 import time
 from pathlib import Path
 
-from read_blocks_from_telemetry import DataBlocksReader
 from data_base_methods import DataBase
+from read_blocks_from_telemetry import DataBlocksReader
 from read_session_structure import read_session_structure
 from read_session_telemetry import TelemetryFrameIterator
 
@@ -34,7 +34,7 @@ if __name__ == "__main__":
         frame_number += 1
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam_task in frame_reader.beam_tasks():
-            beam_task_pk = data_base.get_pk_for_BTs(beam_task)
+            beam_task_pk = data_base.get_pk_for_beam_tasks(beam_task)
             if beam_task_pk is None:
                 beam_task = data_base.map_bin_fields_to_table('BeamTasks', beam_task)
                 data_base.insert_to_table('BeamTasks', beam_task)
@@ -44,10 +44,10 @@ if __name__ == "__main__":
         for primary_mark in frame_reader.primary_marks():
             log.info(f'PrimaryMark {primary_marks_count}')
             log.info(f'PrimaryMark type = {primary_mark["markType"]}')
-            beam_task_pk = data_base.get_pk_for_BTs(primary_mark)
+            beam_task_pk = data_base.get_pk_for_beam_tasks(primary_mark)
             if beam_task_pk:
                 primary_mark.update({'BeamTask': beam_task_pk})
-                primary_mark_pk = data_base.get_pk_for_PMs(primary_mark)
+                primary_mark_pk = data_base.get_pk_for_primary_marks(primary_mark)
                 if primary_mark_pk is None:
                     primary_mark = data_base.map_bin_fields_to_table('PrimaryMarks', primary_mark)
                     data_base.insert_to_table('PrimaryMarks', primary_mark)
@@ -60,22 +60,22 @@ if __name__ == "__main__":
                     and candidate['state'] != 5 and candidate['state'] != 6:
                 log.info(f'Candidate {candidates_count}')
                 log.info(f'Candidate state = {candidate["state"]}')
-                beam_task_pk = data_base.get_pk_for_BTs(candidate)
+                beam_task_pk = data_base.get_pk_for_beam_tasks(candidate)
                 if beam_task_pk:
                     candidate.update({'BeamTask': beam_task_pk})
-                    pm_pk = data_base.get_pk_for_PMs(candidate)
+                    pm_pk = data_base.get_pk_for_primary_marks(candidate)
                     if pm_pk:
                         candidate.update({'PrimaryMark': pm_pk})
-                        candidates_pk = data_base.get_pk_for_Cs(candidate)
+                        candidates_pk = data_base.get_pk_for_candidates(candidate)
                         # if dict_for_get_pk['id'] != 0:
                         if candidates_pk is None:
                             cand = data_base.map_bin_fields_to_table('Candidates', candidate)
                             data_base.insert_to_table('Candidates', cand)
-                            candidates_pk = data_base.get_pk_for_Cs(candidate)
+                            candidates_pk = data_base.get_pk_for_candidates(candidate)
                         else:
                             log.warning(f'Candidate : already exists')
                         candidate.update({'Candidate': candidates_pk})
-                        candidates_history_pk = data_base.get_pk_for_CHs(candidate)
+                        candidates_history_pk = data_base.get_pk_for_cand_hists(candidate)
                         if candidates_history_pk is None:
                             candidate = data_base.map_bin_fields_to_table('CandidatesHistory', candidate)
                             data_base.insert_to_table('CandidatesHistory', candidate)
@@ -87,24 +87,24 @@ if __name__ == "__main__":
             if air_track['antennaId'] != 0:
                 log.info(f'AirTrack {air_track_count}')
                 log.info(f'AirTrack type = {air_track["type"]}')
-                beam_task_pk = data_base.get_pk_for_BTs(air_track)
+                beam_task_pk = data_base.get_pk_for_beam_tasks(air_track)
                 if beam_task_pk:
                     air_track.update(beam_task_pk)
-                    pm_pk = data_base.get_pk_for_PMs(air_track)
+                    pm_pk = data_base.get_pk_for_primary_marks(air_track)
                     if pm_pk:
                         air_track.update(pm_pk)
-                        candidates_history_pk = data_base.get_pk_for_CHs(air_track)
+                        candidates_history_pk = data_base.get_pk_for_cand_hists(air_track)
                         if candidates_history_pk:
                             air_track.update(candidates_history_pk)
-                            air_track_pk = data_base.get_pk_for_As(air_track)
+                            air_track_pk = data_base.get_pk_for_air_tracks(air_track)
                             if air_track_pk is None:
                                 airs = data_base.map_bin_fields_to_table('AirTracks', air_track)
                                 data_base.insert_to_table('AirTracks', airs)
-                                air_track_pk = data_base.get_pk_for_As(air_track)
+                                air_track_pk = data_base.get_pk_for_air_tracks(air_track)
                             else:
                                 log.warning(f'AirTrack : already exists')
                             air_track.update(air_track_pk)
-                            air_track_history_pk = data_base.get_pk_for_AHs(air_track)
+                            air_track_history_pk = data_base.get_pk_for_tracks_hists(air_track)
                             if air_track_history_pk is None:
                                 air_track = data_base.map_bin_fields_to_table('AirTracksHistory', air_track)
                                 data_base.insert_to_table('AirTracksHistory', air_track)
@@ -114,7 +114,7 @@ if __name__ == "__main__":
         # ------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
             log.info(f'forbiddenSector {forbidden_sectors_count}')
-            fs_pk = data_base.get_pk_for_Fs(forbidden_sector)
+            fs_pk = data_base.get_pk_for_forb_sectors(forbidden_sector)
             if fs_pk is None:
                 forbidden_sector = data_base.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
                 data_base.insert_to_table('ForbiddenSectors', forbidden_sector)
