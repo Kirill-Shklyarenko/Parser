@@ -18,7 +18,7 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
-    telemetry = TelemetryFrameIterator(planner_rsf, structure, 299)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
+    telemetry = TelemetryFrameIterator(planner_rsf, structure)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
     db = DataBase(dsn)
     start_parsing_time = time.time()
     for frame in telemetry:
@@ -39,7 +39,7 @@ if __name__ == "__main__":
                 log.warning(f'BeamTask : already exists')
         # ---------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"------------------------------------ #
         for prim_mark in frame_reader.primary_marks():
-            log.info(f'PrimaryMark {primary_marks_count}')
+            log.info(f'PrimaryMark_{primary_marks_count}')
             log.info(f'PrimaryMark type = {prim_mark["markType"]}')
             beam_task_pk = db.get_pk_beam_tasks(prim_mark['taskId'], prim_mark['antennaId'], prim_mark['taskType'])
             if beam_task_pk:
@@ -55,25 +55,25 @@ if __name__ == "__main__":
         for candidate in frame_reader.candidates():
             if candidate['state'] != 0 and candidate['state'] != 3 \
                     and candidate['state'] != 5 and candidate['state'] != 6:
-                log.info(f'Candidate {candidates_count}')
+                log.info(f'Candidate_{candidates_count}')
                 log.info(f'Candidate state = {candidate["state"]}')
-                # beam_task_pk = db.get_pk_for_beam_tasks(candidate)
-                beam_task_pk = db.get_pk_beam_tasks(candidate['task_id'], candidate['antenna_id'], 2, id)
+                beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
+                                                          2, candidate['id'])
                 if beam_task_pk:
                     candidate.update({'BeamTask': beam_task_pk})
-                    pm_pk = db.get_pk_primary_marks(candidate)
+                    pm_pk = db.get_pk_primary_marks(candidate['BeamTask'])
                     if pm_pk:
                         candidate.update({'PrimaryMark': pm_pk})
-                        candidates_pk = db.get_pk_candidates(candidate)
+                        candidates_pk = db.get_pk_candidates(candidate['id'])
                         # if dict_for_get_pk['id'] != 0:
                         if candidates_pk is None:
                             cand = db.map_bin_fields_to_table('Candidates', candidate)
                             db.insert_to_table('Candidates', cand)
-                            candidates_pk = db.get_pk_candidates(candidate)
+                            candidates_pk = db.get_pk_candidates(candidate['id'])
                         else:
                             log.warning(f'Candidate : already exists')
                         candidate.update({'Candidate': candidates_pk})
-                        candidates_history_pk = db.get_pk_cand_hists(candidate)
+                        candidates_history_pk = db.get_pk_cand_hists(candidate['BeamTask'], candidate['PrimaryMark'])
                         if candidates_history_pk is None:
                             candidate = db.map_bin_fields_to_table('CandidatesHistory', candidate)
                             db.insert_to_table('CandidatesHistory', candidate)
@@ -83,9 +83,10 @@ if __name__ == "__main__":
         # ------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- #
         for air_track in frame_reader.air_tracks():
             if air_track['antennaId'] != 0:
-                log.info(f'AirTrack {air_track_count}')
+                log.info(f'AirTrack_{air_track_count}')
                 log.info(f'AirTrack type = {air_track["type"]}')
-                beam_task_pk = db.get_pk_beam_tasks(air_track)
+                air_marks_misses = frame_reader.air_marks_misses()
+                beam_task_pk = db.get_pk_b_tasks_air_track(air_track['id'], air_track['antennaId'], 3)
                 if beam_task_pk:
                     air_track.update(beam_task_pk)
                     pm_pk = db.get_pk_primary_marks(air_track)
@@ -111,8 +112,9 @@ if __name__ == "__main__":
                 air_track_count += 1
         # ------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
-            log.info(f'forbiddenSector {forbidden_sectors_count}')
-            fs_pk = db.get_pk_forb_sectors(forbidden_sector)
+            log.info(f'forbiddenSector_{forbidden_sectors_count}')
+            fs_pk = db.get_pk_forb_sectors(forbidden_sector['azimuth_b_nssk'], forbidden_sector['azimuth_e_nssk'],
+                                           forbidden_sector['elevation_b_nssk'], forbidden_sector['elevation_e_nssk'])
             if fs_pk is None:
                 forbidden_sector = db.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
                 db.insert_to_table('ForbiddenSectors', forbidden_sector)
