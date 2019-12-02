@@ -7,6 +7,8 @@ log = logging.getLogger('simpleExample')
 
 
 class DataBaseMain:
+    __slots__ = ('dsn', 'cur')
+
     def __init__(self, dsn: str):
         self.dsn = dsn
         self.cur = self.connection()
@@ -16,12 +18,12 @@ class DataBaseMain:
         try:
             conn = psycopg2.connect(self.dsn)
         except Exception as e:
-            log.exception(f'{e}')
+            print(f'There is no existing DataBase{e}')
             print(f'Do you want to create new DataBase?')
             print(f'y/n')
             i = input()
             if i == 'y':
-                d = DataBaseCreator
+                d = DataBaseCreator()
         conn.autocommit = True
         cur = conn.cursor()
         log.info(f'DataBase connection complete')
@@ -167,25 +169,11 @@ class DataBase(DataBaseMain):
 
 
 class DataBaseCreator:
-    __slots__ = ('dsn', 'cur')
-
     def __init__(self):
-        self.dsn = None
-        self.cur = None
-        self.create_new_data_base()
-
-    def create_new_data_base(self):
-        print(f'Enter name of DataBase')
-        name = input()
-        print(f'Enter password of DataBase')
-        password = input()
-        print(f'Enter host or ip adress of DataBase')
-        host = input()
-
-        self.dsn = f'dbname={name} user=postgres password={password} host={host}'
-        conn = psycopg2.connect(self.dsn)
-        conn.autocommit = True
-        self.cur = conn.cursor()
+        self.name = None
+        self.password = None
+        self.create_dsn_string()
+        self.cur = self.connection()
 
         self.create_table_beam_tasks()
         self.create_table_primary_marks()
@@ -194,6 +182,21 @@ class DataBaseCreator:
         self.create_table_air_tracks_history()
         self.create_table_air_tracks()
         self.create_table_forb_sectors()
+
+    def create_dsn_string(self):
+        print(f'Enter name of DataBase')
+        self.name = input()
+        print(f'Enter password of DataBase')
+        self.password = input()
+
+    def connection(self) -> any:
+        con = psycopg2.connect(dbname=self.name,
+                               user='postgres', host='localhost',
+                               password=self.password)
+        con.autocommit = True
+        cur = con.cursor()
+        log.info(f'DataBase connection complete')
+        return cur
 
     def create_table_beam_tasks(self):
         query = """CREATE TABLE public."BeamTasks"

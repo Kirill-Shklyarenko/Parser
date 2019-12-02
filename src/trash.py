@@ -93,3 +93,16 @@
 #
 #     if len(z) == 6:
 #         returned_data.update({'possiblePeriods': z})
+
+
+"""
+reg expr for Ideolog:
+message pattern:         ^(\d{2}:\d{2}:\d{2})\s(.*)\s\d{2}\s\s\w*\s\s(.*)$
+message start pattern:   ^\d
+time format:             HH:mm:SS
+groups:
+                         1
+                         3
+                         2
+
+"""

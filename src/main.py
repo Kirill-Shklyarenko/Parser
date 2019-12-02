@@ -127,14 +127,3 @@ if __name__ == "__main__":
 
     time_sec = "{:7.4f}".format(time.time() - start_parsing_time)
     log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
-    """
-    reg expr for Ideolog:
-    message pattern:         ^(\d{2}:\d{2}:\d{2})\s(.*)\s\d{2}\s\s\w*\s\s(.*)$
-    message start pattern:   ^\d
-    time format:             HH:mm:SS
-    groups: 
-                             1
-                             3
-                             2
-
-    """
