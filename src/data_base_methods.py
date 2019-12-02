@@ -78,101 +78,36 @@ class DataBase(DataBaseMain):
         data = {k: v for k, v in data.items() if k in col_names}
         return data
 
-    def get_pk_for_beam_tasks_(self, full_block_dict: dict):
+    def get_pk_beam_tasks(self, task_id, antenna_id, task_type, track_id) -> int:
         table_name = 'BeamTasks'
-        result = {}
-        if 'state' in full_block_dict:                         # блок = Candidate
-            return self.get_pk_for_beam_tasks(task_id=full_block_dict['taskId'],
-                                              antenna_id=full_block_dict['antennaId'], task_type=2)
+        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
+                                        'taskType': task_type})
 
-            fields_for_get_pk = ['taskId', 'antennaId']
-            result.update({'taskType': 2})
-            for k, v in full_block_dict.items():
-                if k in fields_for_get_pk:
-                    result.update({k:v})
-                if k == 'id':
-                    result.update({'trackId': v})
-
-        elif 'type' in full_block_dict:                        # блок = AirTracksHistory
-            fields_for_get_pk = ['antennaId']
-            result.update({'taskType': 3})
-            for k, v in full_block_dict.items():
-                if k in fields_for_get_pk:
-                    result.update({k:v})
-                if k == 'id':
-                    result.update({'trackId': v})
-
-        else:                                                  # блок = BeamTask & PrimaryMark
-            fields_for_get_pk = ['taskId', 'antennaId']
-            for k, v in full_block_dict.items():
-                if k in fields_for_get_pk:
-                    result.update({k:v})
-        pk = self.get_pk(table_name, result)
-        return pk
-
-    def get_pk_for_beam_tasks(self, task_id, antenna_id, task_type) -> int:
-        table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,  'taskType': task_type})
-
-    def get_pk_for_primary_marks(self, full_block_dict: dict):
+    def get_pk_primary_marks(self, beam_task):
         table_name = 'PrimaryMarks'
-        fields_for_get_pk = ['BeamTask']
-        result = {}
-        for k, v in full_block_dict.items():
-            if k in fields_for_get_pk:
-                result.update({k:v})
-        pk = self.get_pk(table_name, result)
-        return pk
+        return self.get_pk(table_name, {'BeamTask': beam_task})
 
-    def get_pk_for_candidates(self, full_block_dict: dict):
+    def get_pk_candidates(self, id):
         table_name = 'Candidates'
-        fields_for_get_pk = ['id']
-        result = {}
-        for k, v in full_block_dict.items():
-            if k in fields_for_get_pk:
-                result.update({k:v})
-        pk = self.get_pk(table_name, result)
-        return pk
+        return self.get_pk(table_name, {'id': id})
 
-    def get_pk_for_air_tracks(self, full_block_dict: dict):
+    def get_pk_air_tracks(self, id):
         table_name = 'AirTracks'
-        fields_for_get_pk = ['id']
-        result = {}
-        for k, v in full_block_dict.items():
-            if k in fields_for_get_pk:
-                result.update({k:v})
-        pk = self.get_pk(table_name, result)
-        return pk
+        return self.get_pk(table_name, {'id': id})
 
-    def get_pk_for_cand_hists(self, full_block_dict: dict):
+    def get_pk_cand_hists(self, beam_task, primary_marks):
         table_name = 'CandidatesHistory'
-        fields_for_get_pk = ['BeamTask', 'PrimaryMark']
-        result = {}
-        for k, v in full_block_dict.items():
-            if k in fields_for_get_pk:
-                result.update({k:v})
-        pk = self.get_pk(table_name, result)
-        return pk
+        return self.get_pk(table_name, {'BeamTask': beam_task, 'PrimaryMark': primary_marks})
 
-    def get_pk_for_tracks_hists(self, full_block_dict: dict):
+    def get_pk_tracks_hists(self, air_tr_hist, primary_marks, cand_hists):
         table_name = 'AirTracksHistory'
-        fields_for_get_pk = ['AirTracksHistory', 'PrimaryMark', 'CandidateHistory']
-        result = {}
-        for k, v in full_block_dict.items():
-            if k in fields_for_get_pk:
-                result.update({k:v})
-        pk = self.get_pk(table_name, result)
-        return pk
+        return self.get_pk(table_name, {'AirTracksHistory': air_tr_hist,
+                                        'PrimaryMark': primary_marks, 'CandidateHistory': cand_hists})
 
-    def get_pk_for_forb_sectors(self, full_block_dict: dict):
+    def get_pk_forb_sectors(self, azimuth_b_nssk, azimuth_e_nssk, elevation_b_nssk, elevation_e_nssk):
         table_name = 'ForbiddenSectors'
-        fields_for_get_pk = ['azimuthBeginNSSK', 'azimuthEndNSSK','elevationBeginNSSK','elevationEndNSSK']
-        result = {}
-        for k, v in full_block_dict.items():
-            if k in fields_for_get_pk:
-                result.update({k:v})
-        pk = self.get_pk(table_name, result)
-        return pk
+        return self.get_pk(table_name, {'azimuthBeginNSSK': azimuth_b_nssk, 'azimuthEndNSSK': azimuth_e_nssk,
+                                        'elevationBeginNSSK': elevation_b_nssk, 'elevationEndNSSK': elevation_e_nssk})
 
 
 class DataBaseCreator:
