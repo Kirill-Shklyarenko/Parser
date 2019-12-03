@@ -18,7 +18,7 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
-    telemetry = TelemetryFrameIterator(planner_rsf, structure)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
+    telemetry = TelemetryFrameIterator(planner_rsf, structure, 4833)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
     db = DataBase(dsn)
     start_parsing_time = time.time()
     for frame in telemetry:
@@ -61,84 +61,83 @@ if __name__ == "__main__":
             primary_marks_count += 1
         # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_reader.candidates():
-            if candidate['state'] != 0 and candidate['state'] != 3 and candidate['state'] != 5 \
-                    and candidate['state'] != 6:
-                log.info(f'Candidate_{candidates_count}')
-                log.info(f'Candidate state = {candidate["state"]}')
-                if candidate['state'] == 1:
-                    beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
-                                                              1, candidate['id'])
-                else:
-                    beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
-                                                              2, candidate['id'])
+            # if candidate['state'] != 0 and candidate['state'] != 3 and candidate['state'] != 5 \
+            #         and candidate['state'] != 6:
+            log.info(f'Candidate_{candidates_count}')
+            log.info(f'Candidate state = {candidate["state"]}')
+            if candidate['state'] == 1:
+                beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
+                                                          1, candidate['id'])
+            else:
+                beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
+                                                          2, candidate['id'])
 
-                if beam_task_pk:
-                    candidate.update({'BeamTask': beam_task_pk})
-                    pm_pk = db.get_pk_primary_marks(candidate['BeamTask'])
-                    if pm_pk:
-                        candidate.update({'PrimaryMark': pm_pk})
+            if beam_task_pk:
+                candidate.update({'BeamTask': beam_task_pk})
+                pm_pk = db.get_pk_primary_marks(candidate['BeamTask'])
+                if pm_pk:
+                    candidate.update({'PrimaryMark': pm_pk})
+                    candidates_pk = db.get_pk_candidates(candidate['id'])
+                    # if dict_for_get_pk['id'] != 0:
+                    if candidates_pk is None:
+                        # cand = db.map_bin_fields_to_table('Candidates', candidate)
+                        fields = ["id"]
+                        dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
+                        db.insert_to_table('Candidates', dict_to_insert)
                         candidates_pk = db.get_pk_candidates(candidate['id'])
-                        # if dict_for_get_pk['id'] != 0:
-                        if candidates_pk is None:
-                            # cand = db.map_bin_fields_to_table('Candidates', candidate)
-                            fields = ["id"]
-                            dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
-                            db.insert_to_table('Candidates', dict_to_insert)
-                            candidates_pk = db.get_pk_candidates(candidate['id'])
-                        else:
-                            log.warning(f'Candidate : already exists')
-                        candidate.update({'Candidate': candidates_pk})
-                        candidates_history_pk = db.get_pk_cand_hists(candidate['BeamTask'], candidate['PrimaryMark'])
-                        if candidates_history_pk is None:
-                            # candidate = db.map_bin_fields_to_table('CandidatesHistory', candidate)
-                            fields = ["BeamTask", "PrimaryMark", "Candidate", "azimuth", "elevation", "state",
-                                      "distanceZoneWidth", "velocityZoneWidth", "numDistanceZone", "numVelocityZone",
-                                      "antennaId", "timeUpdated"]
-                            dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
-                            db.insert_to_table('CandidatesHistory', dict_to_insert)
-                        else:
-                            log.warning(f'CandidateHistory : already exists')
-                candidates_count += 1
+                    else:
+                        log.warning(f'Candidate : already exists')
+                    candidate.update({'Candidate': candidates_pk})
+                    candidates_history_pk = db.get_pk_cand_hists(candidate['BeamTask'], candidate['PrimaryMark'])
+                    if candidates_history_pk is None:
+                        # candidate = db.map_bin_fields_to_table('CandidatesHistory', candidate)
+                        fields = ["BeamTask", "PrimaryMark", "Candidate", "azimuth", "elevation", "state",
+                                  "distanceZoneWidth", "velocityZoneWidth", "numDistanceZone", "numVelocityZone",
+                                  "antennaId", "timeUpdated"]
+                        dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
+                        db.insert_to_table('CandidatesHistory', dict_to_insert)
+                    else:
+                        log.warning(f'CandidateHistory : already exists')
+            candidates_count += 1
         # ------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- #
         for air_track in frame_reader.air_tracks():
-            if air_track['antennaId'] != 0:
-                log.info(f'AirTrack_{air_track_count}')
-                log.info(f'AirTrack type = {air_track["type"]}')
-                air_marks_misses = frame_reader.air_marks_misses()
-                beam_task_pk = db.get_pk_b_tasks_air_track(air_track['id'], air_track['antennaId'], 3)
-                if beam_task_pk:
-                    air_track.update(beam_task_pk)
-                    pm_pk = db.get_pk_primary_marks(air_track)
-                    if pm_pk:
-                        air_track.update(pm_pk)
-                        candidates_history_pk = db.get_pk_cand_hists(air_track['BeamTask'], air_track['PrimaryMark'])
-                        if candidates_history_pk:
-                            air_track.update(candidates_history_pk)
-                            air_track_pk = db.get_pk_air_tracks(air_track)
-                            if air_track_pk is None:
-                                # airs = db.map_bin_fields_to_table('AirTracks', air_track)
-                                fields = ["id"]
-                                dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
-                                db.insert_to_table('AirTracks', dict_to_insert)
-                                air_track_pk = db.get_pk_air_tracks(air_track)
-                            else:
-                                log.warning(f'AirTrack : already exists')
-                            air_track.update(air_track_pk)
-                            air_track_history_pk = db.get_pk_tracks_hists(air_track['PrimaryMark'],
-                                                                          air_track['CandidateHistory'])
-                            if air_track_history_pk is None:
-                                # air_track = db.map_bin_fields_to_table('AirTracksHistory', air_track)
-                                fields = ["PrimaryMark", "CandidatesHistory", "AirTrack", "type", "priority",
-                                          "antennaId", "azimuth", "elevation", "distance", "radialVelocity",
-                                          "pulsePeriod", "missesCount", "possiblePeriods", "nextTimeUpdate",
-                                          "scanPeriod", "sigmaAzimuth", "sigmaElevation", "sigmaDistance",
-                                          "sigmaRadialVelocity", "minDistance", "maxDistance", "minRadialVelocity",
-                                          "maxRadialVelocity"]
-                                dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
-                                db.insert_to_table('AirTracksHistory', dict_to_insert)
-                            else:
-                                log.warning(f'AirTracksHistory : already exists')
-                air_track_count += 1
+            log.info(f'AirTrack_{air_track_count}')
+            log.info(f'AirTrack type = {air_track["type"]}')
+            air_marks_misses = frame_reader.air_marks_misses()
+            beam_task_pk = db.get_pk_b_tasks_air_track(air_track['id'], air_track['antennaId'], 3)
+            if beam_task_pk:
+                air_track.update({'BeamTask': beam_task_pk})
+                pm_pk = db.get_pk_primary_marks(air_track['BeamTask'])
+                if pm_pk:
+                    air_track.update({'PrimaryMark': pm_pk})
+                    candidates_history_pk = db.get_pk_cand_hists(air_track['BeamTask'], air_track['PrimaryMark'])
+                    if candidates_history_pk:
+                        air_track.update({'CandidatesHistory': candidates_history_pk})
+                        air_track_pk = db.get_pk_air_tracks(air_track['id'])
+                        if air_track_pk is None:
+                            # airs = db.map_bin_fields_to_table('AirTracks', air_track)
+                            fields = ["id"]
+                            dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
+                            db.insert_to_table('AirTracks', dict_to_insert)
+                            air_track_pk = db.get_pk_air_tracks(air_track['id'])
+                        else:
+                            log.warning(f'AirTrack : already exists')
+                        air_track.update({'AirTrack': air_track_pk})
+                        air_track_history_pk = db.get_pk_tracks_hists(air_track['PrimaryMark'],
+                                                                      air_track['CandidatesHistory'])
+                        if air_track_history_pk is None:
+                            # air_track = db.map_bin_fields_to_table('AirTracksHistory', air_track)
+                            fields = ["PrimaryMark", "CandidatesHistory", "AirTrack", "type", "priority",
+                                      "antennaId", "azimuth", "elevation", "distance", "radialVelocity",
+                                      "pulsePeriod", "missesCount", "possiblePeriods", "nextTimeUpdate",
+                                      "scanPeriod", "sigmaAzimuth", "sigmaElevation", "sigmaDistance",
+                                      "sigmaRadialVelocity", "minDistance", "maxDistance", "minRadialVelocity",
+                                      "maxRadialVelocity"]
+                            dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
+                            db.insert_to_table('AirTracksHistory', dict_to_insert)
+                        else:
+                            log.warning(f'AirTracksHistory : already exists')
+            air_track_count += 1
         # ------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
             log.info(f'forbiddenSector_{forbidden_sectors_count}')
@@ -156,5 +155,5 @@ if __name__ == "__main__":
         time_sec = "{:7.4f}".format(time.time() - start_frame_time)
         log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
 
-    time_sec = "{:7.4f}".format(time.time() - start_parsing_time)
-    log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
+    minutes = float("{:7.4f}".format(time.time() - start_parsing_time)) / 60
+    log.info(f"------------------------- {minutes} minutes -------------------------\r\n\r\n")

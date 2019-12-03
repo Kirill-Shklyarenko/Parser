@@ -12,7 +12,7 @@ class DataBlocksReader:
     def __init__(self, frame):
         self.frame = frame
 
-    @converter({'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK'})
+    @converter({'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK'})  # {newField : oldField}
     def beam_tasks(self) -> list:
         container = []
         task = {}
@@ -52,9 +52,7 @@ class DataBlocksReader:
                     # log.info(f'PrimaryMark type = {primary_mark["type"]}')
                     self.frame = self.frame[index + 1:]
                     if primary_marks_count == scan_data['primaryMarksCount']:
-                        # self.frame = self.frame[1:]
                         break
-                # self.frame = self.frame[1:]
         return container
 
     @converter({'timeUpdated': 'creationTimeSeconds'})
@@ -68,7 +66,6 @@ class DataBlocksReader:
                 candidate_q = {}
                 for c in group[1:]:
                     candidate_q.update(c)
-                # self.frame = self.frame[index:]
             elif candidates_count < candidate_q['candidatesQueueSize']:
                 if re.search(r'trackCandidate', group[0]):
                     for c in group[1:]:
@@ -79,12 +76,11 @@ class DataBlocksReader:
                         for c in group[1:]:
                             view_spot.update(c)
                         track_candidate.update(view_spot)
-                        container.append(track_candidate)
+                        container.append(track_candidate.copy())
                         candidates_count += 1
                         # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
                         # log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
-                            # self.frame = self.frame[1:]
                             break
                 elif track_candidate['state'] == 2:
                     if re.search(r'distanceResolutionSpot', group[0]):
@@ -97,12 +93,11 @@ class DataBlocksReader:
                                                                          'distancePeriod']})
                         track_candidate.update({'numDistanceZone': round(track_candidate['resolvedDistance'] /
                                                                          track_candidate['distancePeriod'])})
-                        container.append(track_candidate)
+                        container.append(track_candidate.copy())
                         candidates_count += 1
                         # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
                         # log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
-                            # self.frame = self.frame[1:]
                             break
                 elif track_candidate['state'] == 4:
                     if re.search(r'velocityResolutionSpot', group[0]):
@@ -120,21 +115,18 @@ class DataBlocksReader:
                                                                          'velocityPeriod']})
                         track_candidate.update({'numVelocityZone': round(track_candidate['resolvedVelocity'] /
                                                                          track_candidate['velocityPeriod'])})
-                        container.append(track_candidate)
+                        container.append(track_candidate.copy())
                         candidates_count += 1
                         # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
                         # log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
-                            # self.frame = self.frame[1:]
                             break
                 else:
                     candidates_count += 1
                     # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
                     # log.info(f'Candidate state = {track_candidate["state"]}')
                     if candidates_count == candidate_q['candidatesQueueSize']:
-                        # self.frame = self.frame[1:]
                         break
-                # self.frame = self.frame[1:]
         return container
 
     @converter({'timeUpdated': 'nextUpdateTimeSeconds', 'scanPeriod': 'scanPeriodSeconds'})
@@ -148,20 +140,23 @@ class DataBlocksReader:
                 tracks_q = {}
                 for c in group[1:]:
                     tracks_q.update(c)
-                # self.frame = self.frame[index:]
-            elif tracks_count < tracks_q['tracksQueuesSize']:
-                if re.search('track_', group[0]):
-                    for c in group[1:]:
-                        track.update(c)
-                    container.append(track)
-                    tracks_count += 1
-                    # log.info(f'Tracks = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
-                    # log.info(f'Track type  = {track["type"]}')
-                    if track["type"] != 0:
-                        log.warning(f'type  = {track["type"]}')
-                    if tracks_count == tracks_q['tracksQueuesSize']:
-                        break
-            # self.frame = self.frame[1:]
+            # elif tracks_count < tracks_q['tracksQueuesSize']:
+            elif re.search('track_', group[0]):
+                for c in group[1:]:
+                    track.update(c)
+                if track['antennaId'] != 0:
+                    track.update({'possiblePeriods': [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
+                                                      track['possiblePeriod[2]'], track['possiblePeriod[3]'],
+                                                      track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]})
+                    container.append(track.copy())
+                tracks_count += 1
+                # log.info(f'Tracks = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
+                # log.info(f'Track type  = {track["type"]}')
+                if track["type"] != 0:
+                    log.warning(f'type  = {track["type"]}')
+                # if tracks_count == tracks_q['tracksQueuesSize']:
+                if len(container) == tracks_q['tracksQueuesSize']:
+                    break
         return container
 
     def air_marks_misses(self) -> list:
@@ -177,7 +172,7 @@ class DataBlocksReader:
             elif re.search('AirMarkMiss', group[0]):
                 for c in group[1:]:
                     air_marks.update(c)
-                container.append(air_marks)
+                container.append(air_marks.copy())
                 marks_misses_count += 1
             elif re.search('TargetingUpdateRequests', group[0]):
                 break
@@ -193,16 +188,12 @@ class DataBlocksReader:
             if re.search(r'\bRadiationForbiddenSectors\b', group[0]):
                 for c in group[1:]:
                     forbidden_sector.update(c)
-                # self.frame = self.frame[index:]
             elif rad_forbidden_count < forbidden_sector['RadiationForbiddenSectorsCount']:
                 if re.search(r'RadiationForbiddenSector', group[0]):
                     for c in group:
                         forbidden_sector.update(c)
-                    container.append(forbidden_sector)
+                    container.append(forbidden_sector.copy())
                     rad_forbidden_count += 1
-                    # self.frame = self.frame[index + 1:]
                     if rad_forbidden_count == forbidden_sector['RadiationForbiddenSectorsCount']:
-                        # self.frame = self.frame[1:]
                         break
-            # self.frame = self.frame[1:]
         return container

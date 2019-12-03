@@ -40,7 +40,7 @@ class DataBaseMain:
             log.exception(f'\r\nException: {e}')
         finally:
             log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 150,
-                                      subsequent_indent='                                      '))
+                                      subsequent_indent='                                '))
 
     def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> list:
         columns = ','.join([f'"{x}"' for x in dict_for_get_pk])
@@ -103,7 +103,7 @@ class DataBase(DataBaseMain):
 
     def get_pk_tracks_hists(self, primary_marks: int, cand_hists: int) -> int:
         table_name = 'AirTracksHistory'
-        return self.get_pk(table_name, {'PrimaryMark': primary_marks, 'CandidateHistory': cand_hists})
+        return self.get_pk(table_name, {'PrimaryMark': primary_marks, 'CandidatesHistory': cand_hists})
 
     def get_pk_forb_sectors(self, az_b_nssk: float, az_e_nssk: float, elev_b_nssk: float, elev_e_nssk: float) -> int:
         table_name = 'ForbiddenSectors'
