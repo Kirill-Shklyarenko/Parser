@@ -18,7 +18,7 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
-    telemetry = TelemetryFrameIterator(planner_rsf, structure, 4833)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
+    telemetry = TelemetryFrameIterator(planner_rsf, structure)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
     db = DataBase(dsn)
     start_parsing_time = time.time()
     for frame in telemetry:
