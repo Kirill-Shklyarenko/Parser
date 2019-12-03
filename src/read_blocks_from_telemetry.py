@@ -1,7 +1,7 @@
 import logging.config
 import re
 
-from decorators import mapper
+from decorators import converter
 
 log = logging.getLogger('simpleExample')
 
@@ -12,7 +12,7 @@ class DataBlocksReader:
     def __init__(self, frame):
         self.frame = frame
 
-    @mapper
+    @converter({'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK'})
     def beam_tasks(self) -> list:
         container = []
         task = {}
@@ -31,7 +31,7 @@ class DataBlocksReader:
                     break
         return container
 
-    @mapper
+    @converter({'primaryMarkId': 'id', 'markType': 'type', 'scanTime': 'processingTime'})
     def primary_marks(self) -> list:
         container = []
         primary_mark = {}
@@ -57,7 +57,7 @@ class DataBlocksReader:
                 # self.frame = self.frame[1:]
         return container
 
-    @mapper
+    @converter({'timeUpdated': 'creationTimeSeconds'})
     def candidates(self) -> list:
         container = []
         track_candidate = {'state': 0}
@@ -137,7 +137,7 @@ class DataBlocksReader:
                 # self.frame = self.frame[1:]
         return container
 
-    @mapper
+    @converter({'timeUpdated': 'nextUpdateTimeSeconds', 'scanPeriod': 'scanPeriodSeconds'})
     def air_tracks(self) -> list:
         container = []
         track = {}
@@ -183,7 +183,8 @@ class DataBlocksReader:
                 break
         return container
 
-    @mapper
+    @converter({'azimuthBeginNSSK': 'minAzimuth', 'azimuthEndNSSK': 'maxAzimuth',
+                'elevationBeginNSSK': 'minElevation', 'elevationEndNSSK': 'maxElevation'})
     def forbidden_sectors(self) -> list:
         container = []
         forbidden_sector = {'RadiationForbiddenSectorsCount': 0}

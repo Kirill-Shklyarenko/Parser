@@ -18,7 +18,7 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
-    telemetry = TelemetryFrameIterator(planner_rsf, structure, 299)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
+    telemetry = TelemetryFrameIterator(planner_rsf, structure)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
     db = DataBase(dsn)
     start_parsing_time = time.time()
     for frame in telemetry:
@@ -111,7 +111,7 @@ if __name__ == "__main__":
                     pm_pk = db.get_pk_primary_marks(air_track)
                     if pm_pk:
                         air_track.update(pm_pk)
-                        candidates_history_pk = db.get_pk_cand_hists(air_track)
+                        candidates_history_pk = db.get_pk_cand_hists(air_track['BeamTask'], air_track['PrimaryMark'])
                         if candidates_history_pk:
                             air_track.update(candidates_history_pk)
                             air_track_pk = db.get_pk_air_tracks(air_track)
@@ -133,7 +133,7 @@ if __name__ == "__main__":
                                           "pulsePeriod", "missesCount", "possiblePeriods", "nextTimeUpdate",
                                           "scanPeriod", "sigmaAzimuth", "sigmaElevation", "sigmaDistance",
                                           "sigmaRadialVelocity", "minDistance", "maxDistance", "minRadialVelocity",
-                                          "maxRadialVelocity", ]
+                                          "maxRadialVelocity"]
                                 dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
                                 db.insert_to_table('AirTracksHistory', dict_to_insert)
                             else:
@@ -145,8 +145,10 @@ if __name__ == "__main__":
             fs_pk = db.get_pk_forb_sectors(forbidden_sector['azimuth_b_nssk'], forbidden_sector['azimuth_e_nssk'],
                                            forbidden_sector['elevation_b_nssk'], forbidden_sector['elevation_e_nssk'])
             if fs_pk is None:
-                forbidden_sector = db.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
-                db.insert_to_table('ForbiddenSectors', forbidden_sector)
+                # forbidden_sector = db.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
+                fields = ["azimuth_b_nssk", "azimuth_e_nssk", "elevation_b_nssk", "elevation_e_nssk"]
+                dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
+                db.insert_to_table('ForbiddenSectors', dict_to_insert)
             else:
                 log.warning(f'ForbiddenSector : already exists')
             forbidden_sectors_count += 1
