@@ -80,22 +80,22 @@ class DataBase(DataBaseMain):
         return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
                                         'taskType': task_type, 'trackId': track_id})
 
-    def get_pk_b_tasks_air_track(self, id: int, antenna_id: int, task_type: int) -> int:
+    def get_pk_b_tasks_air_track(self, ids: int, antenna_id: int, task_type: int) -> int:
         table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'trackId': id, 'antennaId': antenna_id,
+        return self.get_pk(table_name, {'trackId': ids, 'antennaId': antenna_id,
                                         'taskType': task_type})
 
     def get_pk_primary_marks(self, beam_task: int) -> int:
         table_name = 'PrimaryMarks'
         return self.get_pk(table_name, {'BeamTask': beam_task})
 
-    def get_pk_candidates(self, id: int) -> int:
+    def get_pk_candidates(self, ids: int) -> int:
         table_name = 'Candidates'
-        return self.get_pk(table_name, {'id': id})
+        return self.get_pk(table_name, {'id': ids})
 
-    def get_pk_air_tracks(self, id: int) -> int:
+    def get_pk_air_tracks(self, ids: int) -> int:
         table_name = 'AirTracks'
-        return self.get_pk(table_name, {'id': id})
+        return self.get_pk(table_name, {'id': ids})
 
     def get_pk_cand_hists(self, beam_task: int, primary_marks: int) -> int:
         table_name = 'CandidatesHistory'

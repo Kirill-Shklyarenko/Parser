@@ -1,9 +1,11 @@
 import logging.config
 import re
+import textwrap
 
 from decorators import converter
 
 log = logging.getLogger('simpleExample')
+alog = logging.getLogger('AirTracks_ForbSectors')
 
 
 class DataBlocksReader:
@@ -48,9 +50,6 @@ class DataBlocksReader:
                     primary_mark.update(scan_data)
                     container.append(primary_mark.copy())
                     primary_marks_count += 1
-                    # log.info(f'PrimaryMarks == {primary_marks_count} / {scan_data["primaryMarksCount"]}')
-                    # log.info(f'PrimaryMark type = {primary_mark["type"]}')
-                    self.frame = self.frame[index + 1:]
                     if primary_marks_count == scan_data['primaryMarksCount']:
                         break
         return container
@@ -78,8 +77,6 @@ class DataBlocksReader:
                         track_candidate.update(view_spot)
                         container.append(track_candidate.copy())
                         candidates_count += 1
-                        # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        # log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             break
                 elif track_candidate['state'] == 2:
@@ -95,8 +92,6 @@ class DataBlocksReader:
                                                                          track_candidate['distancePeriod'])})
                         container.append(track_candidate.copy())
                         candidates_count += 1
-                        # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        # log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             break
                 elif track_candidate['state'] == 4:
@@ -117,14 +112,10 @@ class DataBlocksReader:
                                                                          track_candidate['velocityPeriod'])})
                         container.append(track_candidate.copy())
                         candidates_count += 1
-                        # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                        # log.info(f'Candidate state = {track_candidate["state"]}')
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             break
                 else:
                     candidates_count += 1
-                    # log.info(f'Candidates = {candidates_count} / {candidate_q["candidatesQueueSize"]}')
-                    # log.info(f'Candidate state = {track_candidate["state"]}')
                     if candidates_count == candidate_q['candidatesQueueSize']:
                         break
         return container
@@ -148,15 +139,17 @@ class DataBlocksReader:
                     track.update({'possiblePeriods': [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
                                                       track['possiblePeriod[2]'], track['possiblePeriod[3]'],
                                                       track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]})
+
+                    del [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
+                         track['possiblePeriod[2]'], track['possiblePeriod[3]'],
+                         track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]
                     container.append(track.copy())
-                tracks_count += 1
-                # log.info(f'Tracks = {tracks_count} / {tracks_q["tracksQueuesSize"]}')
-                # log.info(f'Track type  = {track["type"]}')
-                if track["type"] != 0:
-                    log.warning(f'type  = {track["type"]}')
+                # tracks_count += 1
                 # if tracks_count == tracks_q['tracksQueuesSize']:
                 if len(container) == tracks_q['tracksQueuesSize']:
                     break
+        if container:
+            alog.info(textwrap.fill(f'AirTrack : {container}', 150, ))
         return container
 
     def air_marks_misses(self) -> list:
@@ -172,10 +165,13 @@ class DataBlocksReader:
             elif re.search('AirMarkMiss', group[0]):
                 for c in group[1:]:
                     air_marks.update(c)
-                container.append(air_marks.copy())
+                if air_marks['markId'] != 0:
+                    container.append(air_marks.copy())
                 marks_misses_count += 1
             elif re.search('TargetingUpdateRequests', group[0]):
                 break
+        if container:
+            alog.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
         return container
 
     @converter({'azimuthBeginNSSK': 'minAzimuth', 'azimuthEndNSSK': 'maxAzimuth',
@@ -196,4 +192,6 @@ class DataBlocksReader:
                     rad_forbidden_count += 1
                     if rad_forbidden_count == forbidden_sector['RadiationForbiddenSectorsCount']:
                         break
+        if container:
+            alog.info(textwrap.fill(f'                RadiationForbiddenSector : {container}', 150, ))
         return container

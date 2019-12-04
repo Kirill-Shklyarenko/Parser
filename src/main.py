@@ -18,7 +18,7 @@ dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
-    telemetry = TelemetryFrameIterator(planner_rsf, structure)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
+    telemetry = TelemetryFrameIterator(planner_rsf, structure, 2839)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
     db = DataBase(dsn)
     start_parsing_time = time.time()
     for frame in telemetry:
@@ -61,8 +61,6 @@ if __name__ == "__main__":
             primary_marks_count += 1
         # -----------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_reader.candidates():
-            # if candidate['state'] != 0 and candidate['state'] != 3 and candidate['state'] != 5 \
-            #         and candidate['state'] != 6:
             log.info(f'Candidate_{candidates_count}')
             log.info(f'Candidate state = {candidate["state"]}')
             if candidate['state'] == 1:
@@ -81,7 +79,7 @@ if __name__ == "__main__":
                     # if dict_for_get_pk['id'] != 0:
                     if candidates_pk is None:
                         # cand = db.map_bin_fields_to_table('Candidates', candidate)
-                        fields = ["id"]
+                        fields = ['id']
                         dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
                         db.insert_to_table('Candidates', dict_to_insert)
                         candidates_pk = db.get_pk_candidates(candidate['id'])
@@ -116,7 +114,7 @@ if __name__ == "__main__":
                         air_track_pk = db.get_pk_air_tracks(air_track['id'])
                         if air_track_pk is None:
                             # airs = db.map_bin_fields_to_table('AirTracks', air_track)
-                            fields = ["id"]
+                            fields = ['id']
                             dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
                             db.insert_to_table('AirTracks', dict_to_insert)
                             air_track_pk = db.get_pk_air_tracks(air_track['id'])
@@ -146,7 +144,7 @@ if __name__ == "__main__":
             if fs_pk is None:
                 # forbidden_sector = db.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
                 fields = ["azimuth_b_nssk", "azimuth_e_nssk", "elevation_b_nssk", "elevation_e_nssk"]
-                dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
+                dict_to_insert = {k: v for k, v in forbidden_sector.items() if k in fields}
                 db.insert_to_table('ForbiddenSectors', dict_to_insert)
             else:
                 log.warning(f'ForbiddenSector : already exists')
