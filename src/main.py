@@ -15,7 +15,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 25072
+frame_number = 0
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -150,7 +150,7 @@ if __name__ == "__main__":
                 log.warning(f'ForbiddenSector : already exists')
             forbidden_sectors_count += 1
         # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN --- #
-        time_sec = "{:7.4f}".format(time.time() - start_frame_time)
+        time_sec = "{:3.4f}".format(time.time() - start_frame_time)
         log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
 
     minutes = "{:3.2f}".format(float(time.time() - start_parsing_time) / 60)
