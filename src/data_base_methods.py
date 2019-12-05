@@ -105,6 +105,10 @@ class DataBase(DataBaseMain):
         table_name = 'CandidatesHistory'
         return self.get_pk(table_name, {'BeamTask': beam_task, 'PrimaryMark': primary_marks})
 
+    def get_pk_cand_hists_if_state_4(self, candidate_pk: int, antenna_id: int) -> int:
+        table_name = 'CandidatesHistory'
+        return self.get_pk(table_name, {'Candidate': candidate_pk, 'antennaId': antenna_id})
+
     def get_pk_c_hists_air_tracks(self, primary_marks: int) -> int:
         table_name = 'CandidatesHistory'
         return self.get_pk(table_name, {'PrimaryMark': primary_marks})

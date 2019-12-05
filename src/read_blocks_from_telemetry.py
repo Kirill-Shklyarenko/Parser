@@ -173,6 +173,28 @@ class DataBlocksReader:
             alog.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
         return container
 
+    def air_marks_update_requests(self):
+        container = []
+        air_marks_upd_req = {}
+        misses_count = {'AirMarksUpdateRequestsCount': 0}
+        air_marks_upd_count = 0
+        for group in self.frame:
+            if re.search(r'AirMarksUpdateRequests', group[0]):
+                for c in group[1:]:
+                    misses_count.update(c)
+            elif air_marks_upd_count < misses_count['AirMarksUpdateRequestsCount']:
+                if re.search(r'\bAirMarkUpdateRequest\b', group[0]) or re.search('AirMarkUpdateRequest_', group[0]):
+                    for c in group[1:]:
+                        air_marks_upd_req.update(c)
+                    if air_marks_upd_req['markId'] != 0:
+                        container.append(air_marks_upd_req.copy())
+                    air_marks_upd_count += 1
+            elif re.search('TargetingUpdateRequests', group[0]):
+                break
+        if container:
+            alog.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
+        return container
+
     @converter({'azimuthBeginNSSK': 'minAzimuth', 'azimuthEndNSSK': 'maxAzimuth',
                 'elevationBeginNSSK': 'minElevation', 'elevationEndNSSK': 'maxElevation'})
     def forbidden_sectors(self) -> list:

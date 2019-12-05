@@ -1,7 +1,8 @@
+import locale
 import logging.config
 import os
 from struct import unpack
-import locale
+
 locale.setlocale(locale.LC_ALL, '')
 
 log = logging.getLogger('FrameLogger')
@@ -74,7 +75,7 @@ class TelemetryFrameIterator(BinFrameReader):
             block_to = block.copy()
             filled_frame.append(block_to)
             block.clear()
-        log.debug('\r'.join(map(str, filled_frame)))
+        # log.debug('\r'.join(map(str, filled_frame)))
         return filled_frame
 
     def __create_serialize_string(self) -> str:
