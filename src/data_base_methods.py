@@ -70,7 +70,11 @@ class DataBase(DataBaseMain):
             log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
 
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
-    def get_pk_beam_tasks(self, task_id: int, antenna_id: int, task_type: int) -> int:
+    def get_pk_b_tasks_beam_tasks(self, task_id: int, antenna_id: int) -> int:
+        table_name = 'BeamTasks'
+        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id})
+
+    def get_pk_b_tasks_prim_marks(self, task_id: int, antenna_id: int, task_type: int) -> int:
         table_name = 'BeamTasks'
         return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
                                         'taskType': task_type})
@@ -100,6 +104,10 @@ class DataBase(DataBaseMain):
     def get_pk_cand_hists(self, beam_task: int, primary_marks: int) -> int:
         table_name = 'CandidatesHistory'
         return self.get_pk(table_name, {'BeamTask': beam_task, 'PrimaryMark': primary_marks})
+
+    def get_pk_c_hists_air_tracks(self, primary_marks: int) -> int:
+        table_name = 'CandidatesHistory'
+        return self.get_pk(table_name, {'PrimaryMark': primary_marks})
 
     def get_pk_tracks_hists(self, primary_marks: int, cand_hists: int) -> int:
         table_name = 'AirTracksHistory'
