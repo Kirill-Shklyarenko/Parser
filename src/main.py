@@ -28,15 +28,15 @@ if __name__ == "__main__":
         candidates_count = 1
         air_track_count = 1
         forbidden_sectors_count = 1
-        log.info(f'------------------------- FRAME {telemetry.frame_index - 1} -------------------------')
+        log.info(f'------------------------- FRAME {telemetry.__frame_index - 1} -------------------------')
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam_task in frame_reader.beam_tasks():
             beam_task_pk = db.get_pk_beam_tasks(beam_task['taskId'], beam_task['antennaId'], beam_task['taskType'])
             if beam_task_pk is None:
                 # beam_task = db.map_bin_fields_to_table('BeamTasks', beam_task)
-                fields = ['taskId', 'isFake', 'trackId', 'taskType', 'viewDirectionId', 'antennaId',
-                          'pulsePeriod', 'threshold', 'lowerVelocityTrim', 'upperVelocityTrim',
-                          'lowerDistanceTrim', 'upperDistanceTrim', 'beamAzimuth', 'beamElevation']
+                fields = ['taskId', 'isFake', 'trackId', 'taskType', 'viewDirectionId', 'antennaId', 'pulsePeriod',
+                          'threshold', 'lowerVelocityTrim', 'upperVelocityTrim', 'lowerDistanceTrim',
+                          'upperDistanceTrim', 'beamAzimuth', 'beamElevation']
                 dict_to_insert = {k: v for k, v in beam_task.items() if k in fields}
                 db.insert_to_table('BeamTasks', dict_to_insert)
             else:
@@ -153,5 +153,5 @@ if __name__ == "__main__":
         time_sec = "{:7.4f}".format(time.time() - start_frame_time)
         log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
 
-    minutes = float("{:7.4f}".format(time.time() - start_parsing_time)) / 60
+    minutes = "{:3.2f}".format(float(time.time() - start_parsing_time) / 60)
     log.info(f"------------------------- {minutes} minutes -------------------------\r\n\r\n")

@@ -125,7 +125,7 @@ class DataBlocksReader:
         container = []
         track = {}
         tracks_q = {'tracksQueuesSize': 0}
-        tracks_count = 0
+        # tracks_count = 0
         for index, group in enumerate(self.frame):
             if re.search(r'\bTracks\b', group[0]):
                 tracks_q = {}
