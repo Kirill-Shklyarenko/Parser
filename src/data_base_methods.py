@@ -70,6 +70,15 @@ class DataBase(DataBaseMain):
             log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
 
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
+    def get_pk_beam_tasks_all_fields(self, track_id: int, task_type: int, antenna_id: int) -> int:
+        table_name = 'BeamTasks'
+        return self.get_pk(table_name, {
+            # 'taskId': task_id,
+            'trackId': track_id,
+            'taskType': task_type,
+            'antennaId': antenna_id
+        })
+
     def get_pk_beam_tasks(self, task_id: int, antenna_id: int, task_type: int) -> int:
         table_name = 'BeamTasks'
         return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,

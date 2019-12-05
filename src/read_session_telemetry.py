@@ -1,8 +1,11 @@
 import logging.config
 import os
 from struct import unpack
+import locale
+locale.setlocale(locale.LC_ALL, '')
 
 log = logging.getLogger('FrameLogger')
+slog = logging.getLogger('simpleExample')
 alog = logging.getLogger('AirTracks_ForbSectors')
 
 
@@ -71,7 +74,7 @@ class TelemetryFrameIterator(BinFrameReader):
             block_to = block.copy()
             filled_frame.append(block_to)
             block.clear()
-        # log.debug('\r'.join(map(str, filled_frame)))
+        log.debug('\r'.join(map(str, filled_frame)))
         return filled_frame
 
     def __create_serialize_string(self) -> str:
@@ -103,8 +106,9 @@ class TelemetryFrameIterator(BinFrameReader):
             log.debug(f'Last frame is reached')
             raise StopIteration
         try:
-            log.info(f'------------------------- FRAME {self.__frame_index} -------------------------')
-            alog.info(f'------------------------- FRAME {self.__frame_index} -------------------------')
+            log.info(f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
+            alog.info(f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
+            slog.info(f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
             result = self.__fill_session_structure()
             self.__frame_index += 1
             return result

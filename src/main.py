@@ -15,10 +15,11 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
+frame_number = 0
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
-    telemetry = TelemetryFrameIterator(planner_rsf, structure, 2839)  # PUT FRAME NUMBER HERE | PUT FRAME NUMBER HERE
+    telemetry = TelemetryFrameIterator(planner_rsf, structure, frame_number)
     db = DataBase(dsn)
     start_parsing_time = time.time()
     for frame in telemetry:
@@ -28,10 +29,10 @@ if __name__ == "__main__":
         candidates_count = 1
         air_track_count = 1
         forbidden_sectors_count = 1
-        log.info(f'------------------------- FRAME {telemetry.__frame_index - 1} -------------------------')
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam_task in frame_reader.beam_tasks():
-            beam_task_pk = db.get_pk_beam_tasks(beam_task['taskId'], beam_task['antennaId'], beam_task['taskType'])
+            beam_task_pk = db.get_pk_beam_tasks_all_fields(beam_task['trackId'],
+                                                           beam_task['taskType'], beam_task['antennaId'])
             if beam_task_pk is None:
                 # beam_task = db.map_bin_fields_to_table('BeamTasks', beam_task)
                 fields = ['taskId', 'isFake', 'trackId', 'taskType', 'viewDirectionId', 'antennaId', 'pulsePeriod',
