@@ -70,26 +70,17 @@ class DataBase(DataBaseMain):
             log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
 
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
-    def get_pk_beam_tasks_all_fields(self, track_id: int, task_type: int, antenna_id: int) -> int:
-        table_name = 'BeamTasks'
-        return self.get_pk(table_name, {
-            # 'taskId': task_id,
-            'trackId': track_id,
-            'taskType': task_type,
-            'antennaId': antenna_id
-        })
-
     def get_pk_beam_tasks(self, task_id: int, antenna_id: int, task_type: int) -> int:
         table_name = 'BeamTasks'
         return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
                                         'taskType': task_type})
 
-    def get_pk_b_tasks_track_id(self, task_id: int, antenna_id: int, task_type: int, track_id: int) -> int:
+    def get_pk_b_tasks_candidates(self, track_id: int, task_id: int, antenna_id: int, task_type: int) -> int:
         table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
-                                        'taskType': task_type, 'trackId': track_id})
+        return self.get_pk(table_name, {'trackId': track_id, 'taskId': task_id, 'antennaId': antenna_id,
+                                        'taskType': task_type})
 
-    def get_pk_b_tasks_air_track(self, ids: int, antenna_id: int, task_type: int) -> int:
+    def get_pk_b_tasks_air_tracks(self, ids: int, antenna_id: int, task_type: int) -> int:
         table_name = 'BeamTasks'
         return self.get_pk(table_name, {'trackId': ids, 'antennaId': antenna_id,
                                         'taskType': task_type})

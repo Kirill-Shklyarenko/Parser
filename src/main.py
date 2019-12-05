@@ -15,7 +15,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 0
+frame_number = 25072
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -31,8 +31,7 @@ if __name__ == "__main__":
         forbidden_sectors_count = 1
         # ---------------------------------ЗАПОЛНЯЕМ "BeamTasks"--------------------------------------- #
         for beam_task in frame_reader.beam_tasks():
-            beam_task_pk = db.get_pk_beam_tasks_all_fields(beam_task['trackId'],
-                                                           beam_task['taskType'], beam_task['antennaId'])
+            beam_task_pk = db.get_pk_beam_tasks(beam_task['taskId'], beam_task['antennaId'], beam_task['taskType'])
             if beam_task_pk is None:
                 # beam_task = db.map_bin_fields_to_table('BeamTasks', beam_task)
                 fields = ['taskId', 'isFake', 'trackId', 'taskType', 'viewDirectionId', 'antennaId', 'pulsePeriod',
@@ -65,11 +64,11 @@ if __name__ == "__main__":
             log.info(f'Candidate_{candidates_count}')
             log.info(f'Candidate state = {candidate["state"]}')
             if candidate['state'] == 1:
-                beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
-                                                          1, candidate['id'])
+                beam_task_pk = db.get_pk_b_tasks_candidates(candidate['id'], candidate['taskId'],
+                                                            candidate['antennaId'], 1)
             else:
-                beam_task_pk = db.get_pk_b_tasks_track_id(candidate['taskId'], candidate['antennaId'],
-                                                          2, candidate['id'])
+                beam_task_pk = db.get_pk_b_tasks_candidates(candidate['id'], candidate['taskId'],
+                                                            candidate['antennaId'], 2)
 
             if beam_task_pk:
                 candidate.update({'BeamTask': beam_task_pk})
@@ -103,7 +102,7 @@ if __name__ == "__main__":
             log.info(f'AirTrack_{air_track_count}')
             log.info(f'AirTrack type = {air_track["type"]}')
             air_marks_misses = frame_reader.air_marks_misses()
-            beam_task_pk = db.get_pk_b_tasks_air_track(air_track['id'], air_track['antennaId'], 3)
+            beam_task_pk = db.get_pk_b_tasks_air_tracks(air_track['id'], air_track['antennaId'], 3)
             if beam_task_pk:
                 air_track.update({'BeamTask': beam_task_pk})
                 pm_pk = db.get_pk_primary_marks(air_track['BeamTask'])
