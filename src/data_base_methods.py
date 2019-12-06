@@ -1,130 +1,301 @@
+import logging.config
+import textwrap
+
 import psycopg2
-import re
 
-# ALTER SEQUENCE "Candidates_Candidate_seq" restart with 1;
-
-# SELECT DISTINCT "taskId", "taskType", "antennaId"
-# FROM public."BeamTasks"
-# ORDER BY "taskId"
-# ;
+log = logging.getLogger('simpleExample')
 
 
-# SELECT "BeamTask", "taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId", "pulsePeriod",
-# threshold, "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim", "upperDistanceTrim", "betaBSK",
-# "epsilonBSK"
-# FROM public."BeamTasks"
-# where "trackId" != 0
-# ;
+class DataBaseMain:
+    __slots__ = ('dsn', 'cur')
 
+    def __init__(self, dsn: str):
+        self.dsn = dsn
+        self.cur = self.connection()
 
-# SELECT "BeamTask", "taskId", "isFake", "trackId", "taskType", "viewDirectionId", "antennaId",
-# "pulsePeriod", threshold, "lowerVelocityTrim", "upperVelocityTrim", "lowerDistanceTrim",
-# "upperDistanceTrim", "betaBSK", "epsilonBSK"
-# FROM public."BeamTasks"
-# where "taskType" != 0
-# and "taskType" != 1
-# ;
+    def connection(self):
+        conn = None
+        try:
+            conn = psycopg2.connect(self.dsn)
+        except Exception as e:
+            print(f'There is no existing DataBase{e}')
+            print(f'Do you want to create new DataBase?')
+            print(f'y/n')
+            i = input()
+            if i == 'y':
+                d = DataBaseCreator()
+        conn.autocommit = True
+        cur = conn.cursor()
+        log.info(f'DataBase connection complete')
+        return cur
 
+    def insert_to_table(self, table_name: str, data: dict):
+        columns = ','.join([f'"{x}"' for x in data])
+        param_placeholders = ','.join(['%s' for x in range(len(data))])
+        query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
+        param_values = tuple(x for x in data.values())
+        try:
+            self.cur.execute(query, param_values)
+        except Exception as e:
+            log.exception(f'\r\nException: {e}')
+        finally:
+            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 150,
+                                      subsequent_indent='                                '))
 
-def connection() -> any:
-    conn = psycopg2.connect(dbname='Telemetry', user='postgres',
-                            password='123', host='localhost')
-    conn.autocommit = True
-    cur = conn.cursor()
-    return cur, conn
-
-
-def insert_data_to_db(table_name: str, cur: any, z: dict):
-    data = [[k, v] for k, v in z.items()]
-
-    # формирование строки запроса
-    columns = ','.join([f'"{x[0]}"' for x in data])
-    param_placeholders = ','.join(['%s' for x in range(len(data))])
-    query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
-    param_values = tuple(x[1] for x in data)
-    try:
-        cur.execute(query, param_values)
-    except Exception as e:
-        print(f'\r\nException: {e}')
-    else:
-        print(f'INSERT INTO "{table_name}" {data}')
-
-
-def read_from(table_name: str, cur: any, z: dict, fields: list) -> any:
-    data = {}
-    for key, value in z.items():
-        if key in fields:
-            data.update({key: value})
-
-    # Для того чтобы узнать имена полей таблицы
-    cur.execute(f'SELECT * FROM "{table_name}";')
-    col_names = []
-    for elt in cur.description:
-        col_names.append(elt[0])
-
-    # формирование строки запроса
-    columns = ','.join([f'"{x}"' for x in data])
-    param_placeholders = ','.join(['%s' for x in range(len(data))])
-    query = f'SELECT * FROM "{table_name}" WHERE ({columns}) = ({param_placeholders})'
-    param_values = tuple(x for x in data.values())
-    try:
-        cur.execute(query, param_values)
-    except Exception as e:
-        print(f'\r\nException: {e}')
-    else:
-        db_values = cur.fetchall()
-        if db_values:
-            wis = dict(zip(col_names, db_values[0]))
-            # print(wis)
-            return wis
+    def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> list:
+        columns = ','.join([f'"{x}"' for x in dict_for_get_pk])
+        param_placeholders = ','.join(['%s' for x in range(len(dict_for_get_pk))])
+        query = f'SELECT * FROM "{table_name}" WHERE ({columns}) = ({param_placeholders})'
+        param_values = tuple(x for x in dict_for_get_pk.values())
+        try:
+            self.cur.execute(query, param_values)
+        except Exception as e:
+            log.exception(f'\r\nException: {e}')
         else:
-            return None
+            db_values = self.cur.fetchall()
+            if db_values:
+                return db_values
+
+    def update_table(self, table_name: str, update_dict: dict, where_condition: dict, ) -> list:
+        where_condition = {}
+        key_for_condition = where_condition.keys()
+        value_for_condition = where_condition.values()
+        columns = ','.join([f'"{x}"' for x in update_dict])
+        param_placeholders = ','.join(['%s' for x in range(len(update_dict))])
+        query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders}) ' \
+                f'WHERE {key_for_condition} = {value_for_condition}'
+        param_values = tuple(x for x in update_dict.values())
+        try:
+            self.cur.execute(query, param_values)
+        except Exception as e:
+            log.exception(f'\r\nException: {e}')
+        finally:
+            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET ({columns})', 150,
+                                  subsequent_indent='                                '))
 
 
-def map_values(data: dict, col_names: list) -> dict:
-    z = []
-    returned_data = {}
-    for k, v in data.items():
-        if 'isFake' in k:
-            data['isFake'] = bool(v)
-            if data['isFake']:
-                raise Exception
-        elif 'processingTime' in k:
-            returned_data['scanTime'] = data['processingTime']
-        elif 'distancePeriod' in k:
-            returned_data['distanceZoneWeight'] = data['distancePeriod']
-        elif 'velocityPeriod' in k:
-            returned_data['velocityZoneWeight'] = data['velocityPeriod']
-        elif re.search(r'\bdistance\b', k) and 'distance' not in col_names:
-            returned_data['numDistanceZone'] = data['resolvedDistance']
-        elif re.search(r'\bvelocity\b', k):
-            returned_data['numVelocityZone'] = data['resolvedVelocity']
-        elif 'possiblePeriod[' in k:
-            z.append(v)
-        elif 'scanPeriodSeconds' in k:
-            returned_data['scanPeriod'] = data['scanPeriodSeconds']
-        elif 'nextUpdateTimeSeconds' in k:
-            returned_data['nextTimeUpdate'] = data['nextUpdateTimeSeconds']
 
-    if len(z) == 6:
-        returned_data.update({'possiblePeriods': z})
-    returned_data.update(data)
-    return returned_data
+class DataBase(DataBaseMain):
+    def __init__(self, dsn: str):
+        super().__init__(dsn)
+
+    def get_pk(self, table_name: str, dict_for_get_pk: dict) -> int:
+        data_with_pk = self.read_from_table(table_name, dict_for_get_pk)
+        if data_with_pk:
+            log.debug(f'PK received successfully : {data_with_pk[0][0]}')
+            return data_with_pk[0][0]
+        else:
+            log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
+
+    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
+    def get_pk_b_tasks_beam_tasks(self, task_id: int, antenna_id: int) -> int:
+        table_name = 'BeamTasks'
+        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id})
+
+    def get_pk_b_tasks_prim_marks(self, task_id: int, antenna_id: int, task_type: int) -> int:
+        table_name = 'BeamTasks'
+        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
+                                        'taskType': task_type})
+
+    def get_pk_b_tasks_candidates(self, track_id: int, task_id: int, antenna_id: int, task_type: int) -> int:
+        table_name = 'BeamTasks'
+        return self.get_pk(table_name, {'trackId': track_id, 'taskId': task_id, 'antennaId': antenna_id,
+                                        'taskType': task_type})
+
+    def get_pk_b_tasks_air_tracks(self, ids: int, antenna_id: int, task_type: int) -> int:
+        table_name = 'BeamTasks'
+        return self.get_pk(table_name, {'trackId': ids, 'antennaId': antenna_id,
+                                        'taskType': task_type})
+
+    def get_pk_primary_marks(self, beam_task: int) -> int:
+        table_name = 'PrimaryMarks'
+        return self.get_pk(table_name, {'BeamTask': beam_task})
+
+    def get_pk_candidates(self, ids: int) -> int:
+        table_name = 'Candidates'
+        return self.get_pk(table_name, {'id': ids})
+
+    def get_pk_air_tracks(self, ids: int) -> int:
+        table_name = 'AirTracks'
+        return self.get_pk(table_name, {'id': ids})
+
+    def get_pk_cand_hists(self, beam_task: int, primary_marks: int) -> int:
+        table_name = 'CandidatesHistory'
+        return self.get_pk(table_name, {'BeamTask': beam_task, 'PrimaryMark': primary_marks})
+
+    def get_pk_cand_hists_if_state_4(self, candidate_pk: int, antenna_id: int) -> int:
+        table_name = 'CandidatesHistory'
+        return self.get_pk(table_name, {'Candidate': candidate_pk, 'antennaId': antenna_id})
+
+    def get_pk_c_hists_air_tracks(self, primary_marks: int) -> int:
+        table_name = 'CandidatesHistory'
+        return self.get_pk(table_name, {'PrimaryMark': primary_marks})
+
+    def get_pk_tracks_hists(self, primary_marks: int, cand_hists: int) -> int:
+        table_name = 'AirTracksHistory'
+        return self.get_pk(table_name, {'PrimaryMark': primary_marks, 'CandidatesHistory': cand_hists})
+
+    def get_pk_forb_sectors(self, az_b_nssk: float, az_e_nssk: float, elev_b_nssk: float, elev_e_nssk: float) -> int:
+        table_name = 'ForbiddenSectors'
+        return self.get_pk(table_name, {'azimuthBeginNSSK': az_b_nssk, 'azimuthEndNSSK': az_e_nssk,
+                                        'elevationBeginNSSK': elev_b_nssk, 'elevationEndNSSK': elev_e_nssk})
 
 
-def prepare_data_for_db(table_name: str, cur: any, data: dict) -> dict:
-    data_to_insert = {}
-    # Узнаем имена полей таблицы
-    cur.execute(f'SELECT * FROM "{table_name}";')
-    col_names = []
-    for elt in cur.description:
-        col_names.append(elt[0])
+class DataBaseCreator:
+    def __init__(self):
+        self.name = None
+        self.password = None
+        self.create_dsn_string()
+        self.cur = self.connection()
 
-    # MAPPING (int ---> bool), имен ('type' => 'markType')
-    data = map_values(data, col_names)
+        self.create_table_beam_tasks()
+        self.create_table_primary_marks()
+        self.create_table_candidates_history()
+        self.create_table_candidates()
+        self.create_table_air_tracks_history()
+        self.create_table_air_tracks()
+        self.create_table_forb_sectors()
 
-    for key, value in data.items():
-        if key in col_names:
-            data_to_insert.update({key: value})
+    def create_dsn_string(self):
+        print(f'Enter name of DataBase')
+        self.name = input()
+        print(f'Enter password of DataBase')
+        self.password = input()
 
-    return data_to_insert
+    def connection(self):
+        con = psycopg2.connect(dbname=self.name,
+                               user='postgres', host='localhost',
+                               password=self.password)
+        con.autocommit = True
+        cur = con.cursor()
+        log.info(f'DataBase connection complete')
+        return cur
+
+    def create_table_beam_tasks(self):
+        query = """CREATE TABLE public."BeamTasks"
+        (
+        "BeamTask" serial PRIMARY KEY,
+        "taskId" integer,
+        "isFake" boolean,
+        "trackId" integer,
+        "taskType" integer,
+        "viewDirectionId" integer,
+        "antennaId" integer,
+        "pulsePeriod" real,
+        threshold real,
+        "lowerVelocityTrim" real,
+        "upperVelocityTrim" real,
+        "lowerDistanceTrim" real,
+        "upperDistanceTrim" real,
+        "beamAzimuth" real,
+        "beamElevation" real
+        )"""
+        self.cur.execute(query)
+
+    def create_table_primary_marks(self):
+        query = """CREATE TABLE public."PrimaryMarks"
+        (
+        "PrimaryMark" serial,
+        "BeamTask" serial,
+        "primaryMarkId" serial,
+        "scanTime" real,
+        "antennaId" integer,
+        "beamAzimuth" real,
+        "beamElevation" real,
+        "azimuth" real,
+        "elevation" real,
+        "markType" integer,
+        "distance" real,
+        "dopplerSpeed" real,
+        "signalLevel" real,
+        "reflectedEnergy" real,
+        CONSTRAINT "PrimaryMarks_pkey" PRIMARY KEY ("PrimaryMark"),
+        CONSTRAINT "PrimaryMarks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
+        )"""
+        self.cur.execute(query)
+
+    def create_table_candidates_history(self):
+        query = """CREATE TABLE public."CandidatesHistory"
+        (
+        "CandidatesHistory" serial PRIMARY KEY,
+        "BeamTask" serial,
+        "PrimaryMark" serial,
+        "Candidate" serial,
+        azimuth real,
+        elevation real,
+        state integer,
+        "distanceZoneWeight" real,
+        "velocityZoneWeight" real,
+        "numDistanceZone" real,
+        "numVelocityZone" real,
+        "antennaId" integer,
+        "nextTimeUpdate" real,
+        CONSTRAINT "CandidatesHistory_pkey" PRIMARY KEY ("CandidatesHistory"),
+        CONSTRAINT "Candidates_BeamTask_fkey" FOREIGN KEY ("BeamTask")
+        CONSTRAINT "Candidates_CandidatesIds_fkey" FOREIGN KEY ("Candidate")
+        CONSTRAINT "Candidates_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
+        )"""
+        self.cur.execute(query)
+
+    def create_table_candidates(self):
+        query = """CREATE TABLE public."Candidates"
+        (
+        "Candidate" serial PRIMARY KEY,
+        id integer
+        )"""
+        self.cur.execute(query)
+
+    def create_table_air_tracks_history(self):
+        query = """CREATE TABLE public."AirTracksHistory"
+        (
+        "AirTracksHistory" serial PRIMARY KEY,
+        "PrimaryMark" serial,
+        "CandidatesHistory" serial,
+        "AirTrack" serial,
+        type integer,
+        priority integer,
+        "antennaId" integer,
+        azimuth real,
+        elevation real,
+        distance real,
+        "radialVelocity" real,
+        "pulsePeriod" real,
+        "missesCount" real,
+        "possiblePeriods" real[],
+        "nextTimeUpdate" integer,
+        "scanPeriod" real,
+        "sigmaAzimuth" real,
+        "sigmaElevation" real,
+        "sigmaDistance" real,
+        "sigmaRadialVelocity" real,
+        "minDistance" real,
+        "maxDistance" real,
+        "minRadialVelocity" real,
+        "maxRadialVelocity" real,
+        CONSTRAINT "AirTracks_pkey" PRIMARY KEY ("AirTracksHistory"),
+        CONSTRAINT "AirTracksHistory_AirTrack_fkey" FOREIGN KEY ("AirTrack")
+        CONSTRAINT "AirTracks_Candidate_fkey" FOREIGN KEY ("CandidatesHistory")
+        CONSTRAINT "AirTracks_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
+        )"""
+        self.cur.execute(query)
+
+    def create_table_air_tracks(self):
+        query = """CREATE TABLE public."AirTracks"
+        (
+        "AirTrack" serial PRIMARY KEY),
+        id integer)
+        )"""
+        self.cur.execute(query)
+
+    def create_table_forb_sectors(self):
+        query = """CREATE TABLE public."ForbiddenSectors"
+        (
+        "ForbiddenSector" serial PRIMARY KEY,
+        "azimuthBeginNSSK" real,
+        "azimuthEndNSSK" real,
+        "elevationBeginNSSK" real,
+        "elevationEndNSSK" real,
+        "nextTimeUpdate" integer,
+        "isActive" boolean)
+        )"""
+        self.cur.execute(query)
