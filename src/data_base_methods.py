@@ -56,6 +56,24 @@ class DataBaseMain:
             if db_values:
                 return db_values
 
+    def update_table(self, table_name: str, update_dict: dict, where_condition: dict, ) -> list:
+        where_condition = {}
+        key_for_condition = where_condition.keys()
+        value_for_condition = where_condition.values()
+        columns = ','.join([f'"{x}"' for x in update_dict])
+        param_placeholders = ','.join(['%s' for x in range(len(update_dict))])
+        query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders}) ' \
+                f'WHERE {key_for_condition} = {value_for_condition}'
+        param_values = tuple(x for x in update_dict.values())
+        try:
+            self.cur.execute(query, param_values)
+        except Exception as e:
+            log.exception(f'\r\nException: {e}')
+        finally:
+            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET ({columns})', 150,
+                                  subsequent_indent='                                '))
+
+
 
 class DataBase(DataBaseMain):
     def __init__(self, dsn: str):

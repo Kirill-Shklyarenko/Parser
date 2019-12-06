@@ -15,7 +15,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 453
+frame_number = 0
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -45,7 +45,8 @@ if __name__ == "__main__":
         for prim_mark in frame_reader.primary_marks():
             log.info(f'PrimaryMark_{primary_marks_count}')
             log.info(f'PrimaryMark type = {prim_mark["markType"]}')
-            beam_task_pk = db.get_pk_b_tasks_prim_marks(prim_mark['taskId'], prim_mark['antennaId'], prim_mark['taskType'])
+            beam_task_pk = db.get_pk_b_tasks_prim_marks(prim_mark['taskId'], prim_mark['antennaId'],
+                                                        prim_mark['taskType'])
             if beam_task_pk:
                 prim_mark.update({'BeamTask': beam_task_pk})
                 primary_mark_pk = db.get_pk_primary_marks(prim_mark['BeamTask'])
@@ -73,23 +74,36 @@ if __name__ == "__main__":
                 log.warning(f'Candidate : already exists')
             # -----------------------ЗАПОЛНЯЕМ "CandidatesHistory"------------------- #
             if candidate['state'] == 1:
-                beam_task_pk = db.get_pk_b_tasks_candidates(candidate['id'], candidate['taskId'],
-                                                            candidate['antennaId'], 1)
+                beam_task_pk_cand = db.get_pk_b_tasks_candidates(candidate['id'], candidate['taskId'],
+                                                                 candidate['antennaId'], 1)
             else:
-                beam_task_pk = db.get_pk_b_tasks_candidates(candidate['id'], candidate['taskId'],
-                                                            candidate['antennaId'], 2)
+                beam_task_pk_cand = db.get_pk_b_tasks_candidates(candidate['id'], candidate['taskId'],
+                                                                 candidate['antennaId'], 2)
 
-            if beam_task_pk:
-                candidate.update({'BeamTask': beam_task_pk})
-                pm_pk = db.get_pk_primary_marks(candidate['BeamTask'])
-                if pm_pk:
-                    candidate.update({'PrimaryMark': pm_pk})
-                    # ------------------------ЗАПОЛНЯЕМ "AirTracksHistory"--------------------------- #
+            if beam_task_pk_cand:
+                candidate.update({'BeamTask': beam_task_pk_cand})
+                pm_pk_cand = db.get_pk_primary_marks(candidate['BeamTask'])
+                if pm_pk_cand:
+                    candidate.update({'PrimaryMark': pm_pk_cand})
+                    candidates_pk = db.get_pk_candidates(candidate['id'])
+                    candidate.update({'Candidate': candidates_pk})
+                    candidates_history_pk = db.get_pk_cand_hists(candidate['BeamTask'], candidate['PrimaryMark'])
+                    if candidates_history_pk is None:
+                        # candidate = db.map_bin_fields_to_table('CandidatesHistory', candidate)
+                        fields = ["BeamTask", "PrimaryMark", "Candidate", "azimuth", "elevation", "state",
+                                  "distanceZoneWidth", "velocityZoneWidth", "numDistanceZone", "numVelocityZone",
+                                  "antennaId", "timeUpdated"]
+                        dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
+                        db.insert_to_table('CandidatesHistory', dict_to_insert)
+                    else:
+                        log.warning(f'CandidateHistory : already exists')
+
+                    # ------------------------ЗАПОЛНЯЕМ "AirTracksHistory"----------------------------- #
                     if candidate['state'] == 4:
                         for air_marks_upd_req in frame_reader.air_marks_update_requests():
-                            candidates_pk = db.get_pk_candidates(air_marks_upd_req['markId'])
-                            if candidates_pk:
-                                air_marks_upd_req.update({'Candidate': candidates_pk})
+                            candidates_pk_cand = db.get_pk_candidates(air_marks_upd_req['markId'])
+                            if candidates_pk_cand:
+                                air_marks_upd_req.update({'Candidate': candidates_pk_cand})
                                 cand_history_pk = db.get_pk_cand_hists_if_state_4(air_marks_upd_req['Candidate'],
                                                                                   air_marks_upd_req['antennaId'])
                                 fields = ["PrimaryMark", "CandidatesHistory", "AirTrack", "type", "priority",
@@ -105,9 +119,9 @@ if __name__ == "__main__":
 
                                 air_track_pk = db.get_pk_air_tracks(air_marks_upd_req['markId'])
                                 if air_track_pk is None:
-                                    fields = ['id']
-                                    dict_to_insert = {k: v for k, v in air_marks_upd_req.items() if k in fields}
-                                    db.insert_to_table('AirTracks', dict_to_insert)
+                                    # fields = ['markId']
+                                    # dict_to_insert = {k: v for k, v in air_marks_upd_req.items() if k in fields}
+                                    db.insert_to_table('AirTracks', {'id': air_marks_upd_req['markId']})
                                 else:
                                     log.warning(f'AirTrack : already exists')
                                 air_track_pk = db.get_pk_air_tracks(air_marks_upd_req['markId'])
@@ -119,19 +133,6 @@ if __name__ == "__main__":
                                     db.insert_to_table('AirTracksHistory', fields)
                                 else:
                                     log.warning(f'AirTracksHistory : already exists')
-
-                    candidates_pk = db.get_pk_candidates(candidate['id'])
-                    candidate.update({'Candidate': candidates_pk})
-                    candidates_history_pk = db.get_pk_cand_hists(candidate['BeamTask'], candidate['PrimaryMark'])
-                    if candidates_history_pk is None:
-                        # candidate = db.map_bin_fields_to_table('CandidatesHistory', candidate)
-                        fields = ["BeamTask", "PrimaryMark", "Candidate", "azimuth", "elevation", "state",
-                                  "distanceZoneWidth", "velocityZoneWidth", "numDistanceZone", "numVelocityZone",
-                                  "antennaId", "timeUpdated"]
-                        dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
-                        db.insert_to_table('CandidatesHistory', dict_to_insert)
-                    else:
-                        log.warning(f'CandidateHistory : already exists')
             candidates_count += 1
         # ------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- #
         for air_track in frame_reader.air_tracks():
@@ -144,8 +145,11 @@ if __name__ == "__main__":
                 fields = ['id']
                 dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
                 db.insert_to_table('AirTracks', dict_to_insert)
+                air_track_pk = db.get_pk_air_tracks(air_track['id'])
+                air_track.update({'AirTrack': air_track_pk})
             else:
                 log.warning(f'AirTrack : already exists')
+                air_track.update({'AirTrack': air_track_pk})
             # ------------------------UPDATE NOT INSERT "AirTracksHistory"----------------------------- #
             beam_task_pk = db.get_pk_b_tasks_air_tracks(air_track['id'], air_track['antennaId'], 3)
             if beam_task_pk:
@@ -178,18 +182,18 @@ if __name__ == "__main__":
                             log.warning(f'AirTracksHistory : already exists')
             air_track_count += 1
         # ------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
-        for forbidden_sector in frame_reader.forbidden_sectors():
-            log.info(f'forbiddenSector_{forbidden_sectors_count}')
-            fs_pk = db.get_pk_forb_sectors(forbidden_sector['azimuth_b_nssk'], forbidden_sector['azimuth_e_nssk'],
-                                           forbidden_sector['elevation_b_nssk'], forbidden_sector['elevation_e_nssk'])
-            if fs_pk is None:
-                # forbidden_sector = db.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
-                fields = ["azimuth_b_nssk", "azimuth_e_nssk", "elevation_b_nssk", "elevation_e_nssk"]
-                dict_to_insert = {k: v for k, v in forbidden_sector.items() if k in fields}
-                db.insert_to_table('ForbiddenSectors', dict_to_insert)
-            else:
-                log.warning(f'ForbiddenSector : already exists')
-            forbidden_sectors_count += 1
+        # for forbidden_sector in frame_reader.forbidden_sectors():
+        #     log.info(f'forbiddenSector_{forbidden_sectors_count}')
+        #     fs_pk = db.get_pk_forb_sectors(forbidden_sector['azimuth_b_nssk'], forbidden_sector['azimuth_e_nssk'],
+        #                                    forbidden_sector['elevation_b_nssk'], forbidden_sector['elevation_e_nssk'])
+        #     if fs_pk is None:
+        #         # forbidden_sector = db.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
+        #         fields = ["azimuth_b_nssk", "azimuth_e_nssk", "elevation_b_nssk", "elevation_e_nssk"]
+        #         dict_to_insert = {k: v for k, v in forbidden_sector.items() if k in fields}
+        #         db.insert_to_table('ForbiddenSectors', dict_to_insert)
+        #     else:
+        #         log.warning(f'ForbiddenSector : already exists')
+        #     forbidden_sectors_count += 1
         # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN --- #
         time_sec = "{:3.4f}".format(time.time() - start_frame_time)
         log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
