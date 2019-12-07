@@ -56,23 +56,22 @@ class DataBaseMain:
             if db_values:
                 return db_values
 
-    def update_table(self, table_name: str, update_dict: dict, where_condition: dict, ) -> list:
-        where_condition = {}
-        key_for_condition = where_condition.keys()
-        value_for_condition = where_condition.values()
+    def update_table(self, table_name: str, update_dict: dict, where_condition: dict, ):
+        key_for_condition = [x for x in where_condition.keys()][0]
+        value_for_condition = [x for x in where_condition.values()][0]
         columns = ','.join([f'"{x}"' for x in update_dict])
         param_placeholders = ','.join(['%s' for x in range(len(update_dict))])
+
         query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders}) ' \
-                f'WHERE {key_for_condition} = {value_for_condition}'
+                f'WHERE "{key_for_condition}" = {value_for_condition}'
         param_values = tuple(x for x in update_dict.values())
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
             log.exception(f'\r\nException: {e}')
         finally:
-            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET ({columns})', 150,
-                                  subsequent_indent='                                '))
-
+            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET ({update_dict})', 150,
+                                      subsequent_indent='                                '))
 
 
 class DataBase(DataBaseMain):
@@ -82,7 +81,7 @@ class DataBase(DataBaseMain):
     def get_pk(self, table_name: str, dict_for_get_pk: dict) -> int:
         data_with_pk = self.read_from_table(table_name, dict_for_get_pk)
         if data_with_pk:
-            log.debug(f'PK received successfully : {data_with_pk[0][0]}')
+            log.debug(f'PK from {table_name} received successfully : {data_with_pk[0][0]}')
             return data_with_pk[0][0]
         else:
             log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
@@ -123,9 +122,9 @@ class DataBase(DataBaseMain):
         table_name = 'CandidatesHistory'
         return self.get_pk(table_name, {'BeamTask': beam_task, 'PrimaryMark': primary_marks})
 
-    def get_pk_cand_hists_if_state_4(self, candidate_pk: int, antenna_id: int) -> int:
+    def get_pk_cand_hists_if_state_4(self, dict_for_get_pk: dict) -> int:
         table_name = 'CandidatesHistory'
-        return self.get_pk(table_name, {'Candidate': candidate_pk, 'antennaId': antenna_id})
+        return self.get_pk(table_name, dict_for_get_pk)
 
     def get_pk_c_hists_air_tracks(self, primary_marks: int) -> int:
         table_name = 'CandidatesHistory'
