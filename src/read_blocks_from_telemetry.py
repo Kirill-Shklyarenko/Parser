@@ -125,29 +125,29 @@ class DataBlocksReader:
         container = []
         track = {}
         tracks_q = {'tracksQueuesSize': 0}
-        # tracks_count = 0
+        tracks_count = 0
         for index, group in enumerate(self.frame):
             if re.search(r'\bTracks\b', group[0][0]):
                 tracks_q = {}
                 for c in group[1]:
                     tracks_q.update(c)
-            # elif tracks_count < tracks_q['tracksQueuesSize']:
-            elif re.search(r'\btrack\b', group[0][0]) or re.search('track_', group[0][0]):
-                for c in group[1]:
-                    track.update(c)
-                if track['antennaId'] != 0:
-                    track.update({'possiblePeriods': [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
-                                                      track['possiblePeriod[2]'], track['possiblePeriod[3]'],
-                                                      track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]})
+            elif tracks_count < tracks_q['tracksQueuesSize']:
+                if re.search(r'\btrack\b', group[0][0]) or re.search('track_', group[0][0]):
+                    for c in group[1]:
+                        track.update(c)
+                    if track['antennaId'] != 0:
+                        track.update({'possiblePeriods': [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
+                                                          track['possiblePeriod[2]'], track['possiblePeriod[3]'],
+                                                          track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]})
 
-                    del [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
-                         track['possiblePeriod[2]'], track['possiblePeriod[3]'],
-                         track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]
-                    container.append(track.copy())
-                # tracks_count += 1
-                # if tracks_count == tracks_q['tracksQueuesSize']:
-                if len(container) == tracks_q['tracksQueuesSize']:
-                    break
+                        del [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
+                             track['possiblePeriod[2]'], track['possiblePeriod[3]'],
+                             track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]
+                        container.append(track.copy())
+                    tracks_count += 1
+                    if tracks_count == tracks_q['tracksQueuesSize']:
+                        # if len(container) == tracks_q['tracksQueuesSize']:
+                        break
         if container:
             alog.info(textwrap.fill(f'AirTrack : {container}', 150, ))
         return container

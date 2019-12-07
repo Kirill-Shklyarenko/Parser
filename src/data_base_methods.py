@@ -106,9 +106,9 @@ class DataBase(DataBaseMain):
         return self.get_pk(table_name, {'trackId': ids, 'antennaId': antenna_id,
                                         'taskType': task_type})
 
-    def get_pk_primary_marks(self, beam_task: int) -> int:
+    def get_pk_primary_marks(self, dict_for_get_pk: dict) -> int:
         table_name = 'PrimaryMarks'
-        return self.get_pk(table_name, {'BeamTask': beam_task})
+        return self.get_pk(table_name, dict_for_get_pk)
 
     def get_pk_candidates(self, ids: int) -> int:
         table_name = 'Candidates'
