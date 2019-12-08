@@ -86,25 +86,28 @@ class DataBase(DataBaseMain):
         else:
             log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
 
+    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---F
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
-    def get_pk_b_tasks_beam_tasks(self, task_id: int, antenna_id: int) -> int:
-        table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id})
+    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
 
-    def get_pk_b_tasks_prim_marks(self, task_id: int, antenna_id: int, task_type: int) -> int:
+    def get_pk_beam_tasks(self, dict_for_get_pk: dict) -> int:
         table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
-                                        'taskType': task_type})
+        return self.get_pk(table_name, dict_for_get_pk)
 
-    def get_pk_b_tasks_candidates(self, track_id: int, task_id: int, antenna_id: int, task_type: int) -> int:
-        table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'trackId': track_id, 'taskId': task_id, 'antennaId': antenna_id,
-                                        'taskType': task_type})
+    # def get_pk_b_tasks_prim_marks(self, task_id: int, antenna_id: int, task_type: int) -> int:
+    #     table_name = 'BeamTasks'
+    #     return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
+    #                                     'taskType': task_type})
 
-    def get_pk_b_tasks_air_tracks(self, ids: int, antenna_id: int, task_type: int) -> int:
-        table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'trackId': ids, 'antennaId': antenna_id,
-                                        'taskType': task_type})
+    # def get_pk_b_tasks_candidates(self, track_id: int, task_id: int, antenna_id: int, task_type: int) -> int:
+    #     table_name = 'BeamTasks'
+    #     return self.get_pk(table_name, {'trackId': track_id, 'taskId': task_id, 'antennaId': antenna_id,
+    #                                     'taskType': task_type})
+
+    # def get_pk_b_tasks_air_tracks(self, ids: int, antenna_id: int, task_type: int) -> int:
+    #     table_name = 'BeamTasks'
+    #     return self.get_pk(table_name, {'trackId': ids, 'antennaId': antenna_id,
+    #                                     'taskType': task_type})
 
     def get_pk_primary_marks(self, dict_for_get_pk: dict) -> int:
         table_name = 'PrimaryMarks'
@@ -114,25 +117,17 @@ class DataBase(DataBaseMain):
         table_name = 'Candidates'
         return self.get_pk(table_name, {'id': ids})
 
+    def get_pk_cand_hists(self, dict_for_get_pk: dict) -> int:
+        table_name = 'CandidatesHistory'
+        return self.get_pk(table_name, dict_for_get_pk)
+
     def get_pk_air_tracks(self, ids: int) -> int:
         table_name = 'AirTracks'
         return self.get_pk(table_name, {'id': ids})
 
-    def get_pk_cand_hists(self, beam_task: int, primary_marks: int) -> int:
-        table_name = 'CandidatesHistory'
-        return self.get_pk(table_name, {'BeamTask': beam_task, 'PrimaryMark': primary_marks})
-
-    def get_pk_cand_hists_if_state_4(self, dict_for_get_pk: dict) -> int:
-        table_name = 'CandidatesHistory'
-        return self.get_pk(table_name, dict_for_get_pk)
-
-    def get_pk_c_hists_air_tracks(self, primary_marks: int) -> int:
-        table_name = 'CandidatesHistory'
-        return self.get_pk(table_name, {'PrimaryMark': primary_marks})
-
-    def get_pk_tracks_hists(self, primary_marks: int, cand_hists: int) -> int:
+    def get_pk_tracks_hists(self, dict_for_get_pk: dict) -> int:
         table_name = 'AirTracksHistory'
-        return self.get_pk(table_name, {'PrimaryMark': primary_marks, 'CandidatesHistory': cand_hists})
+        return self.get_pk(table_name, dict_for_get_pk)
 
     def get_pk_forb_sectors(self, az_b_nssk: float, az_e_nssk: float, elev_b_nssk: float, elev_e_nssk: float) -> int:
         table_name = 'ForbiddenSectors'
