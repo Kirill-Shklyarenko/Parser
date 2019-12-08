@@ -57,19 +57,21 @@ class DataBaseMain:
                 return db_values
 
     def update_tables(self, table_name: str, update_dict: dict, where_condition: dict):
+        del update_dict['AirTracksHistory']
         columns = ','.join([f'"{x}"' for x in update_dict])
         param_placeholders = ','.join(['%s' for x in range(len(update_dict))])
-        keys = '\r and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
-        query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders})' \
-                f'WHERE {keys}'
+        keys = ' and '.join([f'"{k}" = (%s)' for k in where_condition.keys()])
+        first_query = f'SELECT * FROM "{table_name}" WHERE {keys}'
+        second_query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders})'
+        vals = [v for v in where_condition.values()]
         params_values = tuple(x for x in update_dict.values())
         try:
-            self.cur.execute(query, params_values)
+            self.cur.execute(first_query, vals)
+            res = self.cur.fetchall()
+            for _ in res:
+                self.cur.execute(second_query, params_values)
         except Exception as e:
             log.exception(f'\r\nException: {e}')
-        finally:
-            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET {update_dict} WHERE {where_condition}', 80,
-                                      subsequent_indent='                   '))
 
 
 class DataBase(DataBaseMain):
