@@ -15,7 +15,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 6392
+frame_number = 15469
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -187,7 +187,7 @@ if __name__ == "__main__":
                                   'CandidatesHistory': air_track_m['CandidatesHistory'],
                                   'PrimaryMark': air_track_m['PrimaryMark']})
                 air_track_count += 1
-                # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
+                # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------- #
                 for forbidden_sector in frame_reader.forbidden_sectors():
                     log.info(f'\t\t\tforbiddenSector_{forbidden_sectors_count}')
                     fs_pk = db.get_pk_forb_sectors(forbidden_sector['azimuth_b_nssk'],
@@ -195,14 +195,13 @@ if __name__ == "__main__":
                                                    forbidden_sector['elevation_b_nssk'],
                                                    forbidden_sector['elevation_e_nssk'])
                     if fs_pk is None:
-                        # forbidden_sector = db.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
                         fields = ["azimuth_b_nssk", "azimuth_e_nssk", "elevation_b_nssk", "elevation_e_nssk"]
                         dict_to_insert = {k: v for k, v in forbidden_sector.items() if k in fields}
                         db.insert_to_table('ForbiddenSectors', dict_to_insert)
                     else:
                         log.debug(f'ForbiddenSector : already exists')
                         forbidden_sectors_count += 1
-                # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---- #
+                # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN --  #
                 time_sec = "{:3.4f}".format(time.time() - start_frame_time)
                 log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
 
