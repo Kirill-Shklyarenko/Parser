@@ -39,7 +39,7 @@ class DataBaseMain:
         except Exception as e:
             log.exception(f'\r\nException: {e}')
         finally:
-            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 150,
+            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 115,
                                       subsequent_indent='                                '))
 
     def read_from_table(self, table_name: str, where_condition: dict) -> list:
@@ -68,7 +68,7 @@ class DataBaseMain:
         except Exception as e:
             log.exception(f'\r\nException: {e}')
         finally:
-            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET {update_dict} WHERE {where_condition}', 150,
+            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET {update_dict} WHERE {where_condition}', 115,
                                       subsequent_indent='                       '))
 
 
@@ -88,6 +88,8 @@ class DataBase(DataBaseMain):
         data_with_pk = self.read_from_table(table_name, where_condition)
         for idx, col in enumerate(self.cur.description):
             if [col[0]][0] == specific_field_name:
+                log.debug(
+                    f'Value "{specific_field_name}" from {table_name} received successfully : {data_with_pk[0][idx]}')
                 return {specific_field_name: data_with_pk[0][idx]}
 
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---F

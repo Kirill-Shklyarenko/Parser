@@ -142,13 +142,9 @@ class DataBlocksReader:
                         del [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
                              track['possiblePeriod[2]'], track['possiblePeriod[3]'],
                              track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]
-                        if track['possiblePeriods'][0] or track['possiblePeriods'][1] \
-                                or track['possiblePeriods'][2] or track['possiblePeriods'][3] \
-                                or track['possiblePeriods'][4] or track['possiblePeriods'][5]:
-                            container.append(track.copy())
-                            tracks_count += 1
+                        container.append(track.copy())
+                        tracks_count += 1
                     if tracks_count == tracks_q['tracksQueuesSize']:
-                        # if len(container) == tracks_q['tracksQueuesSize']:
                         break
         if container:
             alog.info(textwrap.fill(f'AirTrack : {container}', 150, ))

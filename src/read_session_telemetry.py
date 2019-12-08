@@ -106,7 +106,7 @@ class TelemetryFrameIterator(BinFrameReader):
         self.__frame_buffer = self.read_next_frame()
         try:
             result = self.__fill_session_structure()
-            log.debug('\r'.join(map(str, result)))
+            # log.debug('\r'.join(map(str, result)))
             log.info(f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
             alog.info(f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
             slog.info(f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
