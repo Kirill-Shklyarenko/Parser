@@ -15,7 +15,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 22883
+frame_number = 555
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -120,18 +120,30 @@ if __name__ == "__main__":
                     if air_track_pk is None:
                         db.insert_to_table('AirTracks', {'id': air_marks_upd_req['markId']})
 
-                    candidate_history_pk_if_state_4 = db.get_pk_cand_hists(
+                    candidate_history_pk = db.get_pk_cand_hists(
                         {'BeamTask': candidate['BeamTask'],
                          'PrimaryMark': candidate['PrimaryMark'],
                          'Candidate': candidate['Candidate']})
 
-                    if candidate_history_pk_if_state_4 is None:
+                    if candidate_history_pk is None:
                         fields = ["BeamTask", "PrimaryMark", "Candidate", "azimuth", "elevation", "state",
                                   "distanceZoneWidth", "velocityZoneWidth", "numDistanceZone",
                                   "numVelocityZone",
                                   "antennaId", "timeUpdated"]
                         dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
                         db.insert_to_table('CandidatesHistory', dict_to_insert)
+                        candidate_history_pk = db.get_pk_cand_hists(
+                            {'BeamTask': candidate['BeamTask'],
+                             'PrimaryMark': candidate['PrimaryMark'],
+                             'Candidate': candidate['Candidate']})
+                    candidate.update({'CandidatesHistory': candidate_history_pk})
+                    air_track_history_pk = db.get_pk_tracks_hists({'CandidatesHistory': candidate['CandidatesHistory'],
+                                                                   'PrimaryMark': candidate['PrimaryMark'],
+                                                                   'AirTrack': air_track_pk})
+                    if air_track_history_pk is None:
+                        db.insert_to_table('AirTracksHistory', {'CandidatesHistory': candidate['CandidatesHistory'],
+                                                                'PrimaryMark': candidate['PrimaryMark'],
+                                                                'AirTrack': air_track_pk})
                     else:
                         log.debug(f'CandidateHistory : already exists')
                         # if candidate_history_pk_if_state_4:
@@ -194,20 +206,20 @@ if __name__ == "__main__":
                 'state': 4
             })
             air_track.update({'CandidatesHistory': cand_history_pk})
-            read_values = (db.read_from_table('CandidatesHistory',
-                                              {'CandidatesHistory': air_track['CandidatesHistory']}))
-            if read_values:
-                air_track.update({'BeamTask': read_values[0][1]})
-                air_track.update({'PrimaryMark': read_values[0][2]})
+            air_track.update(db.read_specific_field('CandidatesHistory', 'BeamTask',
+                                                    {'CandidatesHistory': air_track['CandidatesHistory']}))
+
+            air_track.update(db.read_specific_field('CandidatesHistory', 'PrimaryMark',
+                                                    {'CandidatesHistory': air_track['CandidatesHistory']}))
+
+            if air_track['PrimaryMark']:
                 air_track.update(
-                    {'pulsePeriod': db.read_from_table('BeamTasks', {'BeamTask': air_track['BeamTask']})[0][7]})
+                    db.read_specific_field('BeamTasks', 'pulsePeriod', {'BeamTask': air_track['BeamTask']}))
                 air_track.update(
-                    {'scanTime': db.read_from_table('PrimaryMarks', {'PrimaryMark': air_track['PrimaryMark']})[0][3]})
+                    db.read_specific_field('PrimaryMarks', 'scanTime', {'PrimaryMark': air_track['PrimaryMark']}))
                 air_marks_misses = frame_reader.air_marks_misses()
                 if air_marks_misses:
                     air_track.update({'missesCount': air_marks_misses})
-                # else:
-                #     air_track.update({'missesCount': 0})
                 fields = ["PrimaryMark", "CandidatesHistory", "AirTrack", "type", "priority",
                           "antennaId", "azimuth", "elevation", "distance", "radialVelocity",
                           "pulsePeriod", "missesCount", "possiblePeriods", "timeUpdated",
@@ -220,25 +232,29 @@ if __name__ == "__main__":
                                                             'distance': air_track_m['distance'],
                                                             'radialVelocity': air_track_m['radialVelocity']})
                 if air_track_hist_pk is None:
-                    db.insert_to_table('AirTracksHistory', air_track_m)
+                    db.update_tables('AirTracksHistory', air_track_m,
+                                     {'CandidatesHistory': air_track['CandidatesHistory'],
+                                      'PrimaryMark': air_track['PrimaryMark']})
 
-            air_track_count += 1
-        # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
-        for forbidden_sector in frame_reader.forbidden_sectors():
-            log.info(f'\r\nforbiddenSector_{forbidden_sectors_count}')
-            fs_pk = db.get_pk_forb_sectors(forbidden_sector['azimuth_b_nssk'], forbidden_sector['azimuth_e_nssk'],
-                                           forbidden_sector['elevation_b_nssk'], forbidden_sector['elevation_e_nssk'])
-            if fs_pk is None:
-                # forbidden_sector = db.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
-                fields = ["azimuth_b_nssk", "azimuth_e_nssk", "elevation_b_nssk", "elevation_e_nssk"]
-                dict_to_insert = {k: v for k, v in forbidden_sector.items() if k in fields}
-                db.insert_to_table('ForbiddenSectors', dict_to_insert)
-            else:
-                log.debug(f'ForbiddenSector : already exists')
-            forbidden_sectors_count += 1
-        # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---- #
-        time_sec = "{:3.4f}".format(time.time() - start_frame_time)
-        log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
+                air_track_count += 1
+                # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
+                for forbidden_sector in frame_reader.forbidden_sectors():
+                    log.info(f'\r\nforbiddenSector_{forbidden_sectors_count}')
+                    fs_pk = db.get_pk_forb_sectors(forbidden_sector['azimuth_b_nssk'],
+                                                   forbidden_sector['azimuth_e_nssk'],
+                                                   forbidden_sector['elevation_b_nssk'],
+                                                   forbidden_sector['elevation_e_nssk'])
+                    if fs_pk is None:
+                        # forbidden_sector = db.map_bin_fields_to_table('ForbiddenSectors', forbidden_sector)
+                        fields = ["azimuth_b_nssk", "azimuth_e_nssk", "elevation_b_nssk", "elevation_e_nssk"]
+                        dict_to_insert = {k: v for k, v in forbidden_sector.items() if k in fields}
+                        db.insert_to_table('ForbiddenSectors', dict_to_insert)
+                    else:
+                        log.debug(f'ForbiddenSector : already exists')
+                        forbidden_sectors_count += 1
+                # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---- #
+                time_sec = "{:3.4f}".format(time.time() - start_frame_time)
+                log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
 
-    minutes = "{:3.2f}".format(float(time.time() - start_parsing_time) / 60)
-    log.info(f"------------------------- {minutes} minutes -------------------------\r\n\r\n")
+                minutes = "{:3.2f}".format(float(time.time() - start_parsing_time) / 60)
+                log.info(f"------------------------- {minutes} minutes -------------------------\r\n\r\n")

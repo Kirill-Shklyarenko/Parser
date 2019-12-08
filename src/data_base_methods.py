@@ -42,11 +42,11 @@ class DataBaseMain:
             log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 150,
                                       subsequent_indent='                                '))
 
-    def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> list:
-        columns = ','.join([f'"{x}"' for x in dict_for_get_pk])
-        param_placeholders = ','.join(['%s' for x in range(len(dict_for_get_pk))])
+    def read_from_table(self, table_name: str, where_condition: dict) -> list:
+        columns = ','.join([f'"{x}"' for x in where_condition])
+        param_placeholders = ','.join(['%s' for x in range(len(where_condition))])
         query = f'SELECT * FROM "{table_name}" WHERE ({columns}) = ({param_placeholders})'
-        param_values = tuple(x for x in dict_for_get_pk.values())
+        param_values = tuple(x for x in where_condition.values())
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
@@ -56,14 +56,13 @@ class DataBaseMain:
             if db_values:
                 return db_values
 
-    def update_table(self, table_name: str, update_dict: dict, where_condition: dict, ):
-        key_for_condition = [x for x in where_condition.keys()][0]
-        value_for_condition = [x for x in where_condition.values()][0]
+    def update_tables(self, table_name: str, update_dict: dict, where_condition: dict):
+        condition = ' and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
         columns = ','.join([f'"{x}"' for x in update_dict])
         param_placeholders = ','.join(['%s' for x in range(len(update_dict))])
 
         query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders}) ' \
-                f'WHERE "{key_for_condition}" = {value_for_condition}'
+                f'WHERE {condition}'
         param_values = tuple(x for x in update_dict.values())
         try:
             self.cur.execute(query, param_values)
@@ -78,13 +77,19 @@ class DataBase(DataBaseMain):
     def __init__(self, dsn: str):
         super().__init__(dsn)
 
-    def get_pk(self, table_name: str, dict_for_get_pk: dict) -> int:
-        data_with_pk = self.read_from_table(table_name, dict_for_get_pk)
+    def get_pk(self, table_name: str, where_condition: dict) -> int:
+        data_with_pk = self.read_from_table(table_name, where_condition)
         if data_with_pk:
             log.debug(f'PK from {table_name} received successfully : {data_with_pk[0][0]}')
             return data_with_pk[0][0]
         else:
-            log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
+            log.warning(f'PK in {table_name} : doesnt exists : {where_condition}')
+
+    def read_specific_field(self, table_name: str, specific_field_name: str, where_condition: dict) -> dict:
+        data_with_pk = self.read_from_table(table_name, where_condition)
+        for idx, col in enumerate(self.cur.description):
+            if [col[0]][0] == specific_field_name:
+                return {specific_field_name: data_with_pk[0][idx]}
 
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---F
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
@@ -93,21 +98,6 @@ class DataBase(DataBaseMain):
     def get_pk_beam_tasks(self, dict_for_get_pk: dict) -> int:
         table_name = 'BeamTasks'
         return self.get_pk(table_name, dict_for_get_pk)
-
-    # def get_pk_b_tasks_prim_marks(self, task_id: int, antenna_id: int, task_type: int) -> int:
-    #     table_name = 'BeamTasks'
-    #     return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
-    #                                     'taskType': task_type})
-
-    # def get_pk_b_tasks_candidates(self, track_id: int, task_id: int, antenna_id: int, task_type: int) -> int:
-    #     table_name = 'BeamTasks'
-    #     return self.get_pk(table_name, {'trackId': track_id, 'taskId': task_id, 'antennaId': antenna_id,
-    #                                     'taskType': task_type})
-
-    # def get_pk_b_tasks_air_tracks(self, ids: int, antenna_id: int, task_type: int) -> int:
-    #     table_name = 'BeamTasks'
-    #     return self.get_pk(table_name, {'trackId': ids, 'antennaId': antenna_id,
-    #                                     'taskType': task_type})
 
     def get_pk_primary_marks(self, dict_for_get_pk: dict) -> int:
         table_name = 'PrimaryMarks'
