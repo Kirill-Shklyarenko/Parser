@@ -15,7 +15,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 29998
+frame_number = 0
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -149,7 +149,8 @@ if __name__ == "__main__":
                     if air_track_hist_pk is None:
                         db.insert_to_table('AirTracksHistory', {'CandidatesHistory': candidate['CandidatesHistory'],
                                                                 'PrimaryMark': candidate['PrimaryMark'],
-                                                                'AirTrack': candidate['AirTrack']
+                                                                'AirTrack': candidate['AirTrack'],
+                                                                'antennaId': candidate['antennaId'],
                                                                 })
                     else:
                         log.debug(f'AirTracksHistory : already exists')

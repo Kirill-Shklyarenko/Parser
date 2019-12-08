@@ -70,6 +70,7 @@ class DataBaseMain:
             res = self.cur.fetchall()
             for _ in res:
                 self.cur.execute(second_query, params_values)
+                log.warning(f'UPDATE "{table_name}" :  {update_dict}')
         except Exception as e:
             log.exception(f'\r\nException: {e}')
 
