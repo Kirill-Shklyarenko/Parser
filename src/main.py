@@ -119,7 +119,8 @@ if __name__ == "__main__":
 
                     candidate_history_pk = db.get_pk_cand_hists({'BeamTask': candidate['BeamTask'],
                                                                  'PrimaryMark': candidate['PrimaryMark'],
-                                                                 'Candidate': candidate['Candidate']})
+                                                                 # 'Candidate': candidate['Candidate']
+                                                                 })
                     if candidate_history_pk is None:
                         fields = ["BeamTask", "PrimaryMark", "Candidate", "azimuth", "elevation", "distanceZoneWidth",
                                   "velocityZoneWidth", "numDistanceZone", "numVelocityZone", "state",
@@ -128,17 +129,20 @@ if __name__ == "__main__":
                         db.insert_to_table('CandidatesHistory', dict_to_insert)
                         candidate_history_pk = db.get_pk_cand_hists({'BeamTask': candidate['BeamTask'],
                                                                      'PrimaryMark': candidate['PrimaryMark'],
-                                                                     'Candidate': candidate['Candidate']})
+                                                                     # 'Candidate': candidate['Candidate']
+                                                                     })
 
                     candidate.update({'CandidatesHistory': candidate_history_pk})
 
                     air_track_hist_pk = db.get_pk_tracks_hists({'CandidatesHistory': candidate['CandidatesHistory'],
                                                                 'PrimaryMark': candidate['PrimaryMark'],
-                                                                'AirTrack': candidate['AirTrack']})
+                                                                # 'AirTrack': candidate['AirTrack']
+                                                                })
                     if air_track_hist_pk is None:
                         db.insert_to_table('AirTracksHistory', {'CandidatesHistory': candidate['CandidatesHistory'],
                                                                 'PrimaryMark': candidate['PrimaryMark'],
-                                                                'AirTrack': candidate['AirTrack']})
+                                                                # 'AirTrack': candidate['AirTrack']
+                                                                })
                     else:
                         log.debug(f'AirTracksHistory : already exists')
             candidates_count += 1
@@ -148,13 +152,11 @@ if __name__ == "__main__":
             log.info(f'AirTrack type = {air_track["type"]}')
             # --------------------------------------ЗАПОЛНЯЕМ "AirTracks"------------------------------ #
             air_track_pk = db.get_pk_air_tracks(air_track['id'])
-
             if air_track_pk is None:
                 fields = ['id']
                 dict_to_insert = {k: v for k, v in air_track.items() if k in fields}
                 db.insert_to_table('AirTracks', dict_to_insert)
                 air_track_pk = db.get_pk_air_tracks(air_track['id'])
-
             air_track.update({'AirTrack': air_track_pk})
             # ----------------------------------UPDATE "AirTracksHistory"------------------------------ #
             candidates_pk_air = db.get_pk_candidates(air_track['id'])
@@ -164,46 +166,45 @@ if __name__ == "__main__":
                                                     {'CandidatesHistory': air_track['CandidatesHistory']}))
             air_track.update(db.read_specific_field('CandidatesHistory', 'PrimaryMark',
                                                     {'CandidatesHistory': air_track['CandidatesHistory']}))
-            if air_track['PrimaryMark']:
-                air_track.update(db.read_specific_field('BeamTasks', 'pulsePeriod',
-                                                        {'BeamTask': air_track['BeamTask']}))
-                air_track.update(db.read_specific_field('PrimaryMarks', 'scanTime',
-                                                        {'PrimaryMark': air_track['PrimaryMark']}))
-                air_marks_misses = frame_reader.air_marks_misses()
-                if air_marks_misses:
-                    air_track.update({'missesCount': air_marks_misses})
-                fields = ["PrimaryMark", "CandidatesHistory", "AirTrack", "type", "priority",
-                          "antennaId", "azimuth", "elevation", "distance", "radialVelocity",
-                          "pulsePeriod", "missesCount", "possiblePeriods", "timeUpdated",
-                          "scanPeriod", "sigmaAzimuth", "sigmaElevation", "sigmaDistance",
-                          "sigmaRadialVelocity", "minDistance", "maxDistance", "minRadialVelocity",
-                          "maxRadialVelocity", "scanTime"]
-                air_track_m = {k: v for k, v in air_track.items() if k in fields}
-                air_track_hist_pk = db.get_pk_tracks_hists({'CandidatesHistory': air_track_m['CandidatesHistory'],
-                                                            'PrimaryMark': air_track_m['PrimaryMark']})
-                air_track_m.update({'AirTracksHistory': air_track_hist_pk})
-                db.update_tables('AirTracksHistory', air_track_m,
-                                 {'AirTracksHistory': air_track_m['AirTracksHistory'],
-                                  'CandidatesHistory': air_track_m['CandidatesHistory'],
-                                  'PrimaryMark': air_track_m['PrimaryMark']})
+            air_track.update(db.read_specific_field('BeamTasks', 'pulsePeriod',
+                                                    {'BeamTask': air_track['BeamTask']}))
+            air_track.update(db.read_specific_field('PrimaryMarks', 'scanTime',
+                                                    {'PrimaryMark': air_track['PrimaryMark']}))
+            air_marks_misses = frame_reader.air_marks_misses()
+            if air_marks_misses:
+                air_track.update({'missesCount': air_marks_misses})
+            fields = ["PrimaryMark", "CandidatesHistory", "AirTrack", "type", "priority",
+                      "antennaId", "azimuth", "elevation", "distance", "radialVelocity",
+                      "pulsePeriod", "missesCount", "possiblePeriods", "timeUpdated",
+                      "scanPeriod", "sigmaAzimuth", "sigmaElevation", "sigmaDistance",
+                      "sigmaRadialVelocity", "minDistance", "maxDistance", "minRadialVelocity",
+                      "maxRadialVelocity", "scanTime"]
+            air_track_m = {k: v for k, v in air_track.items() if k in fields}
+            air_track_hist_pk = db.get_pk_tracks_hists({'CandidatesHistory': air_track_m['CandidatesHistory'],
+                                                        'PrimaryMark': air_track_m['PrimaryMark']})
+            air_track_m.update({'AirTracksHistory': air_track_hist_pk})
+            db.update_tables('AirTracksHistory', air_track_m,
+                             {'AirTracksHistory': air_track_m['AirTracksHistory'],
+                              'CandidatesHistory': air_track_m['CandidatesHistory'],
+                              'PrimaryMark': air_track_m['PrimaryMark']})
             air_track_count += 1
-            # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------- #
-            for forbidden_sector in frame_reader.forbidden_sectors():
-                log.info(f'\t\t\tforbiddenSector_{forbidden_sectors_count}')
-                fs_pk = db.get_pk_forb_sectors(forbidden_sector['azimuth_b_nssk'],
-                                               forbidden_sector['azimuth_e_nssk'],
-                                               forbidden_sector['elevation_b_nssk'],
-                                               forbidden_sector['elevation_e_nssk'])
-                if fs_pk is None:
-                    fields = ["azimuth_b_nssk", "azimuth_e_nssk", "elevation_b_nssk", "elevation_e_nssk"]
-                    dict_to_insert = {k: v for k, v in forbidden_sector.items() if k in fields}
-                    db.insert_to_table('ForbiddenSectors', dict_to_insert)
-                else:
-                    log.debug(f'ForbiddenSector : already exists')
-                forbidden_sectors_count += 1
-            # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN --  #
-            time_sec = "{:3.4f}".format(time.time() - start_frame_time)
-            log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
+        # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"--------------------------- #
+        for forbidden_sector in frame_reader.forbidden_sectors():
+            log.info(f'\t\t\tforbiddenSector_{forbidden_sectors_count}')
+            fs_pk = db.get_pk_forb_sectors(forbidden_sector['azimuth_b_nssk'],
+                                           forbidden_sector['azimuth_e_nssk'],
+                                           forbidden_sector['elevation_b_nssk'],
+                                           forbidden_sector['elevation_e_nssk'])
+            if fs_pk is None:
+                fields = ["azimuth_b_nssk", "azimuth_e_nssk", "elevation_b_nssk", "elevation_e_nssk"]
+                dict_to_insert = {k: v for k, v in forbidden_sector.items() if k in fields}
+                db.insert_to_table('ForbiddenSectors', dict_to_insert)
+            else:
+                log.debug(f'ForbiddenSector : already exists')
+            forbidden_sectors_count += 1
+        # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN --  #
+        time_sec = "{:3.4f}".format(time.time() - start_frame_time)
+        log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
 
     minutes = "{:3.2f}".format(float(time.time() - start_parsing_time) / 60)
     log.info(f"------------------------- {minutes} minutes -------------------------\r\n\r\n")

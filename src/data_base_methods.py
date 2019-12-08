@@ -89,7 +89,7 @@ class DataBase(DataBaseMain):
         for idx, col in enumerate(self.cur.description):
             if [col[0]][0] == specific_field_name:
                 log.debug(
-                    f'Value "{specific_field_name}" from {table_name} received : {data_with_pk[0][idx]}')
+                    f'"{specific_field_name}" from {table_name} received : {data_with_pk[0][idx]}')
                 return {specific_field_name: data_with_pk[0][idx]}
 
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---F
