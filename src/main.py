@@ -15,7 +15,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 555
+frame_number = 2839
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -99,15 +99,15 @@ if __name__ == "__main__":
             elif candidate['state'] == 4:
                 log.warning(f'Need to get AirMarksUpdateRequests')
                 for air_marks_upd_req in frame_reader.air_marks_update_requests():
-                    beam_task_pk = db.get_pk_beam_tasks(
-                        {'trackId': air_marks_upd_req['markId'], 'taskId': candidate['taskId'],
-                         'antennaId': air_marks_upd_req['antennaId'], 'taskType': 2})
-                    if beam_task_pk:
-                        log.warning(f'FINDED BT_PK WITH air_marks_upd_req[markId]')
-                        candidate.update({'BeamTask': beam_task_pk})
-                    else:
-                        log.debug(f'PK from BeamTasks received successfully : {beam_task_pk_cand}')
-                        candidate.update({'BeamTask': beam_task_pk_cand})
+                    # beam_task_pk = db.get_pk_beam_tasks(
+                    #     {'trackId': air_marks_upd_req['markId'], 'taskId': candidate['taskId'],
+                    #      'antennaId': air_marks_upd_req['antennaId'], 'taskType': 2})
+                    # if beam_task_pk:
+                    #     log.warning(f'FINDED BT_PK WITH air_marks_upd_req[markId]')
+                    #     candidate.update({'BeamTask': beam_task_pk})
+                    # else:
+                    # log.debug(f'PK from BeamTasks received successfully : {beam_task_pk_cand}')
+                    candidate.update({'BeamTask': beam_task_pk_cand})
 
                     candidate.update({'PrimaryMark': db.get_pk_primary_marks(
                         {'BeamTask': candidate['BeamTask'],
