@@ -42,7 +42,7 @@ if __name__ == "__main__":
                 log.debug(f'BeamTask : already exists')
         # ---------------------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"--------------------------------------- #
         for prim_mark in frame_reader.primary_marks():
-            log.info(f'\tPrimaryMark_{primary_marks_count}')
+            log.info(f'\t\t\t\t\tPrimaryMark_{primary_marks_count}')
             log.info(f'PrimaryMark type = {prim_mark["markType"]}')
             beam_task_pk = db.get_pk_beam_tasks({'taskId': prim_mark['taskId'], 'antennaId': prim_mark['antennaId'],
                                                  'taskType': prim_mark['taskType']})
@@ -60,7 +60,7 @@ if __name__ == "__main__":
             primary_marks_count += 1
         # --------------------------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_reader.candidates():
-            log.info(f'\t\t\tCandidate_{candidates_count}')
+            log.info(f'\t\t\t\t\tCandidate_{candidates_count}')
             log.info(f'Candidate state = {candidate["state"]}')
             # -----------------------------------ЗАПОЛНЯЕМ "Candidates"-------------------------------- #
             candidates_pk = db.get_pk_candidates(candidate['id'])
@@ -144,7 +144,7 @@ if __name__ == "__main__":
             candidates_count += 1
         # ---------------------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- #
         for air_track in frame_reader.air_tracks():
-            log.info(f'\t\t\tAirTrack_{air_track_count}')
+            log.info(f'\t\t\t\t\tAirTrack_{air_track_count}')
             log.info(f'AirTrack type = {air_track["type"]}')
             # --------------------------------------ЗАПОЛНЯЕМ "AirTracks"------------------------------ #
             air_track_pk = db.get_pk_air_tracks(air_track['id'])
@@ -200,7 +200,7 @@ if __name__ == "__main__":
                     db.insert_to_table('ForbiddenSectors', dict_to_insert)
                 else:
                     log.debug(f'ForbiddenSector : already exists')
-                    forbidden_sectors_count += 1
+                forbidden_sectors_count += 1
             # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN --  #
             time_sec = "{:3.4f}".format(time.time() - start_frame_time)
             log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
