@@ -57,20 +57,19 @@ class DataBaseMain:
                 return db_values
 
     def update_tables(self, table_name: str, update_dict: dict, where_condition: dict):
-        condition = ' and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
         columns = ','.join([f'"{x}"' for x in update_dict])
         param_placeholders = ','.join(['%s' for x in range(len(update_dict))])
-
-        query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders}) ' \
-                f'WHERE {condition}'
-        param_values = tuple(x for x in update_dict.values())
+        keys = '\r and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
+        query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders})' \
+                f'WHERE {keys}'
+        params_values = tuple(x for x in update_dict.values())
         try:
-            self.cur.execute(query, param_values)
+            self.cur.execute(query, params_values)
         except Exception as e:
             log.exception(f'\r\nException: {e}')
         finally:
-            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET ({update_dict})', 150,
-                                      subsequent_indent='                                '))
+            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET {update_dict} WHERE {where_condition}', 150,
+                                      subsequent_indent='                       '))
 
 
 class DataBase(DataBaseMain):
