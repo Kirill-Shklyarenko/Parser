@@ -1,13 +1,10 @@
-import locale
 import logging.config
 import os
 from struct import unpack
 
-locale.setlocale(locale.LC_ALL, '')
-
-log = logging.getLogger('FrameLogger')
-slog = logging.getLogger('simpleExample')
-alog = logging.getLogger('AirTracks_ForbSectors')
+frame_log = logging.getLogger('FrameLogger')
+console_log = logging.getLogger('simpleExample')
+air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
 
 
 class BinFrameReader:
@@ -20,10 +17,10 @@ class BinFrameReader:
         self.__file = open(self.__file_name, 'rb', 1)
         self.__frames_count = self.__frame_counter()
 
-    def init_to_start(self, frame_index):
+    def _init_to_start(self, frame_index):
         self.__file.seek(self.__frame_size_in_bytes * frame_index + self.__header_size)
 
-    def read_next_frame(self) -> bytes:
+    def _read_next_frame(self) -> bytes:
         return self.__file.read(self.__frame_size_in_bytes)
 
     def __frame_counter(self) -> int:
@@ -31,11 +28,10 @@ class BinFrameReader:
         frames_count = 0
         try:
             frames_count = file_size / self.__frame_size_in_bytes
-        except ZeroDivisionError as e:
-            log.exception(f'{e} , {frames_count}')
-        finally:
-            log.info(f'frames_count = {int(frames_count)}')
+            frame_log.info(f'frames_count = {int(frames_count)}')
             return int(frames_count)
+        except ZeroDivisionError as e:
+            frame_log.exception(f'{e} , {frames_count}')
 
 
 class TelemetryFrameIterator(BinFrameReader):
@@ -77,21 +73,25 @@ class TelemetryFrameIterator(BinFrameReader):
         return serialize_string
 
     def __iter__(self):
-        self.init_to_start(self.__frame_index)
+        self._init_to_start(self.__frame_index)
         return self
 
     def __next__(self):
-        self.__frame_buffer = self.read_next_frame()
-        if len(self.__frame_buffer) == 0:
-            log.debug(f'Last frame is reached')
-            raise StopIteration
+        self.__frame_buffer = self._read_next_frame()
         try:
-            result = self.__fill_session_structure()
-            # log.debug('\r'.join(map(str, result)))
-            log.info(f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
-            alog.info(f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
-            slog.info(f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
-            self.__frame_index += 1
-            return result
+            if self.__frame_buffer:
+                result = self.__fill_session_structure()
+                frame_log.debug('\r'.join(map(str, result)))
+                frame_log.info(
+                    f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
+                air_tracks_log.info(
+                    f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
+                console_log.info(
+                    f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
+                self.__frame_index += 1
+                return result
+            else:
+                console_log.debug(f'Last frame is reached')
+                raise StopIteration
         except IndexError:
             raise StopIteration

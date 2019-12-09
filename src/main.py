@@ -13,9 +13,8 @@ log = logging.getLogger('simpleExample')
 data_folder = Path(r'../data/session_01/')
 planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
-logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 49021
+frame_number = 0
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
