@@ -2,76 +2,56 @@ import logging.config
 import os
 from struct import unpack
 
-log = logging.getLogger('FrameLogger')
+frame_log = logging.getLogger('FrameLogger')
+console_log = logging.getLogger('simpleExample')
+air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
 
 
 class BinFrameReader:
-    __slots__ = ('__file_name', '__frame_size_in_bytes', '__header_size', '__file_obj', '__frames_count')
+    __slots__ = ('__file_name', '__frame_size_in_bytes', '__header_size', '__file', '__frames_count')
 
     def __init__(self, file_name: str, structure, header_size=14):
         self.__file_name = file_name
         self.__frame_size_in_bytes = structure.frame_size * 2
         self.__header_size = header_size
-        self.__file_obj = open(self.__file_name, 'rb', 1)
+        self.__file = open(self.__file_name, 'rb', 1)
         self.__frames_count = self.__frame_counter()
 
-    def init_to_start(self, frame_index):
-        self.__file_obj.seek(self.__frame_size_in_bytes * frame_index + self.__header_size)
+    def _init_to_start(self, frame_index):
+        self.__file.seek(self.__frame_size_in_bytes * frame_index + self.__header_size)
 
-    def read_next_frame(self) -> bytes:
-        return self.__file_obj.read(self.__frame_size_in_bytes)
+    def _read_next_frame(self) -> bytes:
+        return self.__file.read(self.__frame_size_in_bytes)
 
     def __frame_counter(self) -> int:
         file_size = os.path.getsize(self.__file_name) - self.__header_size
         frames_count = 0
         try:
             frames_count = file_size / self.__frame_size_in_bytes
-        except ZeroDivisionError as e:
-            log.exception(f'{e} , {frames_count}')
-        finally:
-            log.info(f'frames_count = {int(frames_count)}')
+            frame_log.info(f'frames_count = {int(frames_count)}')
             return int(frames_count)
+        except ZeroDivisionError as e:
+            frame_log.exception(f'{e} , {frames_count}')
 
 
 class TelemetryFrameIterator(BinFrameReader):
-    __slots__ = ('__data_struct', 'frame_index', '__frame_buffer', '__serialize_string')
+    __slots__ = ('__data_struct', '__frame_index', '__frame_buffer', '__serialize_string')
 
     def __init__(self, file_name: str, structure, frame_index=0):
         super().__init__(file_name, structure)
-        self.frame_index = frame_index
+        self.__frame_index = frame_index
         self.__data_struct = structure.structure
         self.__frame_buffer = None
         self.__serialize_string = self.__create_serialize_string()
 
     def __convert_buffer_to_values(self) -> tuple:
-        try:
-            frame_values = unpack(self.__serialize_string, self.__frame_buffer)
-            return frame_values
-        except Exception as e:
-            log.exception(f'Exception: {e}')
+        return unpack(self.__serialize_string, self.__frame_buffer)
 
     def __fill_session_structure(self) -> list:
         frame_values = self.__convert_buffer_to_values()
-        index = 0
-        filled_frame = []
-        block = []
-        params = {}
-        for line in self.__data_struct:
-            block.append(line[0])
-            for c in line:
-                if type(c) is dict:
-                    key = c.get('name')
-                    value = frame_values[index]
-                    index += 1
-                    params.update({key: value})
-            params_to = params.copy()
-            block.append(params_to)
-            params.clear()
-            block_to = block.copy()
-            filled_frame.append(block_to)
-            block.clear()
-        log.debug('\r'.join(map(str, filled_frame)))
-        return filled_frame
+        return list(zip([[c for c in line if type(c) is str] for line in self.__data_struct],
+                        [[{c.get('name'): frame_values[c.get('index')]} for c in line if type(c) is dict] for line in
+                         self.__data_struct]))
 
     def __create_serialize_string(self) -> str:
         serialize_string = '='
@@ -93,18 +73,25 @@ class TelemetryFrameIterator(BinFrameReader):
         return serialize_string
 
     def __iter__(self):
-        self.init_to_start(self.frame_index)
+        self._init_to_start(self.__frame_index)
         return self
 
     def __next__(self):
-        self.__frame_buffer = self.read_next_frame()
-        if len(self.__frame_buffer) == 0:
-            log.debug(f'Last frame is reached')
-            raise StopIteration
+        self.__frame_buffer = self._read_next_frame()
         try:
-            log.info(f'------------------------- FRAME {self.frame_index} -------------------------')
-            result = self.__fill_session_structure()
-            self.frame_index += 1
-            return result
+            if self.__frame_buffer:
+                result = self.__fill_session_structure()
+                frame_log.debug('\r'.join(map(str, result)))
+                frame_log.info(
+                    f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
+                air_tracks_log.info(
+                    f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
+                console_log.info(
+                    f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
+                self.__frame_index += 1
+                return result
+            else:
+                console_log.debug(f'Last frame is reached')
+                raise StopIteration
         except IndexError:
             raise StopIteration
