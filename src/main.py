@@ -13,13 +13,12 @@ log = logging.getLogger('simpleExample')
 data_folder = Path(r'../data/session_01/')
 planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
-dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
 frame_number = 0
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
     telemetry = TelemetryFrameIterator(planner_rsf, structure, frame_number)
-    db = DataBase(dsn)
+    db = DataBase()
     start_parsing_time = time.time()
     candidate_history_pk_if_state_4 = 0
     for frame in telemetry:

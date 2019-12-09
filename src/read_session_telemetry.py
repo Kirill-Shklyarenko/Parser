@@ -28,10 +28,11 @@ class BinFrameReader:
         frames_count = 0
         try:
             frames_count = file_size / self.__frame_size_in_bytes
-            frame_log.info(f'frames_count = {int(frames_count)}')
-            return int(frames_count)
         except ZeroDivisionError as e:
             frame_log.exception(f'{e} , {frames_count}')
+        else:
+            frame_log.info(f'frames_count = {int(frames_count)}')
+            return int(frames_count)
 
 
 class TelemetryFrameIterator(BinFrameReader):
@@ -78,9 +79,12 @@ class TelemetryFrameIterator(BinFrameReader):
 
     def __next__(self):
         self.__frame_buffer = self._read_next_frame()
-        try:
-            if self.__frame_buffer:
+        if self.__frame_buffer:
+            try:
                 result = self.__fill_session_structure()
+            except IndexError:
+                raise StopIteration
+            else:
                 frame_log.debug('\r'.join(map(str, result)))
                 frame_log.info(
                     f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
@@ -90,8 +94,6 @@ class TelemetryFrameIterator(BinFrameReader):
                     f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
                 self.__frame_index += 1
                 return result
-            else:
-                console_log.debug(f'Last frame is reached')
-                raise StopIteration
-        except IndexError:
+        else:
+            console_log.debug(f'Last frame is reached')
             raise StopIteration

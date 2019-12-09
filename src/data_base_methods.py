@@ -7,22 +7,30 @@ log = logging.getLogger('simpleExample')
 
 
 class DataBaseMain:
-    __slots__ = ('dsn', 'cur')
+    __slots__ = ('__dsn', 'cur')
 
-    def __init__(self, dsn: str):
-        self.dsn = dsn
+    def __init__(self):
+        self.__dsn = self.create_dsn_string()
         self.cur = self.connection()
+
+    @staticmethod
+    def create_dsn_string():
+        print(f'Enter name of DataBase')
+        name = input()
+        print(f'Enter password of DataBase')
+        password = input()
+        return f'dbname={name} user=postgres password={password} host=localhost'
 
     def connection(self):
         try:
-            conn = psycopg2.connect(self.dsn)
+            conn = psycopg2.connect(self.__dsn)
         except Exception as e:
             print(f'There is no existing DataBase{e}')
-            print(f'Do you want to create new DataBase?')
-            print(f'y/n')
-            i = input()
-            if i == 'y':
-                DataBaseCreator()
+            # print(f'Do you want to create new DataBase?')
+            # print(f'y/n')
+            # i = input()
+            # if i == 'y':
+            #     DataBaseCreator()
         else:
             conn.autocommit = True
             cur = conn.cursor()
@@ -75,8 +83,8 @@ class DataBaseMain:
 
 
 class DataBase(DataBaseMain):
-    def __init__(self, dsn: str):
-        super().__init__(dsn)
+    def __init__(self):
+        super().__init__()
 
     def get_pk(self, table_name: str, where_condition: dict) -> int:
         data_with_pk = self.read_from_table(table_name, where_condition)
@@ -127,175 +135,174 @@ class DataBase(DataBaseMain):
         return self.get_pk(table_name, {'azimuthBeginNSSK': az_b_nssk, 'azimuthEndNSSK': az_e_nssk,
                                         'elevationBeginNSSK': elev_b_nssk, 'elevationEndNSSK': elev_e_nssk})
 
-
-class DataBaseCreator:
-    def __init__(self):
-        try:
-            self.name = None
-            self.password = None
-            self.create_dsn_string()
-
-            self.cur = self.connection()
-            self.create_data_base()
-            self.create_table_beam_tasks()
-            self.create_table_primary_marks()
-            self.create_table_candidates_history()
-            self.create_table_candidates()
-            self.create_table_air_tracks_history()
-            self.create_table_air_tracks()
-            self.create_table_forb_sectors()
-        except psycopg2.ProgrammingError as e:
-            log.exception(f'{e}')
-
-    def create_dsn_string(self):
-        print(f'Enter name of DataBase')
-        self.name = input()
-        print(f'Enter password of DataBase')
-        self.password = input()
-
-    def connection(self):
-        con = psycopg2.connect(dbname='postgres', user='postgres',
-                               host='localhost', password='123', port=5432)
-        con.autocommit = True
-        cur = con.cursor()
-        log.info(f'DataBase connection complete')
-        return cur
-
-    def create_data_base(self):
-        query = f'CREATE DATABASE "{self.name}"'
-        self.cur.execute(query)
-
-    def create_table_beam_tasks(self):
-        self.cur.execute(f'DROP TABLE IF EXISTS "BeamTasks"')
-        query = """CREATE TABLE "BeamTasks"
-        (
-        "BeamTask" serial PRIMARY KEY,
-        "taskId" integer,
-        "isFake" boolean,
-        "trackId" integer,
-        "taskType" integer,
-        "viewDirectionId" integer,
-        "antennaId" integer,
-        "pulsePeriod" real,
-        threshold real,
-        "lowerVelocityTrim" real,
-        "upperVelocityTrim" real,
-        "lowerDistanceTrim" real,
-        "upperDistanceTrim" real,
-        "beamAzimuth" real,
-        "beamElevation" real
-        )"""
-        self.cur.execute(query)
-
-    def create_table_primary_marks(self):
-        self.cur.execute("DROP TABLE IF EXISTS PrimaryMarks")
-        query = """CREATE TABLE "PrimaryMarks"
-        (
-        "PrimaryMark" serial PRIMARY KEY,
-        "BeamTask" serial,
-        "primaryMarkId" integer,
-        "scanTime" real,
-        "antennaId" integer,
-        "beamAzimuth" real,
-        "beamElevation" real,
-        "azimuth" real,
-        "elevation" real,
-        "markType" integer,
-        "distance" real,
-        "dopplerSpeed" real,
-        "signalLevel" real,
-        "reflectedEnergy" real,
-        CONSTRAINT "BeamTasks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
-        )"""
-        self.cur.execute(query)
-
-    def create_table_candidates_history(self):
-        self.cur.execute("DROP TABLE IF EXISTS CandidatesHistory")
-        query = """CREATE TABLE "CandidatesHistory"
-        (
-        "CandidatesHistory" serial PRIMARY KEY,
-        "BeamTask" serial,
-        "PrimaryMark" serial,
-        "Candidate" serial,
-        azimuth real,
-        elevation real,
-        state integer,
-        "distanceZoneWeight" real,
-        "velocityZoneWeight" real,
-        "numDistanceZone" real,
-        "numVelocityZone" real,
-        "antennaId" integer,
-        "nextTimeUpdate" real
-        CONSTRAINT "CandidatesHistory_pkey" PRIMARY KEY ("CandidatesHistory"),
-        CONSTRAINT "Candidates_BeamTask_fkey" FOREIGN KEY ("BeamTask")
-        CONSTRAINT "Candidates_CandidatesIds_fkey" FOREIGN KEY ("Candidate")
-        CONSTRAINT "Candidates_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
-        )"""
-        self.cur.execute(query)
-
-    def create_table_candidates(self):
-        self.cur.execute("DROP TABLE IF EXISTS Candidates")
-        query = """CREATE TABLE "Candidates"
-        (
-        "Candidate" serial PRIMARY KEY,
-        id integer
-        )"""
-        self.cur.execute(query)
-
-    def create_table_air_tracks_history(self):
-        self.cur.execute("DROP TABLE IF EXISTS AirTracksHistory")
-        query = """CREATE TABLE "AirTracksHistory"
-        (
-        "AirTracksHistory" serial PRIMARY KEY,
-        "PrimaryMark" serial FOREIGN KEY,
-        "CandidatesHistory" serial FOREIGN KEY,
-        "AirTrack" serial FOREIGN KEY,
-        type integer,
-        priority integer,
-        "antennaId" integer,
-        azimuth real,
-        elevation real,
-        distance real,
-        "radialVelocity" real,
-        "pulsePeriod" real,
-        "missesCount" real,
-        "possiblePeriods" real[],
-        "nextTimeUpdate" integer,
-        "scanPeriod" real,
-        "sigmaAzimuth" real,
-        "sigmaElevation" real,
-        "sigmaDistance" real,
-        "sigmaRadialVelocity" real,
-        "minDistance" real,
-        "maxDistance" real,
-        "minRadialVelocity" real,
-        "maxRadialVelocity" real
-        CONSTRAINT "AirTracks_pkey" PRIMARY KEY ("AirTracksHistory"),
-        CONSTRAINT "AirTracksHistory_AirTrack_fkey" FOREIGN KEY ("AirTrack")
-        CONSTRAINT "AirTracks_Candidate_fkey" FOREIGN KEY ("CandidatesHistory")
-        CONSTRAINT "AirTracks_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
-        )"""
-        self.cur.execute(query)
-
-    def create_table_air_tracks(self):
-        self.cur.execute("DROP TABLE IF EXISTS AirTracks")
-        query = """CREATE TABLE "AirTracks"
-        (
-        "AirTrack" serial PRIMARY KEY),
-        id integer)
-        )"""
-        self.cur.execute(query)
-
-    def create_table_forb_sectors(self):
-        self.cur.execute("DROP TABLE IF EXISTS ForbiddenSectors")
-        query = """CREATE TABLE "ForbiddenSectors"
-        (
-        "ForbiddenSector" serial PRIMARY KEY,
-        "azimuthBeginNSSK" real,
-        "azimuthEndNSSK" real,
-        "elevationBeginNSSK" real,
-        "elevationEndNSSK" real,
-        "nextTimeUpdate" integer,
-        "isActive" boolean)
-        )"""
-        self.cur.execute(query)
+# class DataBaseCreator:
+#     def __init__(self):
+#         try:
+#             self.name = None
+#             self.password = None
+#             self.create_dsn_string()
+#
+#             self.cur = self.connection()
+#             self.create_data_base()
+#             self.create_table_beam_tasks()
+#             self.create_table_primary_marks()
+#             self.create_table_candidates_history()
+#             self.create_table_candidates()
+#             self.create_table_air_tracks_history()
+#             self.create_table_air_tracks()
+#             self.create_table_forb_sectors()
+#         except psycopg2.ProgrammingError as e:
+#             log.exception(f'{e}')
+#
+#     def create_dsn_string(self):
+#         print(f'Enter name of DataBase')
+#         self.name = input()
+#         print(f'Enter password of DataBase')
+#         self.password = input()
+#
+#     def connection(self):
+#         con = psycopg2.connect(dbname='postgres', user='postgres',
+#                                host='localhost', password='123', port=5432)
+#         con.autocommit = True
+#         cur = con.cursor()
+#         log.info(f'DataBase connection complete')
+#         return cur
+#
+#     def create_data_base(self):
+#         query = f'CREATE DATABASE "{self.name}"'
+#         self.cur.execute(query)
+#
+#     def create_table_beam_tasks(self):
+#         self.cur.execute(f'DROP TABLE IF EXISTS "BeamTasks"')
+#         query = """CREATE TABLE "BeamTasks"
+#         (
+#         "BeamTask" serial PRIMARY KEY,
+#         "taskId" integer,
+#         "isFake" boolean,
+#         "trackId" integer,
+#         "taskType" integer,
+#         "viewDirectionId" integer,
+#         "antennaId" integer,
+#         "pulsePeriod" real,
+#         threshold real,
+#         "lowerVelocityTrim" real,
+#         "upperVelocityTrim" real,
+#         "lowerDistanceTrim" real,
+#         "upperDistanceTrim" real,
+#         "beamAzimuth" real,
+#         "beamElevation" real
+#         )"""
+#         self.cur.execute(query)
+#
+#     def create_table_primary_marks(self):
+#         self.cur.execute("DROP TABLE IF EXISTS PrimaryMarks")
+#         query = """CREATE TABLE "PrimaryMarks"
+#         (
+#         "PrimaryMark" serial PRIMARY KEY,
+#         "BeamTask" serial,
+#         "primaryMarkId" integer,
+#         "scanTime" real,
+#         "antennaId" integer,
+#         "beamAzimuth" real,
+#         "beamElevation" real,
+#         "azimuth" real,
+#         "elevation" real,
+#         "markType" integer,
+#         "distance" real,
+#         "dopplerSpeed" real,
+#         "signalLevel" real,
+#         "reflectedEnergy" real,
+#         CONSTRAINT "BeamTasks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
+#         )"""
+#         self.cur.execute(query)
+#
+#     def create_table_candidates_history(self):
+#         self.cur.execute("DROP TABLE IF EXISTS CandidatesHistory")
+#         query = """CREATE TABLE "CandidatesHistory"
+#         (
+#         "CandidatesHistory" serial PRIMARY KEY,
+#         "BeamTask" serial,
+#         "PrimaryMark" serial,
+#         "Candidate" serial,
+#         azimuth real,
+#         elevation real,
+#         state integer,
+#         "distanceZoneWeight" real,
+#         "velocityZoneWeight" real,
+#         "numDistanceZone" real,
+#         "numVelocityZone" real,
+#         "antennaId" integer,
+#         "nextTimeUpdate" real
+#         CONSTRAINT "CandidatesHistory_pkey" PRIMARY KEY ("CandidatesHistory"),
+#         CONSTRAINT "Candidates_BeamTask_fkey" FOREIGN KEY ("BeamTask")
+#         CONSTRAINT "Candidates_CandidatesIds_fkey" FOREIGN KEY ("Candidate")
+#         CONSTRAINT "Candidates_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
+#         )"""
+#         self.cur.execute(query)
+#
+#     def create_table_candidates(self):
+#         self.cur.execute("DROP TABLE IF EXISTS Candidates")
+#         query = """CREATE TABLE "Candidates"
+#         (
+#         "Candidate" serial PRIMARY KEY,
+#         id integer
+#         )"""
+#         self.cur.execute(query)
+#
+#     def create_table_air_tracks_history(self):
+#         self.cur.execute("DROP TABLE IF EXISTS AirTracksHistory")
+#         query = """CREATE TABLE "AirTracksHistory"
+#         (
+#         "AirTracksHistory" serial PRIMARY KEY,
+#         "PrimaryMark" serial FOREIGN KEY,
+#         "CandidatesHistory" serial FOREIGN KEY,
+#         "AirTrack" serial FOREIGN KEY,
+#         type integer,
+#         priority integer,
+#         "antennaId" integer,
+#         azimuth real,
+#         elevation real,
+#         distance real,
+#         "radialVelocity" real,
+#         "pulsePeriod" real,
+#         "missesCount" real,
+#         "possiblePeriods" real[],
+#         "nextTimeUpdate" integer,
+#         "scanPeriod" real,
+#         "sigmaAzimuth" real,
+#         "sigmaElevation" real,
+#         "sigmaDistance" real,
+#         "sigmaRadialVelocity" real,
+#         "minDistance" real,
+#         "maxDistance" real,
+#         "minRadialVelocity" real,
+#         "maxRadialVelocity" real
+#         CONSTRAINT "AirTracks_pkey" PRIMARY KEY ("AirTracksHistory"),
+#         CONSTRAINT "AirTracksHistory_AirTrack_fkey" FOREIGN KEY ("AirTrack")
+#         CONSTRAINT "AirTracks_Candidate_fkey" FOREIGN KEY ("CandidatesHistory")
+#         CONSTRAINT "AirTracks_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
+#         )"""
+#         self.cur.execute(query)
+#
+#     def create_table_air_tracks(self):
+#         self.cur.execute("DROP TABLE IF EXISTS AirTracks")
+#         query = """CREATE TABLE "AirTracks"
+#         (
+#         "AirTrack" serial PRIMARY KEY),
+#         id integer)
+#         )"""
+#         self.cur.execute(query)
+#
+#     def create_table_forb_sectors(self):
+#         self.cur.execute("DROP TABLE IF EXISTS ForbiddenSectors")
+#         query = """CREATE TABLE "ForbiddenSectors"
+#         (
+#         "ForbiddenSector" serial PRIMARY KEY,
+#         "azimuthBeginNSSK" real,
+#         "azimuthEndNSSK" real,
+#         "elevationBeginNSSK" real,
+#         "elevationEndNSSK" real,
+#         "nextTimeUpdate" integer,
+#         "isActive" boolean)
+#         )"""
+#         self.cur.execute(query)
