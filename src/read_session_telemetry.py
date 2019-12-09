@@ -53,25 +53,6 @@ class TelemetryFrameIterator(BinFrameReader):
 
     def __fill_session_structure(self) -> list:
         frame_values = self.__convert_buffer_to_values()
-        if len(frame_values) == 0:
-            log.debug(f'Last frame is reached')
-            raise StopIteration
-        # index = 0
-        # filled_frame = []
-        # block = []
-        # params = {}
-        # for line in self.__data_struct:
-        #     block.append(line[0])
-        #     for c in line:
-        #         if type(c) is dict:
-        #             key = c.get('name')
-        #             value = frame_values[index]
-        #             index += 1
-        #             params.update({key: value})
-        #     block.append(params.copy())
-        #     filled_frame.append(block.copy())
-        #     params.clear()
-        #     block.clear()
         return list(zip([[c for c in line if type(c) is str] for line in self.__data_struct],
                         [[{c.get('name'): frame_values[c.get('index')]} for c in line if type(c) is dict] for line in
                          self.__data_struct]))
@@ -101,6 +82,9 @@ class TelemetryFrameIterator(BinFrameReader):
 
     def __next__(self):
         self.__frame_buffer = self.read_next_frame()
+        if len(self.__frame_buffer) == 0:
+            log.debug(f'Last frame is reached')
+            raise StopIteration
         try:
             result = self.__fill_session_structure()
             # log.debug('\r'.join(map(str, result)))

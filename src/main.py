@@ -15,7 +15,7 @@ planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
 logger = data_folder / r'logger.log'
 dsn = 'dbname=Telemetry user=postgres password=123 host=localhost'
-frame_number = 0
+frame_number = 49021
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -179,7 +179,7 @@ if __name__ == "__main__":
                 if cand_history_pk:
                     air_track.update({'CandidatesHistory': cand_history_pk})
                 else:
-                    breakpoint()
+                    break
             air_track_hist_pk = db.get_pk_tracks_hists({'CandidatesHistory': air_track['CandidatesHistory'],
                                                         'AirTrack': air_track['AirTrack']})
             if air_track_hist_pk:
