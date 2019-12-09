@@ -4,13 +4,18 @@ from struct import unpack
 
 frame_log = logging.getLogger('FrameLogger')
 console_log = logging.getLogger('simpleExample')
-air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
 
 
 class BinFrameReader:
-    __slots__ = ('__file_name', '__frame_size_in_bytes', '__header_size', '__file', '__frames_count')
+    __slots__ = ('__file_name', '__frame_size_in_bytes', '__header_size', '__file', '__frames_count', 'frame_log_flag')
 
     def __init__(self, file_name: str, structure, header_size=14):
+        self.frame_log_flag = None
+        console_log.info(f'Turn ON Frame logger?')
+        console_log.info(f'ENTER "y" OR "n"')
+        answer = input()
+        if answer == 'y':
+            self.frame_log_flag = logging.getLogger('FrameLogger')
         self.__file_name = file_name
         self.__frame_size_in_bytes = structure.frame_size * 2
         self.__header_size = header_size
@@ -29,18 +34,18 @@ class BinFrameReader:
         try:
             frames_count = file_size / self.__frame_size_in_bytes
         except ZeroDivisionError as e:
-            frame_log.exception(f'{e} , {frames_count}')
+            console_log.exception(f'{e} , {frames_count}')
         else:
-            frame_log.info(f'frames_count = {int(frames_count)}')
+            console_log.info(f'Count of Frames = {int(frames_count)}')
             return int(frames_count)
 
 
 class TelemetryFrameIterator(BinFrameReader):
-    __slots__ = ('__data_struct', '__frame_index', '__frame_buffer', '__serialize_string')
+    __slots__ = ('__data_struct', 'frame_index', '__frame_buffer', '__serialize_string')
 
     def __init__(self, file_name: str, structure, frame_index=0):
         super().__init__(file_name, structure)
-        self.__frame_index = frame_index
+        self.frame_index = frame_index
         self.__data_struct = structure.structure
         self.__frame_buffer = None
         self.__serialize_string = self.__create_serialize_string()
@@ -74,7 +79,7 @@ class TelemetryFrameIterator(BinFrameReader):
         return serialize_string
 
     def __iter__(self):
-        self._init_to_start(self.__frame_index)
+        self._init_to_start(self.frame_index)
         return self
 
     def __next__(self):
@@ -85,14 +90,13 @@ class TelemetryFrameIterator(BinFrameReader):
             except IndexError:
                 raise StopIteration
             else:
-                frame_log.debug('\r'.join(map(str, result)))
-                frame_log.info(
-                    f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
-                air_tracks_log.info(
-                    f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
+                if self.frame_log_flag:
+                    frame_log.debug('\r'.join(map(str, result)))
+                    frame_log.info(
+                        f'------------------------- FRAME {(self.frame_index / 100)} -------------------------')
                 console_log.info(
-                    f'------------------------- FRAME {(self.__frame_index / 100)} -------------------------')
-                self.__frame_index += 1
+                    f'------------------------- FRAME {(self.frame_index / 100)} -------------------------')
+                self.frame_index += 1
                 return result
         else:
             console_log.debug(f'Last frame is reached')

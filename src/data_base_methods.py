@@ -15,22 +15,18 @@ class DataBaseMain:
 
     @staticmethod
     def create_dsn_string():
-        print(f'Enter name of DataBase')
+        log.info(f'Enter name of DataBase')
         name = input()
-        print(f'Enter password of DataBase')
+        log.info(f'Enter password of DataBase')
         password = input()
         return f'dbname={name} user=postgres password={password} host=localhost'
 
     def connection(self):
         try:
             conn = psycopg2.connect(self.__dsn)
-        except Exception as e:
-            print(f'There is no existing DataBase{e}')
-            # print(f'Do you want to create new DataBase?')
-            # print(f'y/n')
-            # i = input()
-            # if i == 'y':
-            #     DataBaseCreator()
+        except psycopg2.OperationalError:
+            log.exception(f'There is no existing DataBase')
+            exit()
         else:
             conn.autocommit = True
             cur = conn.cursor()
@@ -39,20 +35,20 @@ class DataBaseMain:
 
     def insert_to_table(self, table_name: str, data: dict):
         columns = ','.join([f'"{x}"' for x in data])
-        param_placeholders = ','.join(['%s' for x in range(len(data))])
+        param_placeholders = ','.join(['%s' for _ in range(len(data))])
         query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
         param_values = tuple(x for x in data.values())
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
             log.exception(f'\r\nException: {e}')
-        finally:
+        else:
             log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 80,
                                       subsequent_indent='                   '))
 
     def read_from_table(self, table_name: str, where_condition: dict) -> list:
         columns = ','.join([f'"{x}"' for x in where_condition])
-        param_placeholders = ','.join(['%s' for x in range(len(where_condition))])
+        param_placeholders = ','.join(['%s' for _ in range(len(where_condition))])
         query = f'SELECT * FROM "{table_name}" WHERE ({columns}) = ({param_placeholders})'
         param_values = tuple(x for x in where_condition.values())
         try:
@@ -61,25 +57,25 @@ class DataBaseMain:
             log.exception(f'\r\nException: {e}')
         else:
             db_values = self.cur.fetchall()
-            if db_values:
-                return db_values
+            return db_values
 
     def update_tables(self, table_name: str, update_dict: dict, where_condition: dict):
-        del update_dict['AirTracksHistory']
-        del update_dict['AirTrack']
-        del update_dict['antennaId']
+        where_condition_keys = [x for x in where_condition.keys()]
+        for x in where_condition_keys:
+            del update_dict[x]
         columns = ','.join([f'"{x}"' for x in update_dict])
-        param_placeholders = ','.join(['%s' for x in range(len(update_dict))])
-        keys = '\r and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
+        param_placeholders = ','.join(['%s' for _ in range(len(update_dict))])
+        keys = ' and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
         query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders})' \
                 f'WHERE {keys}'
         params_values = tuple(x for x in update_dict.values())
         try:
             self.cur.execute(query, params_values)
-            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET {update_dict} WHERE {where_condition}', 80,
-                                      subsequent_indent='                   '))
         except Exception as e:
             log.exception(f'\r\nException: {e}')
+        finally:
+            log.warning(textwrap.fill(f'{self.cur.query}', 80,
+                                      subsequent_indent='                   '))
 
 
 class DataBase(DataBaseMain):
@@ -102,7 +98,7 @@ class DataBase(DataBaseMain):
                     f'"{specific_field_name}" from {table_name} received : {data_with_pk[0][idx]}')
                 return {specific_field_name: data_with_pk[0][idx]}
 
-    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---F
+    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
     # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
 
@@ -155,9 +151,9 @@ class DataBase(DataBaseMain):
 #             log.exception(f'{e}')
 #
 #     def create_dsn_string(self):
-#         print(f'Enter name of DataBase')
+#         log.info(f'Enter name of DataBase')
 #         self.name = input()
-#         print(f'Enter password of DataBase')
+#         log.info(f'Enter password of DataBase')
 #         self.password = input()
 #
 #     def connection(self):
