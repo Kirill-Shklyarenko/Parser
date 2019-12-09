@@ -49,10 +49,7 @@ class TelemetryFrameIterator(BinFrameReader):
         self.__serialize_string = self.__create_serialize_string()
 
     def __convert_buffer_to_values(self) -> tuple:
-        # try:
         return unpack(self.__serialize_string, self.__frame_buffer)
-        # except Exception as e:
-        #     log.exception(f'Exception: {e}')
 
     def __fill_session_structure(self) -> list:
         frame_values = self.__convert_buffer_to_values()

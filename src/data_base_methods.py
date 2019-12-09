@@ -14,7 +14,6 @@ class DataBaseMain:
         self.cur = self.connection()
 
     def connection(self):
-        conn = None
         try:
             conn = psycopg2.connect(self.dsn)
         except Exception as e:
@@ -23,11 +22,12 @@ class DataBaseMain:
             print(f'y/n')
             i = input()
             if i == 'y':
-                d = DataBaseCreator()
-        conn.autocommit = True
-        cur = conn.cursor()
-        log.info(f'DataBase connection complete')
-        return cur
+                DataBaseCreator()
+        else:
+            conn.autocommit = True
+            cur = conn.cursor()
+            log.info(f'DataBase connection complete')
+            return cur
 
     def insert_to_table(self, table_name: str, data: dict):
         columns = ','.join([f'"{x}"' for x in data])
@@ -58,19 +58,18 @@ class DataBaseMain:
 
     def update_tables(self, table_name: str, update_dict: dict, where_condition: dict):
         del update_dict['AirTracksHistory']
+        del update_dict['AirTrack']
+        del update_dict['antennaId']
         columns = ','.join([f'"{x}"' for x in update_dict])
         param_placeholders = ','.join(['%s' for x in range(len(update_dict))])
-        keys = ' and '.join([f'"{k}" = (%s)' for k in where_condition.keys()])
-        first_query = f'SELECT * FROM "{table_name}" WHERE {keys}'
-        second_query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders})'
-        vals = [v for v in where_condition.values()]
+        keys = '\r and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
+        query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders})' \
+                f'WHERE {keys}'
         params_values = tuple(x for x in update_dict.values())
         try:
-            self.cur.execute(first_query, vals)
-            res = self.cur.fetchall()
-            for _ in res:
-                self.cur.execute(second_query, params_values)
-                log.warning(f'UPDATE "{table_name}" :  {update_dict}')
+            self.cur.execute(query, params_values)
+            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET {update_dict} WHERE {where_condition}', 80,
+                                      subsequent_indent='                   '))
         except Exception as e:
             log.exception(f'\r\nException: {e}')
 
@@ -131,18 +130,22 @@ class DataBase(DataBaseMain):
 
 class DataBaseCreator:
     def __init__(self):
-        self.name = None
-        self.password = None
-        self.create_dsn_string()
-        self.cur = self.connection()
+        try:
+            self.name = None
+            self.password = None
+            self.create_dsn_string()
 
-        self.create_table_beam_tasks()
-        self.create_table_primary_marks()
-        self.create_table_candidates_history()
-        self.create_table_candidates()
-        self.create_table_air_tracks_history()
-        self.create_table_air_tracks()
-        self.create_table_forb_sectors()
+            self.cur = self.connection()
+            self.create_data_base()
+            self.create_table_beam_tasks()
+            self.create_table_primary_marks()
+            self.create_table_candidates_history()
+            self.create_table_candidates()
+            self.create_table_air_tracks_history()
+            self.create_table_air_tracks()
+            self.create_table_forb_sectors()
+        except psycopg2.ProgrammingError as e:
+            log.exception(f'{e}')
 
     def create_dsn_string(self):
         print(f'Enter name of DataBase')
@@ -151,16 +154,20 @@ class DataBaseCreator:
         self.password = input()
 
     def connection(self):
-        con = psycopg2.connect(dbname=self.name,
-                               user='postgres', host='localhost',
-                               password=self.password)
+        con = psycopg2.connect(dbname='postgres', user='postgres',
+                               host='localhost', password='123', port=5432)
         con.autocommit = True
         cur = con.cursor()
         log.info(f'DataBase connection complete')
         return cur
 
+    def create_data_base(self):
+        query = f'CREATE DATABASE "{self.name}"'
+        self.cur.execute(query)
+
     def create_table_beam_tasks(self):
-        query = """CREATE TABLE public."BeamTasks"
+        self.cur.execute(f'DROP TABLE IF EXISTS "BeamTasks"')
+        query = """CREATE TABLE "BeamTasks"
         (
         "BeamTask" serial PRIMARY KEY,
         "taskId" integer,
@@ -181,11 +188,12 @@ class DataBaseCreator:
         self.cur.execute(query)
 
     def create_table_primary_marks(self):
-        query = """CREATE TABLE public."PrimaryMarks"
+        self.cur.execute("DROP TABLE IF EXISTS PrimaryMarks")
+        query = """CREATE TABLE "PrimaryMarks"
         (
-        "PrimaryMark" serial,
+        "PrimaryMark" serial PRIMARY KEY,
         "BeamTask" serial,
-        "primaryMarkId" serial,
+        "primaryMarkId" integer,
         "scanTime" real,
         "antennaId" integer,
         "beamAzimuth" real,
@@ -197,13 +205,13 @@ class DataBaseCreator:
         "dopplerSpeed" real,
         "signalLevel" real,
         "reflectedEnergy" real,
-        CONSTRAINT "PrimaryMarks_pkey" PRIMARY KEY ("PrimaryMark"),
-        CONSTRAINT "PrimaryMarks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
+        CONSTRAINT "BeamTasks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
         )"""
         self.cur.execute(query)
 
     def create_table_candidates_history(self):
-        query = """CREATE TABLE public."CandidatesHistory"
+        self.cur.execute("DROP TABLE IF EXISTS CandidatesHistory")
+        query = """CREATE TABLE "CandidatesHistory"
         (
         "CandidatesHistory" serial PRIMARY KEY,
         "BeamTask" serial,
@@ -217,7 +225,7 @@ class DataBaseCreator:
         "numDistanceZone" real,
         "numVelocityZone" real,
         "antennaId" integer,
-        "nextTimeUpdate" real,
+        "nextTimeUpdate" real
         CONSTRAINT "CandidatesHistory_pkey" PRIMARY KEY ("CandidatesHistory"),
         CONSTRAINT "Candidates_BeamTask_fkey" FOREIGN KEY ("BeamTask")
         CONSTRAINT "Candidates_CandidatesIds_fkey" FOREIGN KEY ("Candidate")
@@ -226,7 +234,8 @@ class DataBaseCreator:
         self.cur.execute(query)
 
     def create_table_candidates(self):
-        query = """CREATE TABLE public."Candidates"
+        self.cur.execute("DROP TABLE IF EXISTS Candidates")
+        query = """CREATE TABLE "Candidates"
         (
         "Candidate" serial PRIMARY KEY,
         id integer
@@ -234,12 +243,13 @@ class DataBaseCreator:
         self.cur.execute(query)
 
     def create_table_air_tracks_history(self):
-        query = """CREATE TABLE public."AirTracksHistory"
+        self.cur.execute("DROP TABLE IF EXISTS AirTracksHistory")
+        query = """CREATE TABLE "AirTracksHistory"
         (
         "AirTracksHistory" serial PRIMARY KEY,
-        "PrimaryMark" serial,
-        "CandidatesHistory" serial,
-        "AirTrack" serial,
+        "PrimaryMark" serial FOREIGN KEY,
+        "CandidatesHistory" serial FOREIGN KEY,
+        "AirTrack" serial FOREIGN KEY,
         type integer,
         priority integer,
         "antennaId" integer,
@@ -259,7 +269,7 @@ class DataBaseCreator:
         "minDistance" real,
         "maxDistance" real,
         "minRadialVelocity" real,
-        "maxRadialVelocity" real,
+        "maxRadialVelocity" real
         CONSTRAINT "AirTracks_pkey" PRIMARY KEY ("AirTracksHistory"),
         CONSTRAINT "AirTracksHistory_AirTrack_fkey" FOREIGN KEY ("AirTrack")
         CONSTRAINT "AirTracks_Candidate_fkey" FOREIGN KEY ("CandidatesHistory")
@@ -268,7 +278,8 @@ class DataBaseCreator:
         self.cur.execute(query)
 
     def create_table_air_tracks(self):
-        query = """CREATE TABLE public."AirTracks"
+        self.cur.execute("DROP TABLE IF EXISTS AirTracks")
+        query = """CREATE TABLE "AirTracks"
         (
         "AirTrack" serial PRIMARY KEY),
         id integer)
@@ -276,7 +287,8 @@ class DataBaseCreator:
         self.cur.execute(query)
 
     def create_table_forb_sectors(self):
-        query = """CREATE TABLE public."ForbiddenSectors"
+        self.cur.execute("DROP TABLE IF EXISTS ForbiddenSectors")
+        query = """CREATE TABLE "ForbiddenSectors"
         (
         "ForbiddenSector" serial PRIMARY KEY,
         "azimuthBeginNSSK" real,

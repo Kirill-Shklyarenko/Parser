@@ -144,7 +144,8 @@ if __name__ == "__main__":
                     candidate_history_pk_if_state_4 = candidate_history_pk
                     air_track_hist_pk = db.get_pk_tracks_hists({'CandidatesHistory': candidate['CandidatesHistory'],
                                                                 'PrimaryMark': candidate['PrimaryMark'],
-                                                                'AirTrack': candidate['AirTrack']
+                                                                'AirTrack': candidate['AirTrack'],
+                                                                'antennaId': candidate['antennaId']
                                                                 })
                     if air_track_hist_pk is None:
                         db.insert_to_table('AirTracksHistory', {'CandidatesHistory': candidate['CandidatesHistory'],
