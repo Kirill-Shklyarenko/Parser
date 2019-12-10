@@ -13,7 +13,7 @@ air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
 data_folder = Path(r'../data/session_01/')
 planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
-frame_number = 0
+frame_number = 453
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -27,9 +27,8 @@ if __name__ == "__main__":
         # ---------------------------------------------ЗАПОЛНЯЕМ "BeamTasks"------------------------------------------ #
         for beam_task in frame_reader.beam_tasks():
             x = frame_reader.entity_count
-            nx = x[0]
-            console_log.info(f'\t\t\t\t\tBeamTask_{nx}')
-            x.remove(nx)
+            console_log.info(f'\t\t\t\t\tBeamTask_{x[0]}')
+            del x[0]
             bt_pk = db.get_pk_beam_tasks({'taskId': beam_task['taskId'],
                                           'antennaId': beam_task['antennaId'],
                                           'taskType': beam_task['taskType']})
@@ -40,9 +39,8 @@ if __name__ == "__main__":
         # ---------------------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"--------------------------------------- #
         for prim_mark in frame_reader.primary_marks():
             x = frame_reader.entity_count
-            nx = x[0]
-            console_log.info(f'\t\t\t\t\tPrimaryMark_{nx}')
-            x.remove(nx)
+            console_log.info(f'\t\t\t\t\tPrimaryMark_{x[0]}')
+            del x[0]
             console_log.info(f'PrimaryMark type = {prim_mark["markType"]}')
             bt_pk = db.get_pk_beam_tasks({'taskId': prim_mark['taskId'],
                                           'antennaId': prim_mark['antennaId'],
@@ -57,9 +55,8 @@ if __name__ == "__main__":
         # --------------------------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_reader.candidates():
             x = frame_reader.entity_count
-            nx = x[0]
-            console_log.info(f'\t\t\t\t\tCandidate_{nx}')
-            x.remove(nx)
+            console_log.info(f'\t\t\t\t\tCandidate_{x[0]}')
+            del x[0]
             console_log.info(f'Candidate state = {candidate["state"]}')
             # -----------------------------------ЗАПОЛНЯЕМ "Candidates"-------------------------------- #
             cand_pk = db.get_pk_candidates(candidate['id'])
@@ -149,9 +146,8 @@ if __name__ == "__main__":
             air_tracks_log.info(
                 f'------------------------- FRAME {(telemetry.frame_index / 100)} -------------------------')
             x = frame_reader.entity_count
-            nx = x[0]
-            console_log.info(f'\t\t\t\t\tAirTrack_{nx}')
-            x.remove(nx)
+            console_log.info(f'\t\t\t\t\tAirTrack_{x[0]}')
+            del x[0]
             console_log.info(f'AirTrack type = {air_track["type"]}')
             # --------------------------------------ЗАПОЛНЯЕМ "AirTracks"------------------------------ #
             air_track_pk = db.get_pk_air_tracks(air_track['id'])
@@ -180,9 +176,8 @@ if __name__ == "__main__":
         # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
             x = frame_reader.entity_count
-            nx = x[0]
-            console_log.info(f'\t\t\t\t\tForbiddenSector{nx}')
-            x.remove(nx)
+            console_log.info(f'\t\t\t\t\tForbiddenSector{x[0]}')
+            del x[0]
             fs_pk = db.get_pk_forb_sectors({'azimuthBeginNSSK': ['azimuth_b_nssk'],
                                             'azimuthEndNSSK': ['azimuth_e_nssk'],
                                             'elevationBeginNSSK': ['elevation_b_nssk'],
