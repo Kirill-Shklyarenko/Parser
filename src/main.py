@@ -119,15 +119,16 @@ if __name__ == "__main__":
                         cand_hist_pk_if_state_4 = db.get_pk_cand_hists(
                             {'BeamTask': candidate['BeamTask'],
                              'PrimaryMark': candidate['PrimaryMark'],
-                             # 'Candidate': candidate['Candidate'],
+                             'Candidate': candidate['Candidate'],
                              'state': candidate['state']
                              })
                         if cand_hist_pk_if_state_4 is None:
+                            candidate['Candidate'] = candidate['CandidateAir']
                             db.insert_cand_histories(candidate)
                             candidate_history_pk_if_state_4 = db.get_pk_cand_hists(
                                 {'BeamTask': candidate['BeamTask'],
                                  'PrimaryMark': candidate['PrimaryMark'],
-                                 # 'Candidate': candidate['CandidateAir'],
+                                 'Candidate': candidate['CandidateAir'],
                                  'state': candidate['state']
                                  })
                         candidate.update({'CandidatesHistory': candidate_history_pk})
@@ -136,7 +137,7 @@ if __name__ == "__main__":
                         air_track_hist_pk = db.get_pk_tracks_hists(
                             {'CandidatesHistory': candidate['CandidatesHistory'],
                              'PrimaryMark': candidate['PrimaryMark'],
-                             # 'AirTrack': candidate['AirTrack'],
+                             'AirTrack': candidate['AirTrack'],
                              'antennaId': candidate['antennaId']
                              })
                         if air_track_hist_pk is None:
