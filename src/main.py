@@ -26,7 +26,7 @@ if __name__ == "__main__":
         frame_reader = DataBlocksReader(frame)  # Session00
         # ---------------------------------------------ЗАПОЛНЯЕМ "BeamTasks"------------------------------------------ #
         for beam_task in frame_reader.beam_tasks():
-            x = frame_reader.beam_task_count
+            x = frame_reader.entity_count
             nx = x[0]
             console_log.info(f'\t\t\t\t\tBeamTask_{nx}')
             x.remove(nx)
@@ -39,7 +39,7 @@ if __name__ == "__main__":
                 console_log.debug(f'BeamTask : already exists')
         # ---------------------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"--------------------------------------- #
         for prim_mark in frame_reader.primary_marks():
-            x = frame_reader.primary_marks_count
+            x = frame_reader.entity_count
             nx = x[0]
             console_log.info(f'\t\t\t\t\tPrimaryMark_{nx}')
             x.remove(nx)
@@ -56,7 +56,7 @@ if __name__ == "__main__":
                     console_log.debug(f'PrimaryMark : already exists')
         # --------------------------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_reader.candidates():
-            x = frame_reader.candidates_count
+            x = frame_reader.entity_count
             nx = x[0]
             console_log.info(f'\t\t\t\t\tCandidate_{nx}')
             x.remove(nx)
@@ -148,7 +148,7 @@ if __name__ == "__main__":
         for air_track in frame_reader.air_tracks():
             air_tracks_log.info(
                 f'------------------------- FRAME {(telemetry.frame_index / 100)} -------------------------')
-            x = frame_reader.tracks_count
+            x = frame_reader.entity_count
             nx = x[0]
             console_log.info(f'\t\t\t\t\tAirTrack_{nx}')
             x.remove(nx)
@@ -179,7 +179,7 @@ if __name__ == "__main__":
             db.update_air_tracks_histories(air_track)
         # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
-            x = frame_reader.primary_marks_count
+            x = frame_reader.entity_count
             nx = x[0]
             console_log.info(f'\t\t\t\t\tForbiddenSector{nx}')
             x.remove(nx)

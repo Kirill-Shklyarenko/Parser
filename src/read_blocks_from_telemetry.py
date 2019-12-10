@@ -8,15 +8,11 @@ air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
 
 
 class DataBlocksReader:
-    # __slots__ = ('frame', 'beam_task_count', 'primary_marks_count')
+    __slots__ = ('frame', 'entity_count')
 
     def __init__(self, frame):
         self.frame = frame
-        self.beam_task_count = []
-        self.primary_marks_count = []
-        self.candidates_count = []
-        self.tracks_count = []
-        self.rad_forbidden_count = []
+        self.entity_count = []
 
     @converter({'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK'})  # {newField : oldField}
     def beam_tasks(self) -> list:
@@ -34,7 +30,7 @@ class DataBlocksReader:
                 beam_task.update({k: bool(v) for k, v in beam_task.items() if k == 'isFake'})
                 container.append(beam_task.copy())
             elif re.search('scanData', group[0][0]):
-                self.beam_task_count = [x for x in range(len(container))]
+                self.entity_count = [x for x in range(len(container))]
                 break
         return container
 
@@ -56,7 +52,7 @@ class DataBlocksReader:
                     container.append(primary_mark.copy())
                     primary_marks_count += 1
                     if primary_marks_count == scan_data['primaryMarksCount']:
-                        self.primary_marks_count = [x for x in range(len(container))]
+                        self.entity_count = [x for x in range(len(container))]
                         break
         return container
 
@@ -84,7 +80,7 @@ class DataBlocksReader:
                         container.append(track_candidate.copy())
                         candidates_count += 1
                         if candidates_count == candidate_q['candidatesQueueSize']:
-                            self.candidates_count = [x for x in range(len(container))]
+                            self.entity_count = [x for x in range(len(container))]
                             break
                 elif track_candidate['state'] == 2:
                     if re.search(r'distanceResolutionSpot', group[0][0]):
@@ -100,7 +96,7 @@ class DataBlocksReader:
                         container.append(track_candidate.copy())
                         candidates_count += 1
                         if candidates_count == candidate_q['candidatesQueueSize']:
-                            self.candidates_count = [x for x in range(len(container))]
+                            self.entity_count = [x for x in range(len(container))]
                             break
                 elif track_candidate['state'] == 4:
                     if re.search(r'velocityResolutionSpot', group[0][0]):
@@ -121,12 +117,12 @@ class DataBlocksReader:
                         container.append(track_candidate.copy())
                         candidates_count += 1
                         if candidates_count == candidate_q['candidatesQueueSize']:
-                            self.candidates_count = [x for x in range(len(container))]
+                            self.entity_count = [x for x in range(len(container))]
                             break
                 else:
                     candidates_count += 1
                     if candidates_count == candidate_q['candidatesQueueSize']:
-                        self.candidates_count = [x for x in range(len(container))]
+                        self.entity_count = [x for x in range(len(container))]
                         break
         container.reverse()
         return container
@@ -156,7 +152,7 @@ class DataBlocksReader:
                         container.append(track.copy())
                         tracks_count += 1
                     if tracks_count == tracks_q['tracksQueuesSize']:
-                        self.tracks_count = [x for x in range(len(container))]
+                        self.entity_count = [x for x in range(len(container))]
                         break
         if container:
             air_tracks_log.info(textwrap.fill(f'AirTrack : {container}', 150, ))
@@ -224,7 +220,7 @@ class DataBlocksReader:
                     container.append(forbidden_sector.copy())
                     rad_forbidden_count += 1
                     if rad_forbidden_count == forbidden_sector['RadiationForbiddenSectorsCount']:
-                        self.rad_forbidden_count = [x for x in range(len(container))]
+                        self.entity_count = [x for x in range(len(container))]
                         break
         if container:
             air_tracks_log.info(textwrap.fill(f'                RadiationForbiddenSector : {container}', 150, ))
