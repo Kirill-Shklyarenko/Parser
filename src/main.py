@@ -20,17 +20,16 @@ if __name__ == "__main__":
     telemetry = TelemetryFrameIterator(planner_rsf, structure, frame_number)
     db = DataBase()
     start_parsing_time = time.time()
-    candidate_history_pk_if_state_4 = 0
     air_track_hist_pk_if_state_4 = []
     for frame in telemetry:
         start_frame_time = time.time()
-        frame_reader = DataBlocksReader(frame)
-        forbidden_sectors_count = 1
-        primary_marks_count = 1
-        candidates_count = 1
-        air_track_count = 1
+        frame_reader = DataBlocksReader(frame)  # Session00
         # ---------------------------------------------ЗАПОЛНЯЕМ "BeamTasks"------------------------------------------ #
         for beam_task in frame_reader.beam_tasks():
+            x = frame_reader.beam_task_count
+            nx = x[0]
+            console_log.info(f'\t\t\t\t\tBeamTask_{nx}')
+            x.remove(nx)
             bt_pk = db.get_pk_beam_tasks({'taskId': beam_task['taskId'],
                                           'antennaId': beam_task['antennaId'],
                                           'taskType': beam_task['taskType']})
@@ -40,7 +39,10 @@ if __name__ == "__main__":
                 console_log.debug(f'BeamTask : already exists')
         # ---------------------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"--------------------------------------- #
         for prim_mark in frame_reader.primary_marks():
-            console_log.info(f'\t\t\t\t\tPrimaryMark_{primary_marks_count}')
+            x = frame_reader.primary_marks_count
+            nx = x[0]
+            console_log.info(f'\t\t\t\t\tPrimaryMark_{nx}')
+            x.remove(nx)
             console_log.info(f'PrimaryMark type = {prim_mark["markType"]}')
             bt_pk = db.get_pk_beam_tasks({'taskId': prim_mark['taskId'],
                                           'antennaId': prim_mark['antennaId'],
@@ -52,10 +54,12 @@ if __name__ == "__main__":
                     db.insert_prim_marks(prim_mark)
                 else:
                     console_log.debug(f'PrimaryMark : already exists')
-            primary_marks_count += 1
         # --------------------------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
         for candidate in frame_reader.candidates():
-            console_log.info(f'\t\t\t\t\tCandidate_{candidates_count}')
+            x = frame_reader.candidates_count
+            nx = x[0]
+            console_log.info(f'\t\t\t\t\tCandidate_{nx}')
+            x.remove(nx)
             console_log.info(f'Candidate state = {candidate["state"]}')
             # -----------------------------------ЗАПОЛНЯЕМ "Candidates"-------------------------------- #
             cand_pk = db.get_pk_candidates(candidate['id'])
@@ -140,12 +144,14 @@ if __name__ == "__main__":
                              'antennaId': candidate['antennaId']
                              })
                     air_track_hist_pk_if_state_4.append(air_track_hist_pk)
-            candidates_count += 1
         # ---------------------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- #
         for air_track in frame_reader.air_tracks():
             air_tracks_log.info(
                 f'------------------------- FRAME {(telemetry.frame_index / 100)} -------------------------')
-            console_log.info(f'\t\t\t\t\tAirTrack_{air_track_count}')
+            x = frame_reader.tracks_count
+            nx = x[0]
+            console_log.info(f'\t\t\t\t\tAirTrack_{nx}')
+            x.remove(nx)
             console_log.info(f'AirTrack type = {air_track["type"]}')
             # --------------------------------------ЗАПОЛНЯЕМ "AirTracks"------------------------------ #
             air_track_pk = db.get_pk_air_tracks(air_track['id'])
@@ -171,10 +177,12 @@ if __name__ == "__main__":
             air_track.update(db.read_specific_field('PrimaryMarks', 'scanTime',
                                                     {'PrimaryMark': air_track['PrimaryMark']}))
             db.update_air_tracks_histories(air_track)
-            air_track_count += 1
         # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
-            console_log.info(f'\t\t\tforbiddenSector_{forbidden_sectors_count}')
+            x = frame_reader.primary_marks_count
+            nx = x[0]
+            console_log.info(f'\t\t\t\t\tForbiddenSector{nx}')
+            x.remove(nx)
             fs_pk = db.get_pk_forb_sectors({'azimuthBeginNSSK': ['azimuth_b_nssk'],
                                             'azimuthEndNSSK': ['azimuth_e_nssk'],
                                             'elevationBeginNSSK': ['elevation_b_nssk'],
@@ -185,7 +193,6 @@ if __name__ == "__main__":
                 db.insert_to_table('ForbiddenSectors', dict_to_insert)
             else:
                 console_log.debug(f'ForbiddenSector : already exists')
-            forbidden_sectors_count += 1
         time_sec = "{:3.4f}".format(time.time() - start_frame_time)
         console_log.info(f"------------------------- {time_sec} seconds -------------------------\r\n\r\n")
     minutes = "{:3.2f}".format(float(time.time() - start_parsing_time) / 60)
