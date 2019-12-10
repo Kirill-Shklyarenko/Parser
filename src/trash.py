@@ -1,6 +1,5 @@
 # ALTER SEQUENCE "Candidates_Candidate_seq" restart with 1;
 
-
 # ALTER
 # SEQUENCE
 # "PrimaryMarks_PrimaryMark_seq"

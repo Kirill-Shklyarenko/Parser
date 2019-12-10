@@ -71,59 +71,63 @@ class DataBlocksReader:
                 if re.search(r'\btrackCandidate\b', group[0][0]) or re.search('trackCandidate_', group[0][0]):
                     for c in group[1]:
                         track_candidate.update(c)
-                elif track_candidate['state'] == 1:
-                    if re.search(r'viewSpot', group[0][0]):
-                        view_spot = {}
-                        for c in group[1]:
-                            view_spot.update(c)
-                        track_candidate.update(view_spot)
-                        container.append(track_candidate.copy())
+                elif track_candidate['antennaId'] != 0:
+                    if track_candidate['state'] == 1:
+                        if re.search(r'viewSpot', group[0][0]):
+                            view_spot = {}
+                            for c in group[1]:
+                                view_spot.update(c)
+                            track_candidate.update(view_spot)
+                            container.append(track_candidate.copy())
+                            candidates_count += 1
+                            if candidates_count == candidate_q['candidatesQueueSize']:
+                                self.entity_count = [x for x in range(len(container))]
+                                break
+                    elif track_candidate['state'] == 2:
+                        if re.search(r'distanceResolutionSpot', group[0][0]):
+                            distance_res_spot = {}
+                            for c in group[1]:
+                                distance_res_spot.update(c)
+                            track_candidate.update(distance_res_spot)
+                            track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
+                                                                          track_candidate['distance']) /
+                                                                         track_candidate[
+                                                                             'distancePeriod']})
+                            track_candidate.update({'numDistanceZone': round(track_candidate['resolvedDistance'] /
+                                                                             track_candidate['distancePeriod'])})
+                            container.append(track_candidate.copy())
+                            candidates_count += 1
+                            if candidates_count == candidate_q['candidatesQueueSize']:
+                                self.entity_count = [x for x in range(len(container))]
+                                break
+                    elif track_candidate['state'] == 4:
+                        if re.search(r'velocityResolutionSpot', group[0][0]):
+                            velocity_res_spot = {}
+                            for c in group[1]:
+                                velocity_res_spot.update(c)
+                            track_candidate.update(velocity_res_spot)
+                            track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
+                                                                          track_candidate['distance']) /
+                                                                         track_candidate[
+                                                                             'distancePeriod']})
+                            track_candidate.update({'numDistanceZone': round(track_candidate['resolvedDistance'] /
+                                                                             track_candidate['distancePeriod'])})
+                            track_candidate.update({'velocityZoneWidth': (track_candidate['resolvedVelocity'] -
+                                                                          track_candidate['velocity']) /
+                                                                         track_candidate[
+                                                                             'velocityPeriod']})
+                            track_candidate.update({'numVelocityZone': round(track_candidate['resolvedVelocity'] /
+                                                                             track_candidate['velocityPeriod'])})
+                            container.append(track_candidate.copy())
+                            candidates_count += 1
+                            if candidates_count == candidate_q['candidatesQueueSize']:
+                                self.entity_count = [x for x in range(len(container))]
+                                break
+                    else:
                         candidates_count += 1
                         if candidates_count == candidate_q['candidatesQueueSize']:
                             self.entity_count = [x for x in range(len(container))]
                             break
-                elif track_candidate['state'] == 2:
-                    if re.search(r'distanceResolutionSpot', group[0][0]):
-                        distance_res_spot = {}
-                        for c in group[1]:
-                            distance_res_spot.update(c)
-                        track_candidate.update(distance_res_spot)
-                        track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
-                                                                      track_candidate['distance']) / track_candidate[
-                                                                         'distancePeriod']})
-                        track_candidate.update({'numDistanceZone': round(track_candidate['resolvedDistance'] /
-                                                                         track_candidate['distancePeriod'])})
-                        container.append(track_candidate.copy())
-                        candidates_count += 1
-                        if candidates_count == candidate_q['candidatesQueueSize']:
-                            self.entity_count = [x for x in range(len(container))]
-                            break
-                elif track_candidate['state'] == 4:
-                    if re.search(r'velocityResolutionSpot', group[0][0]):
-                        velocity_res_spot = {}
-                        for c in group[1]:
-                            velocity_res_spot.update(c)
-                        track_candidate.update(velocity_res_spot)
-                        track_candidate.update({'distanceZoneWidth': (track_candidate['resolvedDistance'] -
-                                                                      track_candidate['distance']) / track_candidate[
-                                                                         'distancePeriod']})
-                        track_candidate.update({'numDistanceZone': round(track_candidate['resolvedDistance'] /
-                                                                         track_candidate['distancePeriod'])})
-                        track_candidate.update({'velocityZoneWidth': (track_candidate['resolvedVelocity'] -
-                                                                      track_candidate['velocity']) / track_candidate[
-                                                                         'velocityPeriod']})
-                        track_candidate.update({'numVelocityZone': round(track_candidate['resolvedVelocity'] /
-                                                                         track_candidate['velocityPeriod'])})
-                        container.append(track_candidate.copy())
-                        candidates_count += 1
-                        if candidates_count == candidate_q['candidatesQueueSize']:
-                            self.entity_count = [x for x in range(len(container))]
-                            break
-                else:
-                    candidates_count += 1
-                    if candidates_count == candidate_q['candidatesQueueSize']:
-                        self.entity_count = [x for x in range(len(container))]
-                        break
         container.reverse()
         return container
 
