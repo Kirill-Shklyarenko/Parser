@@ -4,7 +4,7 @@ import textwrap
 
 from decorators import converter
 
-alog = logging.getLogger('AirTracks_ForbSectors')
+air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
 
 
 class DataBlocksReader:
@@ -147,7 +147,7 @@ class DataBlocksReader:
                     if tracks_count == tracks_q['tracksQueuesSize']:
                         break
         if container:
-            alog.info(textwrap.fill(f'AirTrack : {container}', 150, ))
+            air_tracks_log.info(textwrap.fill(f'AirTrack : {container}', 150, ))
         return container
 
     def air_marks_misses(self) -> list:
@@ -169,7 +169,7 @@ class DataBlocksReader:
             elif re.search('TargetingUpdateRequests', group[0][0]):
                 break
         if container:
-            alog.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
+            air_tracks_log.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
         return container
 
     def air_marks_update_requests(self):
@@ -192,7 +192,7 @@ class DataBlocksReader:
                 elif re.search('TargetingUpdateRequests', group[0][0]):
                     break
         if container:
-            alog.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
+            air_tracks_log.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
         return container
 
     @converter({'azimuthBeginNSSK': 'minAzimuth', 'azimuthEndNSSK': 'maxAzimuth',
@@ -214,5 +214,5 @@ class DataBlocksReader:
                     if rad_forbidden_count == forbidden_sector['RadiationForbiddenSectorsCount']:
                         break
         if container:
-            alog.info(textwrap.fill(f'                RadiationForbiddenSector : {container}', 150, ))
+            air_tracks_log.info(textwrap.fill(f'                RadiationForbiddenSector : {container}', 150, ))
         return container

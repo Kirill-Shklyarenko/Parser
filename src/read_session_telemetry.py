@@ -12,7 +12,7 @@ class BinFrameReader:
     def __init__(self, file_name: str, structure, header_size=14):
         self.frame_log_flag = None
         console_log.info(f'Turn ON Frame logger?')
-        console_log.info(f'ENTER "y" OR "n"')
+        console_log.info(f'INPUT "y" if YES or press ENTER')
         answer = input()
         if answer == 'y':
             self.frame_log_flag = logging.getLogger('FrameLogger')

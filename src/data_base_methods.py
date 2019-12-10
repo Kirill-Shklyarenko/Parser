@@ -1,37 +1,130 @@
 import logging.config
+import os
 import textwrap
+from pathlib import Path
+from subprocess import Popen, PIPE
 
 import psycopg2
 
+OS_ENV_PGPASS = None
 log = logging.getLogger('simpleExample')
 
 
 class DataBaseMain:
-    __slots__ = ('__dsn', 'cur')
+    __slots__ = ('__dsn', 'cur', '__pgpass_file')
 
     def __init__(self):
-        self.__dsn = self.create_dsn_string()
-        self.cur = self.connection()
+        self.__dsn = self.__dsn_string()
+        self.__check_conf_file()
+        self.cur = self.__connection()
 
     @staticmethod
-    def create_dsn_string():
+    def __dsn_string():
         log.info(f'Enter name of DataBase')
         name = input()
         log.info(f'Enter password of DataBase')
         password = input()
-        return f'dbname={name} user=postgres password={password} host=localhost'
+        log.info(f'Enter user_name of DataBase. Press "ENTER" if default="postgres"')
+        user_name = input()
+        if len(user_name) == 0:
+            user_name = 'postgres'
+        log.info(f'Enter host_name of DataBase. Press "ENTER" if default="localhost"')
+        host_name = input()
+        if len(host_name) == 0:
+            host_name = 'localhost'
+        return {'dbname': name, 'user': user_name, 'password': password, 'host': host_name}
 
-    def connection(self):
+    def __check_conf_file(self):
+        app_data = os.environ.copy()["APPDATA"]
+        postgres_path = Path(f'{app_data}\postgresql')
+        __pgpass_file = Path(f'{postgres_path}\pgpass.conf')
         try:
-            conn = psycopg2.connect(self.__dsn)
+            os.makedirs(postgres_path)
+        except Exception as _:
+            pass
+        finally:
+            if os.path.isfile(__pgpass_file):
+                log.debug(f'File "pgpass.conf" already exists')
+                with open(__pgpass_file, 'r+') as f:
+                    content = f.readlines()
+                    if f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:' \
+                       f'{self.__dsn["user"]}:{int(self.__dsn["password"])}\n' \
+                       f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:' \
+                       f'{os.environ["UserName"]}:{int(self.__dsn["password"])}\n' not in content:
+                        # сервер: порт:база_данных: имя_пользователя:пароль
+                        f.write(f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:'
+                                f'{self.__dsn["user"]}:{int(self.__dsn["password"])}\n'
+                                f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:'
+                                f'{os.environ["UserName"]}:{int(self.__dsn["password"])}\n')
+                    else:
+                        log.info(f'{self.__dsn["host"]}:5432:{self.__dsn["dbname"]}:'
+                                 f'{self.__dsn["user"]}:{self.__dsn["password"]}'
+                                 f' already in "pgpass.conf" file')
+            else:
+                log.debug(f'File "pgpass.conf" not exists')
+                with open(__pgpass_file, 'x') as f:
+                    # сервер: порт:база_данных: имя_пользователя:пароль
+                    f.write(f'{self.__dsn["host"]}:5432:{self.__dsn["dbname"]}:'
+                            f'{self.__dsn["user"]}:{self.__dsn["password"]}\n')
+
+    def __connection(self):
+        try:
+            conn = psycopg2.connect(dbname=self.__dsn['dbname'], user=self.__dsn['user'],
+                                    host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
+
         except psycopg2.OperationalError:
-            log.exception(f'There is no existing DataBase')
-            exit()
+            log.info(textwrap.fill(f'There is no existing DataBase. Do You want to create new and RESTORE'
+                                   f' from backup file?', 80,
+                                   subsequent_indent='                   '))
+            log.info(f'INPUT "y" if YES or press ENTER')
+            answer = input()
+            if answer == 'y':
+                cur = self.__create_data_base()
+                self.__restore_data_base()
+                return cur
+            else:
+                exit()
         else:
             conn.autocommit = True
             cur = conn.cursor()
             log.info(f'DataBase connection complete')
             return cur
+
+    def __create_data_base(self):
+        try:
+            conn = psycopg2.connect(dbname='postgres', user=self.__dsn['user'],
+                                    host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
+        except Exception as _:
+            pass
+        else:
+            conn.autocommit = True
+            cur = conn.cursor()
+            query = f'CREATE DATABASE "{self.__dsn["dbname"]}"'
+            cur.execute(query)
+            log.info(textwrap.fill(f'{cur.query}', 80,
+                                   subsequent_indent='                   '))
+            return cur
+
+    def __restore_data_base(self):
+        col = [x for x in self.__dsn.values()]
+        folder_name = Path(__file__).parent.parent
+        folder_name_data = os.path.join(folder_name, 'data')
+        file_to_open = os.path.join(folder_name_data, 'bd.backup')
+        cmd = f'pg_restore ' \
+              f'--host={col[3]} ' \
+              f'--dbname={col[0]} ' \
+              f'--verbose=True ' \
+              f'--username={col[1]} ' \
+              f'--no-password ' \
+              f'{file_to_open}'
+        try:
+            proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+            stderr = proc.communicate()[1].decode('utf-8', errors="ignore").strip()
+            print(stderr)
+        except FileNotFoundError:
+            log.info(f'FileNotFoundError: [WinError 2] Не удается найти указанный файл')
+            log.info(textwrap.fill(f'You need to SET Windows $PATH for Postgres tools os.env="C:\Program Fi'
+                                   f'les\PostgreSQL\12\\bin"', 80, subsequent_indent='                   '))
 
     def insert_to_table(self, table_name: str, data: dict):
         columns = ','.join([f'"{x}"' for x in data])
@@ -130,175 +223,3 @@ class DataBase(DataBaseMain):
         table_name = 'ForbiddenSectors'
         return self.get_pk(table_name, {'azimuthBeginNSSK': az_b_nssk, 'azimuthEndNSSK': az_e_nssk,
                                         'elevationBeginNSSK': elev_b_nssk, 'elevationEndNSSK': elev_e_nssk})
-
-# class DataBaseCreator:
-#     def __init__(self):
-#         try:
-#             self.name = None
-#             self.password = None
-#             self.create_dsn_string()
-#
-#             self.cur = self.connection()
-#             self.create_data_base()
-#             self.create_table_beam_tasks()
-#             self.create_table_primary_marks()
-#             self.create_table_candidates_history()
-#             self.create_table_candidates()
-#             self.create_table_air_tracks_history()
-#             self.create_table_air_tracks()
-#             self.create_table_forb_sectors()
-#         except psycopg2.ProgrammingError as e:
-#             log.exception(f'{e}')
-#
-#     def create_dsn_string(self):
-#         log.info(f'Enter name of DataBase')
-#         self.name = input()
-#         log.info(f'Enter password of DataBase')
-#         self.password = input()
-#
-#     def connection(self):
-#         con = psycopg2.connect(dbname='postgres', user='postgres',
-#                                host='localhost', password='123', port=5432)
-#         con.autocommit = True
-#         cur = con.cursor()
-#         log.info(f'DataBase connection complete')
-#         return cur
-#
-#     def create_data_base(self):
-#         query = f'CREATE DATABASE "{self.name}"'
-#         self.cur.execute(query)
-#
-#     def create_table_beam_tasks(self):
-#         self.cur.execute(f'DROP TABLE IF EXISTS "BeamTasks"')
-#         query = """CREATE TABLE "BeamTasks"
-#         (
-#         "BeamTask" serial PRIMARY KEY,
-#         "taskId" integer,
-#         "isFake" boolean,
-#         "trackId" integer,
-#         "taskType" integer,
-#         "viewDirectionId" integer,
-#         "antennaId" integer,
-#         "pulsePeriod" real,
-#         threshold real,
-#         "lowerVelocityTrim" real,
-#         "upperVelocityTrim" real,
-#         "lowerDistanceTrim" real,
-#         "upperDistanceTrim" real,
-#         "beamAzimuth" real,
-#         "beamElevation" real
-#         )"""
-#         self.cur.execute(query)
-#
-#     def create_table_primary_marks(self):
-#         self.cur.execute("DROP TABLE IF EXISTS PrimaryMarks")
-#         query = """CREATE TABLE "PrimaryMarks"
-#         (
-#         "PrimaryMark" serial PRIMARY KEY,
-#         "BeamTask" serial,
-#         "primaryMarkId" integer,
-#         "scanTime" real,
-#         "antennaId" integer,
-#         "beamAzimuth" real,
-#         "beamElevation" real,
-#         "azimuth" real,
-#         "elevation" real,
-#         "markType" integer,
-#         "distance" real,
-#         "dopplerSpeed" real,
-#         "signalLevel" real,
-#         "reflectedEnergy" real,
-#         CONSTRAINT "BeamTasks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
-#         )"""
-#         self.cur.execute(query)
-#
-#     def create_table_candidates_history(self):
-#         self.cur.execute("DROP TABLE IF EXISTS CandidatesHistory")
-#         query = """CREATE TABLE "CandidatesHistory"
-#         (
-#         "CandidatesHistory" serial PRIMARY KEY,
-#         "BeamTask" serial,
-#         "PrimaryMark" serial,
-#         "Candidate" serial,
-#         azimuth real,
-#         elevation real,
-#         state integer,
-#         "distanceZoneWeight" real,
-#         "velocityZoneWeight" real,
-#         "numDistanceZone" real,
-#         "numVelocityZone" real,
-#         "antennaId" integer,
-#         "nextTimeUpdate" real
-#         CONSTRAINT "CandidatesHistory_pkey" PRIMARY KEY ("CandidatesHistory"),
-#         CONSTRAINT "Candidates_BeamTask_fkey" FOREIGN KEY ("BeamTask")
-#         CONSTRAINT "Candidates_CandidatesIds_fkey" FOREIGN KEY ("Candidate")
-#         CONSTRAINT "Candidates_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
-#         )"""
-#         self.cur.execute(query)
-#
-#     def create_table_candidates(self):
-#         self.cur.execute("DROP TABLE IF EXISTS Candidates")
-#         query = """CREATE TABLE "Candidates"
-#         (
-#         "Candidate" serial PRIMARY KEY,
-#         id integer
-#         )"""
-#         self.cur.execute(query)
-#
-#     def create_table_air_tracks_history(self):
-#         self.cur.execute("DROP TABLE IF EXISTS AirTracksHistory")
-#         query = """CREATE TABLE "AirTracksHistory"
-#         (
-#         "AirTracksHistory" serial PRIMARY KEY,
-#         "PrimaryMark" serial FOREIGN KEY,
-#         "CandidatesHistory" serial FOREIGN KEY,
-#         "AirTrack" serial FOREIGN KEY,
-#         type integer,
-#         priority integer,
-#         "antennaId" integer,
-#         azimuth real,
-#         elevation real,
-#         distance real,
-#         "radialVelocity" real,
-#         "pulsePeriod" real,
-#         "missesCount" real,
-#         "possiblePeriods" real[],
-#         "nextTimeUpdate" integer,
-#         "scanPeriod" real,
-#         "sigmaAzimuth" real,
-#         "sigmaElevation" real,
-#         "sigmaDistance" real,
-#         "sigmaRadialVelocity" real,
-#         "minDistance" real,
-#         "maxDistance" real,
-#         "minRadialVelocity" real,
-#         "maxRadialVelocity" real
-#         CONSTRAINT "AirTracks_pkey" PRIMARY KEY ("AirTracksHistory"),
-#         CONSTRAINT "AirTracksHistory_AirTrack_fkey" FOREIGN KEY ("AirTrack")
-#         CONSTRAINT "AirTracks_Candidate_fkey" FOREIGN KEY ("CandidatesHistory")
-#         CONSTRAINT "AirTracks_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
-#         )"""
-#         self.cur.execute(query)
-#
-#     def create_table_air_tracks(self):
-#         self.cur.execute("DROP TABLE IF EXISTS AirTracks")
-#         query = """CREATE TABLE "AirTracks"
-#         (
-#         "AirTrack" serial PRIMARY KEY),
-#         id integer)
-#         )"""
-#         self.cur.execute(query)
-#
-#     def create_table_forb_sectors(self):
-#         self.cur.execute("DROP TABLE IF EXISTS ForbiddenSectors")
-#         query = """CREATE TABLE "ForbiddenSectors"
-#         (
-#         "ForbiddenSector" serial PRIMARY KEY,
-#         "azimuthBeginNSSK" real,
-#         "azimuthEndNSSK" real,
-#         "elevationBeginNSSK" real,
-#         "elevationEndNSSK" real,
-#         "nextTimeUpdate" integer,
-#         "isActive" boolean)
-#         )"""
-#         self.cur.execute(query)

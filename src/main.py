@@ -7,14 +7,13 @@ from read_blocks_from_telemetry import DataBlocksReader
 from read_session_structure import read_session_structure
 from read_session_telemetry import TelemetryFrameIterator
 
-logging.config.fileConfig('..\\logging.conf')
+logging.config.fileConfig('../logging.conf')
 console_log = logging.getLogger('simpleExample')
 air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
-
 data_folder = Path(r'../data/session_01/')
 planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
-frame_number = 453
+frame_number = 0
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -70,6 +69,7 @@ if __name__ == "__main__":
                 fields = ['id']
                 dict_to_insert = {k: v for k, v in candidate.items() if k in fields}
                 db.insert_to_table('Candidates', dict_to_insert)
+                cand_pk = db.get_pk_candidates(candidate['id'])
             else:
                 console_log.debug(f'Candidate : already exists')
             candidate.update({'Candidate': cand_pk})
@@ -99,7 +99,7 @@ if __name__ == "__main__":
                             console_log.debug(f'CandidateHistory : already exists')
                         # ------------------------ЗАПОЛНЯЕМ "AirTracksHistory"----------------------------- #
             if candidate['state'] == 4:
-                console_log.warning(f'Need to get AirMarksUpdateRequests')
+                console_log.debug(f'Need to get AirMarksUpdateRequests')
                 for air_marks_upd_req in frame_reader.air_marks_update_requests():
                     if air_marks_upd_req['markId'] != candidate['id']:
                         console_log.warning(f'air_marks_upd_req["markId"] : {air_marks_upd_req["markId"]}'
