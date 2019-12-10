@@ -17,7 +17,7 @@ class DataBaseAPI:
         self.cur = self.__connection()
 
     @staticmethod
-    def __dsn_string():
+    def __dsn_string() -> dict:
         log.info(f'INPUT name of DataBase')
         name = input()
         log.info(f'INPUT password of DataBase')
@@ -74,7 +74,7 @@ class DataBaseAPI:
             db_values = self.cur.fetchall()
             return db_values
 
-    def update_tables(self, table_name: str, update_dict: dict, where_condition: dict):
+    def update_table(self, table_name: str, update_dict: dict, where_condition: dict):
         where_condition_keys = [x for x in where_condition.keys()]
         for x in where_condition_keys:
             del update_dict[x]
@@ -92,11 +92,6 @@ class DataBaseAPI:
             log.warning(textwrap.fill(f'{self.cur.query}', 80,
                                       subsequent_indent='                   '))
 
-
-class GetPrimaryKey(DataBaseAPI):
-    def __init__(self):
-        super().__init__()
-
     def get_pk(self, table_name: str, where_condition: dict) -> int:
         data_with_pk = self.read_from_table(table_name, where_condition)
         if data_with_pk:
@@ -105,13 +100,26 @@ class GetPrimaryKey(DataBaseAPI):
         else:
             log.warning(f'PK in {table_name} : doesnt exists : {where_condition}')
 
-    def read_specific_field(self, table_name: str, specific_field_name: str, where_condition: dict) -> dict:
+    def read_specific_field(self, table_name: str, spec_field: str, where_condition: dict) -> dict:
         data_with_pk = self.read_from_table(table_name, where_condition)
         for idx, col in enumerate(self.cur.description):
-            if [col[0]][0] == specific_field_name:
+            if [col[0]][0] == spec_field:
                 log.debug(
-                    f'"{specific_field_name}" from {table_name} received : {data_with_pk[0][idx]}')
-                return {specific_field_name: data_with_pk[0][idx]}
+                    f'"{spec_field}" from {table_name} received : {data_with_pk[0][idx]}')
+                return {spec_field: data_with_pk[0][idx]}
+
+
+class DataBase(DataBaseAPI):
+    def __init__(self):
+        super().__init__()
+
+    def get_pk_candidates(self, ids: int) -> int:
+        table_name = 'Candidates'
+        return self.get_pk(table_name, {'id': ids})
+
+    def get_pk_air_tracks(self, ids: int) -> int:
+        table_name = 'AirTracks'
+        return self.get_pk(table_name, {'id': ids})
 
     def get_pk_beam_tasks(self, dict_for_get_pk: dict) -> int:
         table_name = 'BeamTasks'
@@ -121,26 +129,69 @@ class GetPrimaryKey(DataBaseAPI):
         table_name = 'PrimaryMarks'
         return self.get_pk(table_name, dict_for_get_pk)
 
-    def get_pk_candidates(self, ids: int) -> int:
-        table_name = 'Candidates'
-        return self.get_pk(table_name, {'id': ids})
-
     def get_pk_cand_hists(self, dict_for_get_pk: dict) -> int:
         table_name = 'CandidatesHistory'
         return self.get_pk(table_name, dict_for_get_pk)
-
-    def get_pk_air_tracks(self, ids: int) -> int:
-        table_name = 'AirTracks'
-        return self.get_pk(table_name, {'id': ids})
 
     def get_pk_tracks_hists(self, dict_for_get_pk: dict) -> int:
         table_name = 'AirTracksHistory'
         return self.get_pk(table_name, dict_for_get_pk)
 
-    def get_pk_forb_sectors(self, az_b_nssk: float, az_e_nssk: float, elev_b_nssk: float, elev_e_nssk: float) -> int:
+    def get_pk_forb_sectors(self, dict_for_get_pk: dict) -> int:
         table_name = 'ForbiddenSectors'
-        return self.get_pk(table_name, {'azimuthBeginNSSK': az_b_nssk, 'azimuthEndNSSK': az_e_nssk,
-                                        'elevationBeginNSSK': elev_b_nssk, 'elevationEndNSSK': elev_e_nssk})
+        return self.get_pk(table_name, dict_for_get_pk)
+
+    def insert_beam_tasks(self, insert_dict: dict):
+        table_name = 'BeamTasks'
+        fields = ['taskId', 'isFake', 'trackId', 'taskType', 'viewDirectionId', 'antennaId', 'pulsePeriod',
+                  'threshold', 'lowerVelocityTrim', 'upperVelocityTrim', 'lowerDistanceTrim',
+                  'upperDistanceTrim', 'beamAzimuth', 'beamElevation']
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_prim_marks(self, insert_dict: dict):
+        table_name = 'PrimaryMarks'
+        fields = ["BeamTask", "primaryMarkId", "scanTime", "antennaId", "beamAzimuth", "beamElevation",
+                  "azimuth", "elevation", "markType", "distance", "dopplerSpeed", "signalLevel",
+                  "reflectedEnergy"]
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_candidates(self, insert_dict: dict):
+        table_name = 'Candidates'
+        fields = ['id']
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_cand_histories(self, insert_dict: dict):
+        table_name = 'CandidatesHistory'
+        fields = ["BeamTask", "PrimaryMark", "Candidate", "azimuth", "elevation", "state", "antennaId",
+                  "distanceZoneWidth", "velocityZoneWidth", "numDistanceZone", "numVelocityZone", "timeUpdated"]
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_air_tracks(self, insert_dict: dict):
+        table_name = 'AirTracks'
+        fields = ['id']
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_air_tracks_histories(self, insert_dict: dict):
+        table_name = 'AirTracksHistory'
+        fields = ["CandidatesHistory", "PrimaryMark", "AirTrack", "antennaId"]
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def update_air_tracks_histories(self, insert_dict: dict):
+        table_name = 'AirTracksHistory'
+        fields = ["AirTracksHistory", "AirTrack", "type", "priority", "antennaId", "azimuth", "elevation",
+                  "distance", "radialVelocity", "pulsePeriod", "missesCount", "possiblePeriods", "timeUpdated",
+                  "scanPeriod", "sigmaAzimuth", "sigmaElevation", "sigmaDistance", "sigmaRadialVelocity",
+                  "minDistance", "maxDistance", "minRadialVelocity", "maxRadialVelocity", "scanTime"]
+        update_dict = {k: v for k, v in insert_dict.items() if k in fields}
+        where_fields = ['AirTracksHistory', 'AirTrack', 'antennaId']
+        where_dict = {k: v for k, v in insert_dict.items() if k in where_fields}
+        self.update_table(table_name, update_dict, where_dict)
 
 
 class DataBaseCreator:
@@ -156,7 +207,6 @@ class DataBaseCreator:
         __pgpass_file = Path(f'{postgres_path}\pgpass.conf')
         parameters = f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:' \
                      f'{self.__dsn["user"]}:{int(self.__dsn["password"])}\n'
-
         if not os.path.isdir(postgres_path):
             os.makedirs(postgres_path)
         if os.path.isfile(__pgpass_file):
@@ -184,8 +234,8 @@ class DataBaseCreator:
             conn.autocommit = True
             cur = conn.cursor()
             query = f'CREATE DATABASE "{self.__dsn["dbname"]}"'
-            log.info(f'{query}')
             cur.execute(query)
+            log.info(f'{query}')
 
     def __restore_data_base(self):
         col = [x for x in self.__dsn.values()]
