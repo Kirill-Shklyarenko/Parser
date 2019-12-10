@@ -2,7 +2,7 @@ import logging.config
 import time
 from pathlib import Path
 
-from data_base_methods import DataBase
+from data_base_methods import GetPrimaryKey
 from read_blocks_from_telemetry import DataBlocksReader
 from read_session_structure import read_session_structure
 from read_session_telemetry import TelemetryFrameIterator
@@ -13,12 +13,12 @@ air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
 data_folder = Path(r'../data/session_01/')
 planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
-frame_number = 0
+frame_number = 453
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
     telemetry = TelemetryFrameIterator(planner_rsf, structure, frame_number)
-    db = DataBase()
+    db = GetPrimaryKey()
     start_parsing_time = time.time()
     candidate_history_pk_if_state_4 = 0
     for frame in telemetry:

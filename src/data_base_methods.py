@@ -9,12 +9,12 @@ import psycopg2
 log = logging.getLogger('simpleExample')
 
 
-class DataBaseMain:
+class DataBaseAPI:
     __slots__ = ('__dsn', 'cur')
 
     def __init__(self):
         self.__dsn = self.__dsn_string()
-        self.cur = self.connection()
+        self.cur = self.__connection()
 
     @staticmethod
     def __dsn_string():
@@ -32,23 +32,16 @@ class DataBaseMain:
             host_name = 'localhost'
         return {'dbname': name, 'user': user_name, 'password': password, 'host': host_name}
 
-    def connection(self):
+    def __connection(self):
         try:
             conn = psycopg2.connect(dbname=self.__dsn['dbname'], user=self.__dsn['user'],
                                     host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
-
         except psycopg2.OperationalError:
-            log.info(textwrap.fill(f'There is no existing DataBase. Do You want to create new and RESTORE'
-                                   f' from backup file?', 80,
+            log.info(textwrap.fill(f'There is no existing DataBase. Creating new DataBase', 80,
                                    subsequent_indent='                   '))
-            log.info(f'INPUT "y" if YES or press ENTER')
-            answer = input()
-            if answer == 'y':
-                DataBaseCreator(self.__dsn)
-                conn = psycopg2.connect(dbname=self.__dsn['dbname'], user=self.__dsn['user'],
-                                        host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
-            else:
-                exit()
+            DataBaseCreator(self.__dsn)
+            conn = psycopg2.connect(dbname=self.__dsn['dbname'], user=self.__dsn['user'],
+                                    host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
         finally:
             conn.autocommit = True
             cur = conn.cursor()
@@ -100,7 +93,7 @@ class DataBaseMain:
                                       subsequent_indent='                   '))
 
 
-class DataBase(DataBaseMain):
+class GetPrimaryKey(DataBaseAPI):
     def __init__(self):
         super().__init__()
 
@@ -119,10 +112,6 @@ class DataBase(DataBaseMain):
                 log.debug(
                     f'"{specific_field_name}" from {table_name} received : {data_with_pk[0][idx]}')
                 return {specific_field_name: data_with_pk[0][idx]}
-
-    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
-    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
-    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
 
     def get_pk_beam_tasks(self, dict_for_get_pk: dict) -> int:
         table_name = 'BeamTasks'
@@ -157,43 +146,33 @@ class DataBase(DataBaseMain):
 class DataBaseCreator:
     def __init__(self, dsn):
         self.__dsn = dsn
-        self.cur = self.__create_data_base()
         self.__check_conf_file()
-
+        self.__create_data_base()
         self.__restore_data_base()
 
     def __check_conf_file(self):
         app_data = os.environ.copy()["APPDATA"]
         postgres_path = Path(f'{app_data}\postgresql')
         __pgpass_file = Path(f'{postgres_path}\pgpass.conf')
-        try:
+        parameters = f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:' \
+                     f'{self.__dsn["user"]}:{int(self.__dsn["password"])}\n'
+
+        if not os.path.isdir(postgres_path):
             os.makedirs(postgres_path)
-        except Exception as _:
-            f'{_}'
-        finally:
-            if os.path.isfile(__pgpass_file):
-                log.debug(f'File "pgpass.conf" already exists')
-                with open(__pgpass_file, 'r+') as f:
-                    content = f.readlines()
-                    if f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:' \
-                       f'{self.__dsn["user"]}:{int(self.__dsn["password"])}\n' \
-                       f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:' \
-                       f'{os.environ["UserName"]}:{int(self.__dsn["password"])}\n' not in content:
-                        # сервер: порт:база_данных: имя_пользователя:пароль
-                        f.write(f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:'
-                                f'{self.__dsn["user"]}:{int(self.__dsn["password"])}\n'
-                                f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:'
-                                f'{os.environ["UserName"]}:{int(self.__dsn["password"])}\n')
-                    else:
-                        log.info(f'{self.__dsn["host"]}:5432:{self.__dsn["dbname"]}:'
-                                 f'{self.__dsn["user"]}:{self.__dsn["password"]}'
-                                 f' already in "pgpass.conf" file')
-            else:
-                log.debug(f'File "pgpass.conf" not exists')
-                with open(__pgpass_file, 'x') as f:
+        if os.path.isfile(__pgpass_file):
+            log.debug(f'File "pgpass.conf" already exists')
+            with open(__pgpass_file, 'r+') as f:
+                content = f.readlines()
+                if parameters not in content:
                     # сервер: порт:база_данных: имя_пользователя:пароль
-                    f.write(f'{self.__dsn["host"]}:5432:{self.__dsn["dbname"]}:'
-                            f'{self.__dsn["user"]}:{self.__dsn["password"]}\n')
+                    f.write(parameters)
+                else:
+                    log.info(f' {parameters} already in "pgpass.conf" file')
+        else:
+            log.debug(f'File "pgpass.conf" not exists')
+            with open(__pgpass_file, 'x') as f:
+                # сервер: порт:база_данных: имя_пользователя:пароль
+                f.write(parameters)
 
     def __create_data_base(self):
         try:
@@ -205,8 +184,8 @@ class DataBaseCreator:
             conn.autocommit = True
             cur = conn.cursor()
             query = f'CREATE DATABASE "{self.__dsn["dbname"]}"'
+            log.info(f'{query}')
             cur.execute(query)
-            return cur
 
     def __restore_data_base(self):
         col = [x for x in self.__dsn.values()]
@@ -214,7 +193,8 @@ class DataBaseCreator:
         folder_name_data = os.path.join(folder_name, 'data')
         file_to_open = os.path.join(folder_name_data, 'bd.backup')
         cmd = f'pg_restore --host={col[3]} --dbname={col[0]} --username={col[1]} ' \
-              f'--verbose=True --no-password {file_to_open}'
+              f'--verbose=True --no-password ' \
+              f'{file_to_open}'
         try:
             proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
         except FileNotFoundError:
@@ -223,4 +203,4 @@ class DataBaseCreator:
                                    subsequent_indent='                   '))
         else:
             stderr = proc.communicate()[1].decode('utf-8', errors="ignore").strip()
-            print(stderr)
+            log.debug(textwrap.fill(f'{stderr}', 80))
