@@ -23,8 +23,8 @@ class BinFrameReader:
         self.__file = open(self.__file_name, 'rb', 1)
         self.__frames_count = self.__frame_counter()
 
-    def _init_to_start(self, frame_index):
-        self.__file.seek(self.__frame_size_in_bytes * frame_index + self.__header_size)
+    def _init_to_start(self, frame_id):
+        self.__file.seek(self.__frame_size_in_bytes * frame_id + self.__header_size)
 
     def _read_next_frame(self) -> bytes:
         return self.__file.read(self.__frame_size_in_bytes)
@@ -44,9 +44,9 @@ class BinFrameReader:
 class TelemetryFrameIterator(BinFrameReader):
     __slots__ = ('__data_struct', 'frame_id', '__frame_buffer', '__serialize_string')
 
-    def __init__(self, file_name: str, structure, frame_index=0):
+    def __init__(self, file_name: str, structure, frame_id=0):
         super().__init__(file_name, structure)
-        self.frame_id = frame_index
+        self.frame_id = frame_id
         self.__data_struct = structure.structure
         self.__frame_buffer = None
         self.__serialize_string = self.__create_serialize_string()

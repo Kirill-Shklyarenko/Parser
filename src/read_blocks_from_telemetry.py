@@ -155,6 +155,7 @@ class DataBlocksReader:
                         self.entity_count = [x for x in range(len(container))]
                         break
         if container:
+            container.reverse()
             air_tracks_log.info(textwrap.fill(f'AirTrack : {container}', 150, ))
         return container
 
@@ -177,6 +178,7 @@ class DataBlocksReader:
             elif re.search('TargetingUpdateRequests', group[0][0]):
                 break
         if container:
+            container.reverse()
             air_tracks_log.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
         return container
 
@@ -200,6 +202,7 @@ class DataBlocksReader:
                 elif re.search('TargetingUpdateRequests', group[0][0]):
                     break
         if container:
+            container.reverse()
             air_tracks_log.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
         return container
 
