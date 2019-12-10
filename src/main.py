@@ -13,7 +13,7 @@ air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
 data_folder = Path(r'../data/session_01/')
 planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
-frame_number = 2840
+frame_number = 0
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
