@@ -9,11 +9,11 @@ from read_session_telemetry import TelemetryFrameIterator
 
 logging.config.fileConfig('../logging.conf')
 console_log = logging.getLogger('simpleExample')
-air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
+tracks_log = logging.getLogger('AirTracks_ForbSectors')
 data_folder = Path(r'../data/session_01/')
 planner = data_folder / r'Planner'
 planner_rsf = data_folder / r'Planner.rsf'
-frame_number = 453
+frame_number = 0
 
 if __name__ == "__main__":
     structure = read_session_structure(planner)
@@ -68,12 +68,12 @@ if __name__ == "__main__":
             if candidate['state'] == 1:
                 bt_pk = db.get_pk_beam_tasks({'trackId': candidate['id'], 'taskId': candidate['taskId'],
                                               'antennaId': candidate['antennaId'], 'taskType': 1})
-            if candidate['state'] == 2:
+            else:
                 bt_pk = db.get_pk_beam_tasks({'trackId': candidate['id'], 'taskId': candidate['taskId'],
                                               'antennaId': candidate['antennaId'], 'taskType': 2})
             if bt_pk:
                 candidate.update({'BeamTask': bt_pk})
-                if candidate['state'] == 1 or candidate['state'] == 2:
+                if candidate['state'] != 4:
                     pm_pk = db.get_pk_primary_marks({'BeamTask': candidate['BeamTask'],
                                                      'primaryMarkId': candidate['primaryMarkId']})
                     if pm_pk:
@@ -84,8 +84,6 @@ if __name__ == "__main__":
                             db.insert_cand_histories(candidate)
                             candidate_history_pk = db.get_pk_cand_hists({'BeamTask': candidate['BeamTask'],
                                                                          'PrimaryMark': candidate['PrimaryMark']})
-                        # else:
-                        #     console_log.debug(f'CandidateHistory : already exists')
                         # ------------------------ЗАПОЛНЯЕМ "AirTracksHistory"----------------------------- #
             if candidate['state'] == 4:
                 console_log.debug(f'Need to get AirMarksUpdateRequests')
@@ -100,6 +98,11 @@ if __name__ == "__main__":
                     candidate.update({'Candidate': cand_pk})
                     bt_pk = db.get_pk_beam_tasks({'trackId': candidate['id'], 'taskId': candidate['taskId'],
                                                   'antennaId': air_marks_upd_req['antennaId'], 'taskType': 2})
+                    bt_pk_airs = db.get_pk_beam_tasks(
+                        {'trackId': air_marks_upd_req['markId'], 'taskId': candidate['taskId'],
+                         'antennaId': air_marks_upd_req['antennaId'], 'taskType': 3})
+                    if bt_pk_airs:
+                        breakpoint()
                     if bt_pk:
                         candidate.update({'BeamTask': bt_pk})
                     candidate.update({'PrimaryMark': db.get_pk_primary_marks(
@@ -143,8 +146,7 @@ if __name__ == "__main__":
                     air_track_hist_pk_if_state_4.append(air_track_hist_pk)
         # ---------------------------------------ЗАПОЛНЯЕМ "AirTracks" & "AirTracksHistory"--------------------------- #
         for air_track in frame_reader.air_tracks():
-            air_tracks_log.info(
-                f'------------------------- FRAME {(telemetry.frame_index / 100)} -------------------------')
+            tracks_log.info(f'------------------------- FRAME {(telemetry.frame_id / 100)} -------------------------')
             x = frame_reader.entity_count
             console_log.info(f'\t\t\t\t\tAirTrack_{x[0]}')
             del x[0]
@@ -156,23 +158,23 @@ if __name__ == "__main__":
                 air_track_pk = db.get_pk_air_tracks(air_track['id'])
             air_track.update({'AirTrack': air_track_pk})
             # ----------------------------------UPDATE "AirTracksHistory"------------------------------ #
-            cand_pk_air = db.get_pk_candidates(air_track['id'])
-            air_track_hist_pk = air_track_hist_pk_if_state_4[-1]
-            if len(air_track_hist_pk_if_state_4) != 1:
-                air_track_hist_pk_if_state_4.remove(air_track_hist_pk)
-            console_log.debug(f'PK from AirTracksHistory received successfully : {air_track_hist_pk}')
-            air_track.update({'AirTracksHistory': air_track_hist_pk})
-            air_track.update(db.read_specific_field('AirTracksHistory', 'CandidatesHistory',
-                                                    {'AirTracksHistory': air_track['AirTracksHistory']}))
-            air_track.update(db.read_specific_field('CandidatesHistory', 'BeamTask',
-                                                    {'CandidatesHistory': air_track['CandidatesHistory']}))
-            air_track.update(db.read_specific_field('CandidatesHistory', 'PrimaryMark',
-                                                    {'CandidatesHistory': air_track['CandidatesHistory']}))
-            air_track.update(db.read_specific_field('BeamTasks', 'pulsePeriod',
-                                                    {'BeamTask': air_track['BeamTask']}))
-            air_track.update(db.read_specific_field('PrimaryMarks', 'scanTime',
-                                                    {'PrimaryMark': air_track['PrimaryMark']}))
-            db.update_air_tracks_histories(air_track)
+            if air_track_hist_pk_if_state_4:
+                air_track_hist_pk = air_track_hist_pk_if_state_4[-1]
+                if len(air_track_hist_pk_if_state_4) != 1:
+                    air_track_hist_pk_if_state_4.remove(air_track_hist_pk)
+                console_log.debug(f'PK from AirTracksHistory received successfully : {air_track_hist_pk}')
+                air_track.update({'AirTracksHistory': air_track_hist_pk})
+                air_track.update(db.read_specific_field('AirTracksHistory', 'CandidatesHistory',
+                                                        {'AirTracksHistory': air_track['AirTracksHistory']}))
+                air_track.update(db.read_specific_field('CandidatesHistory', 'BeamTask',
+                                                        {'CandidatesHistory': air_track['CandidatesHistory']}))
+                air_track.update(db.read_specific_field('CandidatesHistory', 'PrimaryMark',
+                                                        {'CandidatesHistory': air_track['CandidatesHistory']}))
+                air_track.update(db.read_specific_field('BeamTasks', 'pulsePeriod',
+                                                        {'BeamTask': air_track['BeamTask']}))
+                air_track.update(db.read_specific_field('PrimaryMarks', 'scanTime',
+                                                        {'PrimaryMark': air_track['PrimaryMark']}))
+                db.update_air_tracks_histories(air_track)
         # ---------------------------------------------ЗАПОЛНЯЕМ "ForbiddenSectors"----------------------------------- #
         for forbidden_sector in frame_reader.forbidden_sectors():
             x = frame_reader.entity_count

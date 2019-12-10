@@ -202,13 +202,13 @@ class DataBaseCreator:
         self.__restore_data_base()
 
     def __check_conf_file(self):
-        app_data = os.environ.copy()["APPDATA"]
-        postgres_path = Path(f'{app_data}\postgresql')
-        __pgpass_file = Path(f'{postgres_path}\pgpass.conf')
+        __app_data = os.environ.copy()["APPDATA"]
+        __postgres_path = Path(f'{__app_data}\postgresql')
+        __pgpass_file = Path(f'{__postgres_path}\pgpass.conf')
         parameters = f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:' \
                      f'{self.__dsn["user"]}:{int(self.__dsn["password"])}\n'
-        if not os.path.isdir(postgres_path):
-            os.makedirs(postgres_path)
+        if not os.path.isdir(__postgres_path):
+            os.makedirs(__postgres_path)
         if os.path.isfile(__pgpass_file):
             log.debug(f'File "pgpass.conf" already exists')
             with open(__pgpass_file, 'r+') as f:
@@ -226,31 +226,31 @@ class DataBaseCreator:
 
     def __create_data_base(self):
         try:
-            conn = psycopg2.connect(dbname='postgres', user=self.__dsn['user'],
-                                    host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
+            __conn = psycopg2.connect(dbname='postgres', user=self.__dsn['user'],
+                                      host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
         except Exception as _:
             log.exception(f'{_}')
         else:
-            conn.autocommit = True
-            cur = conn.cursor()
-            query = f'CREATE DATABASE "{self.__dsn["dbname"]}"'
-            cur.execute(query)
-            log.info(f'{query}')
+            __conn.autocommit = True
+            __cur = __conn.cursor()
+            __query = f'CREATE DATABASE "{self.__dsn["dbname"]}"'
+            __cur.execute(__query)
+            log.info(f'{__query}')
 
     def __restore_data_base(self):
-        col = [x for x in self.__dsn.values()]
-        folder_name = Path(__file__).parent.parent
-        folder_name_data = os.path.join(folder_name, 'data')
-        file_to_open = os.path.join(folder_name_data, 'bd.backup')
-        cmd = f'pg_restore --host={col[3]} --dbname={col[0]} --username={col[1]} ' \
-              f'--verbose=True --no-password ' \
-              f'{file_to_open}'
+        __col = [x for x in self.__dsn.values()]
+        __folder_name = Path(__file__).parent.parent
+        __folder_name_data = os.path.join(__folder_name, 'data')
+        __file_to_open = os.path.join(__folder_name_data, 'bd.backup')
+        __cmd = f'pg_restore --host={__col[3]} --dbname={__col[0]} --username={__col[1]} ' \
+                f'--verbose=True --no-password ' \
+                f'{__file_to_open}'
         try:
-            proc = Popen(cmd, stdout=PIPE, stderr=PIPE)
+            __proc = Popen(__cmd, stdout=PIPE, stderr=PIPE)
         except FileNotFoundError:
             log.info(f'FileNotFoundError: [WinError 2] Не удается найти указанный файл')
             log.info(textwrap.fill(f'You need to SET Windows $PATH for use "pg_restore" in cmd', 80,
                                    subsequent_indent='                   '))
         else:
-            stderr = proc.communicate()[1].decode('utf-8', errors="ignore").strip()
-            log.debug(textwrap.fill(f'{stderr}', 80))
+            __stderr = __proc.communicate()[1].decode('utf-8', errors="ignore").strip()
+            log.debug(textwrap.fill(f'{__stderr}', 80))
