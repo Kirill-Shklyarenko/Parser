@@ -56,7 +56,7 @@ class DataBaseAPI:
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
-            log.exception(f'\r\nException: {e}')
+            log.exception(f'\nException: {e}')
         else:
             log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 80,
                                       subsequent_indent='                   '))
@@ -69,7 +69,7 @@ class DataBaseAPI:
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
-            log.exception(f'\r\nException: {e}')
+            log.exception(f'\nException: {e}')
         else:
             db_values = self.cur.fetchall()
             return db_values
@@ -87,9 +87,9 @@ class DataBaseAPI:
         try:
             self.cur.execute(query, params_values)
         except Exception as e:
-            log.exception(f'\r\nException: {e}')
+            log.exception(f'\nException: {e}')
         finally:
-            log.warning(textwrap.fill(f'{self.cur.query}', 80,
+            log.warning(textwrap.fill(f'\r{self.cur.query}', 85,
                                       subsequent_indent='                   '))
 
     def get_pk(self, table_name: str, where_condition: dict) -> int:
@@ -98,7 +98,8 @@ class DataBaseAPI:
             log.debug(f'PK from {table_name} received successfully : {data_with_pk[0][0]}')
             return data_with_pk[0][0]
         else:
-            log.warning(f'PK in {table_name} : doesnt exists : {where_condition}')
+            log.warning(textwrap.fill(f'PK in {table_name} : doesnt exists : {where_condition}', 85,
+                                      subsequent_indent='                   '))
 
     def read_specific_field(self, table_name: str, spec_field: str, where_condition: dict) -> dict:
         data_with_pk = self.read_from_table(table_name, where_condition)
@@ -141,6 +142,8 @@ class DataBase(DataBaseAPI):
         table_name = 'ForbiddenSectors'
         return self.get_pk(table_name, dict_for_get_pk)
 
+    #
+    #
     def insert_beam_tasks(self, insert_dict: dict):
         table_name = 'BeamTasks'
         fields = ['taskId', 'isFake', 'trackId', 'taskType', 'viewDirectionId', 'antennaId', 'pulsePeriod',
@@ -182,12 +185,14 @@ class DataBase(DataBaseAPI):
         dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
         self.insert_to_table(table_name, dict_to_insert)
 
+    #
+    #
     def update_air_tracks_histories(self, insert_dict: dict):
         table_name = 'AirTracksHistory'
         fields = ["AirTracksHistory", "AirTrack", "type", "priority", "antennaId", "azimuth", "elevation",
-                  "distance", "radialVelocity", "pulsePeriod", "missesCount", "possiblePeriods", "timeUpdated",
-                  "scanPeriod", "sigmaAzimuth", "sigmaElevation", "sigmaDistance", "sigmaRadialVelocity",
-                  "minDistance", "maxDistance", "minRadialVelocity", "maxRadialVelocity", "scanTime"]
+                  "distance", "scanTime", "scanPeriod", "pulsePeriod", "missesCount", "possiblePeriods", "timeUpdated",
+                  "sigmaAzimuth", "sigmaElevation", "sigmaDistance", "sigmaRadialVelocity", "radialVelocity",
+                  "minRadialVelocity", "maxRadialVelocity", "minDistance", "maxDistance", ]
         update_dict = {k: v for k, v in insert_dict.items() if k in fields}
         where_fields = ['AirTracksHistory', 'AirTrack', 'antennaId']
         where_dict = {k: v for k, v in insert_dict.items() if k in where_fields}
@@ -195,8 +200,8 @@ class DataBase(DataBaseAPI):
 
 
 class DataBaseCreator:
-    def __init__(self, dsn):
-        self.__dsn = dsn
+    def __init__(self, __dsn):
+        self.__dsn = __dsn
         self.__check_conf_file()
         self.__create_data_base()
         self.__restore_data_base()
