@@ -1,6 +1,9 @@
 import logging.config
 import os
+from decimal import Decimal, getcontext
 from struct import unpack
+
+getcontext().prec = 3
 
 frame_log = logging.getLogger('FrameLogger')
 console_log = logging.getLogger('simpleExample')
@@ -92,13 +95,11 @@ class TelemetryFrameIterator(BinFrameReader):
                 raise StopIteration
             else:
                 if self.frame_log_flag:
+                    frame_log.info(f'{(25 * "-")} FRAME {Decimal(self.frame_id / 100):.{3}} {(25 * "-")}')
                     frame_log.debug('\r'.join(map(str, result)))
-                    frame_log.info(
-                        f'------------------------- FRAME {(self.frame_id / 100)} -------------------------')
-                console_log.info(
-                    f'------------------------- FRAME {(self.frame_id / 100)} -------------------------')
+                console_log.info(f'{(25 * "-")} FRAME {Decimal(self.frame_id / 100):.{3}} {(25 * "-")}')
                 self.frame_id += 1
                 return result
         else:
-            console_log.debug(f'Last frame is reached')
+            console_log.warning(f'LAST FRAME IS REACHED')
             raise StopIteration
