@@ -68,11 +68,11 @@ if __name__ == "__main__":
             del x[0]
             console_log.info(f'Candidate state = {candidate["state"]}')
             # -----------------------------------ЗАПОЛНЯЕМ "Candidates"-------------------------------- #
-            cand_pk = db.get_pk_candidates(candidate['id'])
-            if cand_pk is None:
+            cand_pk_with_mark_id = db.get_pk_candidates(candidate['id'])
+            if cand_pk_with_mark_id is None:
                 db.insert_candidates(candidate)
-                cand_pk = db.get_pk_candidates(candidate['id'])
-            candidate.update({'Candidate': cand_pk})
+                cand_pk_with_mark_id = db.get_pk_candidates(candidate['id'])
+            candidate.update({'Candidate': cand_pk_with_mark_id})
             # -----------------------------------ЗАПОЛНЯЕМ "CandidatesHistory"------------------------- #
             if candidate['state'] == 1:
                 bt_pk = db.get_pk_beam_tasks({'trackId': candidate['id'], 'taskId': candidate['taskId'],
@@ -86,6 +86,31 @@ if __name__ == "__main__":
                                                  'primaryMarkId': candidate['primaryMarkId']})
                 if pm_pk:
                     candidate.update({'PrimaryMark': pm_pk})
+                    if candidate['state'] != 4:
+                        candidate_history_pk = db.get_pk_cand_hists({'BeamTask': candidate['BeamTask'],
+                                                                     'PrimaryMark': candidate['PrimaryMark'],
+                                                                     'Candidate': candidate['Candidate'],
+                                                                     'state': candidate['state'],
+                                                                     })
+                        if candidate_history_pk is None:
+                            db.insert_cand_histories(candidate)
+            # ------------------------ЗАПОЛНЯЕМ "AirTracksHistory"------------------------------------- #
+            if candidate['state'] == 4:
+                console_log.debug(f'Need to check with air_marks_update_requests[id]')
+                for air_marks_upd_req in frame_reader.air_marks_update_requests():
+                    cand_pk_with_mark_id = db.get_pk_candidates(air_marks_upd_req['markId'])
+                    if cand_pk_with_mark_id is None:
+                        db.insert_candidates(candidate)
+                        cand_pk_with_mark_id = db.get_pk_candidates(air_marks_upd_req['markId'])
+                    # ----------------- ## ----------------- ## ----------------- #
+                    candidate.update({'Candidate': cand_pk_with_mark_id})
+                    console_log.debug(f'Need to insert in AirTracks if not exist')
+                    air_track_pk_with_mark_id = db.get_pk_air_tracks(air_marks_upd_req['markId'])
+                    if air_track_pk_with_mark_id is None:
+                        db.insert_air_tracks({'id': air_marks_upd_req['markId']})
+                        air_track_pk_with_mark_id = db.get_pk_air_tracks(air_marks_upd_req['markId'])
+                    # ----------------- ## ----------------- ## ----------------- #
+                    candidate.update({'AirTrack': air_track_pk_with_mark_id})
                     candidate_history_pk = db.get_pk_cand_hists({'BeamTask': candidate['BeamTask'],
                                                                  'PrimaryMark': candidate['PrimaryMark'],
                                                                  'Candidate': candidate['Candidate'],
@@ -98,22 +123,6 @@ if __name__ == "__main__":
                                                                      'Candidate': candidate['Candidate'],
                                                                      'state': candidate['state'],
                                                                      })
-            # ------------------------ЗАПОЛНЯЕМ "AirTracksHistory"------------------------------------- #
-            if candidate['state'] == 4:
-                console_log.debug(f'Need to check with air_marks_update_requests[id]')
-                for air_marks_upd_req in frame_reader.air_marks_update_requests():
-                    cand_pk = db.get_pk_candidates(air_marks_upd_req['markId'])
-                    if cand_pk is None:
-                        db.insert_candidates(candidate)
-                        cand_pk = db.get_pk_candidates(air_marks_upd_req['markId'])
-                    candidate.update({'Candidate': cand_pk})
-                    console_log.debug(f'Need to insert in AirTracks if not exist')
-                    air_track_pk = db.get_pk_air_tracks(air_marks_upd_req['markId'])
-                    if air_track_pk is None:
-                        db.insert_air_tracks({'id': air_marks_upd_req['markId']})
-                        air_track_pk = db.get_pk_air_tracks(air_marks_upd_req['markId'])
-                    candidate.update({'AirTrack': air_track_pk})
-                    candidate.update({'BeamTask': bt_pk})
                     # -------# # -------# # -------# # -------# # -------# # -------#
                     if last_cand_hist_pk_if_state_4 is None:
                         cand_hist_pk_if_state_4.append(candidate_history_pk)
@@ -124,13 +133,6 @@ if __name__ == "__main__":
                             last_cand_hist_pk_if_state_4 = candidate_history_pk
                     # -------# # -------# # -------# # -------# # -------# # -------#
                     candidate.update({'CandidatesHistory': last_cand_hist_pk_if_state_4})
-                    db.update_table('CandidatesHistory', {'Candidate': candidate['Candidate'],
-                                                          'BeamTask': candidate['BeamTask'],
-                                                          'PrimaryMark': candidate['PrimaryMark'],
-                                                          'antennaId': candidate['antennaId'],
-                                                          'CandidatesHistory': candidate['CandidatesHistory']},
-                                    {'CandidatesHistory': last_cand_hist_pk_if_state_4})
-
                     a_tr_hist_pk = db.get_pk_tracks_hists({
                         'AirTrack': candidate['AirTrack'],
                         'PrimaryMark': candidate['PrimaryMark'],
@@ -144,6 +146,7 @@ if __name__ == "__main__":
                                                                'antennaId': candidate['antennaId'],
                                                                'CandidatesHistory': candidate['CandidatesHistory'],
                                                                })
+                    # -------# # -------# # -------# # -------# # -------# # -------#
                     if last_air_track_hist_pk_if_state_4 is None:
                         air_track_hist_pk_if_state_4.append(a_tr_hist_pk)
                         last_air_track_hist_pk_if_state_4 = a_tr_hist_pk
@@ -162,9 +165,9 @@ if __name__ == "__main__":
                 console_log.info(f'\t\t\t\t\tAirTrack_{x[0]}')
                 del x[0]
                 # ----------------------------------UPDATE "AirTracksHistory"-------------------------- #
-                air_track_pk = db.get_pk_air_tracks(air_track['id'])
-                if air_track_pk:
-                    air_track.update({'AirTrack': air_track_pk})
+                air_track_pk_with_mark_id = db.get_pk_air_tracks(air_track['id'])
+                if air_track_pk_with_mark_id:
+                    air_track.update({'AirTrack': air_track_pk_with_mark_id})
                     if last_cand_hist_pk_if_state_4:
                         console_log.debug(f'PK from CandidatesHistory '
                                           f'received successfully : {last_cand_hist_pk_if_state_4}')
