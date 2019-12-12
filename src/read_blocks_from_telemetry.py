@@ -140,7 +140,9 @@ class DataBlocksReader:
                     for c in group[1]:
                         track.update(c)
                     if track['id'] != 1:
-                        air_tracks_log.info(textwrap.fill(f'\tAirTrack : {track}', 150, ))
+                        air_tracks_log.info(textwrap.fill(f'\tAirTrack : {track["id"]} {track["priority"]} '
+                                                          f'{track["antennaId"]}',
+                                                          150, ))
                     if track['antennaId'] != 0:
                         track.update({'possiblePeriods': [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
                                                           track['possiblePeriod[2]'], track['possiblePeriod[3]'],
@@ -151,7 +153,6 @@ class DataBlocksReader:
                         break
         if container:
             container.reverse()
-            # air_tracks_log.info(textwrap.fill(f'\tAirTrack : {container}', 150, ))
         return container
 
     def air_marks_misses(self) -> list:
@@ -174,7 +175,6 @@ class DataBlocksReader:
                 break
         if container:
             container.reverse()
-            # air_tracks_log.info(textwrap.fill(f'\t\tAirMarkMiss : {container}', 150, ))
         return container
 
     def air_marks_update_requests(self):
@@ -198,7 +198,7 @@ class DataBlocksReader:
                     break
         if container:
             container.reverse()
-            air_tracks_log.info(textwrap.fill(f'{(3 * "    ")}AirMarksUpdateRequests : {container}', 150, ))
+            # air_tracks_log.info(textwrap.fill(f'{(3 * "    ")}AirMarksUpdateRequests : {container}', 150, ))
         return container
 
     @converter({'azimuthBeginNSSK': 'minAzimuth', 'azimuthEndNSSK': 'maxAzimuth',
@@ -219,6 +219,4 @@ class DataBlocksReader:
                     rad_forbidden_count += 1
                     if rad_forbidden_count == forbidden_sector['RadiationForbiddenSectorsCount']:
                         break
-        # if container:
-        # air_tracks_log.info(textwrap.fill(f'\t\t\t\tRadiationForbiddenSector : {container}', 150, ))
         return container
