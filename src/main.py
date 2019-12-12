@@ -32,7 +32,7 @@ if __name__ == "__main__":
             last_air_track_hist_pk_if_state_4 = air_track_hist_pk_if_state_4[-1]
         start_frame_time = time.time()
         frame_reader = DataBlocksReader(frame)
-        # ---------------------------------------------ЗАПОЛНЯЕМ "BeamTasks"------------------------------------------ #
+        # --------------------------------------------ЗАПОЛНЯЕМ "BeamTasks"------------------------------------------- #
         for beam_task in frame_reader.beam_tasks():
             console_log.info(f'{(6 * "    ")}BeamTask_{entity_count}')
             entity_count += 1
@@ -44,7 +44,7 @@ if __name__ == "__main__":
             else:
                 console_log.debug(f'BeamTask : already exists')
         entity_count = 1
-        # ---------------------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"--------------------------------------- #
+        # --------------------------------------------ЗАПОЛНЯЕМ "PrimaryMarks"---------------------------------------- #
         for prim_mark in frame_reader.primary_marks():
             console_log.info(f'{(6 * "    ")}PrimaryMark_{entity_count}')
             entity_count += 1
@@ -60,7 +60,7 @@ if __name__ == "__main__":
                 else:
                     console_log.debug(f'PrimaryMark : already exists')
         entity_count = 1
-        # --------------------------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"-------------------------- #
+        # ------------------------------------ЗАПОЛНЯЕМ "Candidates" & "CandidatesHistory"---------------------------- #
         for candidate in frame_reader.candidates():
             console_log.info(f'{(6 * "    ")}Candidate_{entity_count}')
             entity_count += 1
@@ -185,5 +185,5 @@ if __name__ == "__main__":
                 db.insert_to_table('ForbiddenSectors', dict_to_insert)
             else:
                 console_log.debug(f'ForbiddenSector : already exists')
-        console_log.info(f'{(25 * "-")} {(time.time() - start_frame_time):{1}.{3}} Secs {(25 * "-")}\r\n')
-    console_log.info(f'{(25 * "-")} {((time.time() - start_parsing_time) / 60):{3}.{2}} Mins {(25 * "-")}\r\n')
+        console_log.info(f'{(25 * "-")} {(time.time() - start_frame_time):#1.3f} Secs {(25 * "-")}\r\n')
+    console_log.info(f'{(25 * "-")} {((time.time() - start_parsing_time) / 60):#3.2f} Mins {(25 * "-")}\r\n')

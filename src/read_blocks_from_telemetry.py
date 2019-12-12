@@ -21,9 +21,9 @@ class DataBlocksReader:
         for index, group in enumerate(self.frame):
             if re.search(r'\bTask\b', group[0][0]):
                 for c in group[1]:
-                    task.update(c)
+                    beam_task.update(c)
             elif re.search(r'beamTask', group[0][0]):
-                beam_task.update(task)
+                # beam_task.update(task)
                 for c in group[1]:
                     beam_task.update(c)
                 beam_task.update({k: bool(v) for k, v in beam_task.items() if k == 'isFake'})
@@ -139,14 +139,12 @@ class DataBlocksReader:
                 if re.search(r'\btrack\b', group[0][0]) or re.search('track_', group[0][0]):
                     for c in group[1]:
                         track.update(c)
-                    if track['id'] != 1:
-                        air_tracks_log.info(textwrap.fill(f'\tAirTrack : {track["id"]} {track["priority"]} '
-                                                          f'{track["antennaId"]}',
-                                                          150, ))
                     if track['antennaId'] != 0:
                         track.update({'possiblePeriods': [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
                                                           track['possiblePeriod[2]'], track['possiblePeriod[3]'],
                                                           track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]})
+                        air_tracks_log.info(f'\tAirTrack : {"id": track["id"]} {"priority": track["priority"]} '
+                                            f'"antennaId": {track["antennaId"]}')
                         container.append(track.copy())
                         tracks_count += 1
                     if tracks_count == tracks_q['tracksQueuesSize']:
