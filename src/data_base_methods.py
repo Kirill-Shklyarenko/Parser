@@ -77,7 +77,11 @@ class DataBaseAPI:
     def update_table(self, table_name: str, update_dict: dict, where_condition: dict):
         where_condition_keys = [x for x in where_condition.keys()]
         for x in where_condition_keys:
-            del update_dict[x]
+            try:
+                del update_dict[x]
+            except KeyError:
+                log.exception(f'KeyError Key {x} not in {update_dict}')
+
         columns = ','.join([f'"{x}"' for x in update_dict])
         param_placeholders = ','.join(['%s' for _ in range(len(update_dict))])
         keys = ' and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
@@ -195,14 +199,6 @@ class DataBase(DataBaseAPI):
                   "minRadialVelocity", "maxRadialVelocity", "minDistance", "maxDistance", ]
         update_dict = {k: v for k, v in insert_dict.items() if k in fields}
         where_fields = ['AirTracksHistory', 'AirTrack', 'antennaId']
-        where_dict = {k: v for k, v in insert_dict.items() if k in where_fields}
-        self.update_table(table_name, update_dict, where_dict)
-
-    def update_candidate_histories(self, insert_dict: dict):
-        table_name = 'CandidatesHistory'
-        fields = ["BeamTask", "PrimaryMark", "Candidate", "CandidatesHistory"]
-        update_dict = {k: v for k, v in insert_dict.items() if k in fields}
-        where_fields = ['CandidatesHistory']
         where_dict = {k: v for k, v in insert_dict.items() if k in where_fields}
         self.update_table(table_name, update_dict, where_dict)
 
