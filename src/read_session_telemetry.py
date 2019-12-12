@@ -11,11 +11,6 @@ class BinFrameReader:
 
     def __init__(self, file_name: str, structure, header_size=14):
         self.frame_log_flag = None
-        # console_log.info(f'Turn ON Frame logger?')
-        # console_log.info(f'INPUT "y" if Yes /or press ENTER if No')
-        # answer = input()
-        # if answer == 'y':
-        # self.frame_log_flag = logging.getLogger('FrameLogger')
         self.__file_name = file_name
         self.__frame_size_in_bytes = structure.frame_size * 2
         self.__header_size = header_size
@@ -90,9 +85,8 @@ class TelemetryFrameIterator(BinFrameReader):
             except IndexError:
                 raise StopIteration
             else:
-                if self.frame_log_flag:
-                    frame_log.info(f'{(25 * "-")} FRAME {self.frame_id} {(25 * "-")}')
-                    frame_log.debug('\r'.join(map(str, result)))
+                frame_log.info(f'{(25 * "-")} FRAME {self.frame_id} {(25 * "-")}')
+                frame_log.debug('\r'.join(map(str, result)))
                 console_log.info(f'{(25 * "-")} FRAME {self.frame_id} {(25 * "-")}')
                 self.frame_id += 1
                 return result
