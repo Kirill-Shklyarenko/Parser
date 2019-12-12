@@ -58,7 +58,7 @@ class DataBaseAPI:
         except Exception as e:
             log.exception(f'\nException: {e}')
         else:
-            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 80,
+            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 82,
                                       subsequent_indent='                   '))
 
     def read_from_table(self, table_name: str, where_condition: dict) -> list:
@@ -81,7 +81,6 @@ class DataBaseAPI:
                 del update_dict[x]
             except KeyError:
                 log.exception(f'KeyError Key {x} not in {update_dict}')
-
         columns = ','.join([f'"{x}"' for x in update_dict])
         param_placeholders = ','.join(['%s' for _ in range(len(update_dict))])
         keys = ' and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
@@ -93,7 +92,9 @@ class DataBaseAPI:
         except Exception as e:
             log.exception(f'\nException: {e}')
         finally:
-            log.warning(textwrap.fill(f'UPDATE {table_name} SET {update_dict} WHERE {where_condition}', 85,
+            log.warning(textwrap.fill(f'UPDATE {table_name} '
+                                      f'SET {update_dict} '
+                                      f'WHERE {where_condition}', 82,
                                       subsequent_indent='                   '))
 
     def get_pk(self, table_name: str, where_condition: dict) -> int:
@@ -102,7 +103,7 @@ class DataBaseAPI:
             log.debug(f'PK from {table_name} received successfully : {data_with_pk[0][0]}')
             return data_with_pk[0][0]
         else:
-            log.warning(textwrap.fill(f'PK in {table_name} : doesnt exists : {where_condition}', 85,
+            log.warning(textwrap.fill(f'PK in {table_name} : doesnt exists : {where_condition}', 82,
                                       subsequent_indent='                   '))
 
     def read_specific_field(self, table_name: str, get_field: str, where_condition: dict) -> dict:
@@ -198,7 +199,7 @@ class DataBase(DataBaseAPI):
                   "sigmaAzimuth", "sigmaElevation", "sigmaDistance", "sigmaRadialVelocity", "radialVelocity",
                   "minRadialVelocity", "maxRadialVelocity", "minDistance", "maxDistance", ]
         update_dict = {k: v for k, v in insert_dict.items() if k in fields}
-        where_fields = ['AirTracksHistory', 'AirTrack', 'antennaId']
+        where_fields = ['AirTracksHistory']
         where_dict = {k: v for k, v in insert_dict.items() if k in where_fields}
         self.update_table(table_name, update_dict, where_dict)
 
