@@ -44,10 +44,9 @@ class DataBaseAPI:
             conn = psycopg2.connect(dbname=self.__dsn['dbname'], user=self.__dsn['user'],
                                     host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
         finally:
-            if conn:
-                conn.autocommit = True
-                cur = conn.cursor()
-                log.info(f'DataBase connection complete')
+            conn.autocommit = True
+            cur = conn.cursor()
+            log.info(f'DataBase connection complete')
             return cur
 
     def insert_to_table(self, table_name: str, data: dict):
@@ -216,12 +215,13 @@ class DataBaseCreator:
         __app_data = os.environ.copy()["APPDATA"]
         __postgres_path = Path(f'{__app_data}\postgresql')
         __pgpass_file = Path(f'{__postgres_path}\pgpass.conf')
+        # сервер: порт:база_данных: имя_пользователя:пароль
         parameters = f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:' \
                      f'{self.__dsn["user"]}:{int(self.__dsn["password"])}\n'
         if not os.path.isdir(__postgres_path):
             os.makedirs(__postgres_path)
         if os.path.isfile(__pgpass_file):
-            log.debug(f'File "pgpass.conf" already exists')
+            log.debug(f'File "pgpass.conf" in {__pgpass_file} already exists')
             with open(__pgpass_file, 'r+') as f:
                 content = f.readlines()
                 if parameters not in content:
@@ -230,9 +230,8 @@ class DataBaseCreator:
                 else:
                     log.info(f' {parameters} already in "pgpass.conf" file')
         else:
-            log.debug(f'File "pgpass.conf" not exists')
+            log.debug(f'Create "pgpass.conf" in {__pgpass_file}')
             with open(__pgpass_file, 'x') as f:
-                # сервер: порт:база_данных: имя_пользователя:пароль
                 f.write(parameters)
 
     def __create_data_base(self):

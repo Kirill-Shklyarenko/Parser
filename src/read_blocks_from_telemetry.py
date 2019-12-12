@@ -139,17 +139,13 @@ class DataBlocksReader:
                 if re.search(r'\btrack\b', group[0][0]) or re.search('track_', group[0][0]):
                     for c in group[1]:
                         track.update(c)
+                    if track['id'] != 1:
+                        air_tracks_log.info(textwrap.fill(f'\tAirTrack : {track}', 150, ))
                     if track['antennaId'] != 0:
                         track.update({'possiblePeriods': [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
                                                           track['possiblePeriod[2]'], track['possiblePeriod[3]'],
                                                           track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]})
-                        # del [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
-                        #      track['possiblePeriod[2]'], track['possiblePeriod[3]'],
-                        #      track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]
-                        if track['possiblePeriods'][0] != 0 and track['possiblePeriods'][1] != 0 \
-                                and track['possiblePeriods'][2] != 0 and track['possiblePeriods'][3] != 0 \
-                                and track['possiblePeriods'][4] != 0 and track['possiblePeriods'][5] != 0:
-                            container.append(track.copy())
+                        container.append(track.copy())
                         tracks_count += 1
                     if tracks_count == tracks_q['tracksQueuesSize']:
                         break

@@ -16,7 +16,6 @@ class BinFrameReader:
         # answer = input()
         # if answer == 'y':
         # self.frame_log_flag = logging.getLogger('FrameLogger')
-        self.frame_log_flag = 0
         self.__file_name = file_name
         self.__frame_size_in_bytes = structure.frame_size * 2
         self.__header_size = header_size
