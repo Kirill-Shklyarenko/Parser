@@ -8,12 +8,12 @@ air_tracks_log = logging.getLogger('AirTracks_ForbSectors')
 
 
 class DataBlocksReader:
-    __slots__ = ('frame')
+    __slots__ = 'frame'
 
     def __init__(self, frame):
         self.frame = frame
 
-    @converter({'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK'})  # {newField : oldField}
+    @converter({'beamAzimuth': 'betaBSK', 'beamElevation': 'epsilonBSK'})  # {newField : oldField, newField : oldField}
     def beam_tasks(self) -> list:
         container = []
         task = {}
@@ -143,16 +143,19 @@ class DataBlocksReader:
                         track.update({'possiblePeriods': [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
                                                           track['possiblePeriod[2]'], track['possiblePeriod[3]'],
                                                           track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]})
-                        del [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
-                             track['possiblePeriod[2]'], track['possiblePeriod[3]'],
-                             track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]
-                        container.append(track.copy())
+                        # del [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
+                        #      track['possiblePeriod[2]'], track['possiblePeriod[3]'],
+                        #      track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]
+                        if track['possiblePeriods'][0] != 0 and track['possiblePeriods'][1] != 0 \
+                                and track['possiblePeriods'][2] != 0 and track['possiblePeriods'][3] != 0 \
+                                and track['possiblePeriods'][4] != 0 and track['possiblePeriods'][5] != 0:
+                            container.append(track.copy())
                         tracks_count += 1
                     if tracks_count == tracks_q['tracksQueuesSize']:
                         break
         if container:
             container.reverse()
-            air_tracks_log.info(textwrap.fill(f'AirTrack : {container}', 150, ))
+            # air_tracks_log.info(textwrap.fill(f'\tAirTrack : {container}', 150, ))
         return container
 
     def air_marks_misses(self) -> list:
@@ -175,7 +178,7 @@ class DataBlocksReader:
                 break
         if container:
             container.reverse()
-            air_tracks_log.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
+            # air_tracks_log.info(textwrap.fill(f'\t\tAirMarkMiss : {container}', 150, ))
         return container
 
     def air_marks_update_requests(self):
@@ -199,7 +202,7 @@ class DataBlocksReader:
                     break
         if container:
             container.reverse()
-            air_tracks_log.info(textwrap.fill(f'        AirMarkMiss : {container}', 150, ))
+            air_tracks_log.info(textwrap.fill(f'{(3 * "    ")}AirMarksUpdateRequests : {container}', 150, ))
         return container
 
     @converter({'azimuthBeginNSSK': 'minAzimuth', 'azimuthEndNSSK': 'maxAzimuth',
@@ -220,6 +223,6 @@ class DataBlocksReader:
                     rad_forbidden_count += 1
                     if rad_forbidden_count == forbidden_sector['RadiationForbiddenSectorsCount']:
                         break
-        if container:
-            air_tracks_log.info(textwrap.fill(f'                RadiationForbiddenSector : {container}', 150, ))
+        # if container:
+        # air_tracks_log.info(textwrap.fill(f'\t\t\t\tRadiationForbiddenSector : {container}', 150, ))
         return container

@@ -20,7 +20,8 @@ class DataBaseAPI:
     def __dsn_string() -> dict:
         log.info(f'INPUT name of DataBase')
         name = input()
-        log.info(f'INPUT password of DataBase')
+        log.info(f'Please enter your master password.'
+                 f' This is required to unlock saved passwords and reconnect to the database server(s).')
         password = input()
         log.info(f'INPUT user_name of DataBase or press ENTER if user_name="postgres"')
         user_name = input()
@@ -43,9 +44,10 @@ class DataBaseAPI:
             conn = psycopg2.connect(dbname=self.__dsn['dbname'], user=self.__dsn['user'],
                                     host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
         finally:
-            conn.autocommit = True
-            cur = conn.cursor()
-            log.info(f'DataBase connection complete')
+            if conn:
+                conn.autocommit = True
+                cur = conn.cursor()
+                log.info(f'DataBase connection complete')
             return cur
 
     def insert_to_table(self, table_name: str, data: dict):
@@ -110,8 +112,7 @@ class DataBaseAPI:
         data_with_pk = self.read_from_table(table_name, where_condition)
         for idx, col in enumerate(self.cur.description):
             if [col[0]][0] == get_field:
-                log.debug(
-                    f'"{get_field}" from {table_name} received : {data_with_pk[0][idx]}')
+                log.debug(f'"{get_field}" from {table_name} received : {data_with_pk[0][idx]}')
                 return {get_field: data_with_pk[0][idx]}
 
 
