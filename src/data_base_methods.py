@@ -89,7 +89,7 @@ class DataBaseAPI:
         except Exception as e:
             log.exception(f'\nException: {e}')
         finally:
-            log.warning(textwrap.fill(f'\r{self.cur.query}', 85,
+            log.warning(textwrap.fill(f'UPDATE {table_name} SET {update_dict} WHERE {where_condition}', 85,
                                       subsequent_indent='                   '))
 
     def get_pk(self, table_name: str, where_condition: dict) -> int:
@@ -101,13 +101,13 @@ class DataBaseAPI:
             log.warning(textwrap.fill(f'PK in {table_name} : doesnt exists : {where_condition}', 85,
                                       subsequent_indent='                   '))
 
-    def read_specific_field(self, table_name: str, spec_field: str, where_condition: dict) -> dict:
+    def read_specific_field(self, table_name: str, get_field: str, where_condition: dict) -> dict:
         data_with_pk = self.read_from_table(table_name, where_condition)
         for idx, col in enumerate(self.cur.description):
-            if [col[0]][0] == spec_field:
+            if [col[0]][0] == get_field:
                 log.debug(
-                    f'"{spec_field}" from {table_name} received : {data_with_pk[0][idx]}')
-                return {spec_field: data_with_pk[0][idx]}
+                    f'"{get_field}" from {table_name} received : {data_with_pk[0][idx]}')
+                return {get_field: data_with_pk[0][idx]}
 
 
 class DataBase(DataBaseAPI):
@@ -195,6 +195,14 @@ class DataBase(DataBaseAPI):
                   "minRadialVelocity", "maxRadialVelocity", "minDistance", "maxDistance", ]
         update_dict = {k: v for k, v in insert_dict.items() if k in fields}
         where_fields = ['AirTracksHistory', 'AirTrack', 'antennaId']
+        where_dict = {k: v for k, v in insert_dict.items() if k in where_fields}
+        self.update_table(table_name, update_dict, where_dict)
+
+    def update_candidate_histories(self, insert_dict: dict):
+        table_name = 'CandidatesHistory'
+        fields = ["BeamTask", "PrimaryMark", "Candidate", "CandidatesHistory"]
+        update_dict = {k: v for k, v in insert_dict.items() if k in fields}
+        where_fields = ['CandidatesHistory']
         where_dict = {k: v for k, v in insert_dict.items() if k in where_fields}
         self.update_table(table_name, update_dict, where_dict)
 
