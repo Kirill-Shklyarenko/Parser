@@ -1,115 +1,123 @@
 import logging.config
+import os
 import textwrap
+from pathlib import Path
+from subprocess import Popen, PIPE
 
 import psycopg2
 
 log = logging.getLogger('simpleExample')
 
 
-class DataBaseMain:
-    __slots__ = ('dsn', 'cur')
+class DataBaseAPI:
+    __slots__ = ('__dsn', 'cur')
 
-    def __init__(self, dsn: str):
-        self.dsn = dsn
-        self.cur = self.connection()
+    def __init__(self):
+        self.__dsn = self.__dsn_string()
+        self.cur = self.__connection()
 
-    def connection(self):
-        conn = None
+    @staticmethod
+    def __dsn_string() -> dict:
+        log.info(f'INPUT name of DataBase')
+        name = input()
+        log.info(f'Please enter your master password.'
+                 f' This is required to unlock saved passwords and reconnect to the database server(s).')
+        password = input()
+        log.info(f'INPUT user_name of DataBase or press ENTER if user_name="postgres"')
+        user_name = input()
+        if len(user_name) == 0:
+            user_name = 'postgres'
+        log.info(f'INPUT host_name of DataBase or press ENTER if host_name="localhost"')
+        host_name = input()
+        if len(host_name) == 0:
+            host_name = 'localhost'
+        return {'dbname': name, 'user': user_name, 'password': password, 'host': host_name}
+
+    def __connection(self):
         try:
-            conn = psycopg2.connect(self.dsn)
-        except Exception as e:
-            print(f'There is no existing DataBase{e}')
-            print(f'Do you want to create new DataBase?')
-            print(f'y/n')
-            i = input()
-            if i == 'y':
-                d = DataBaseCreator()
-        conn.autocommit = True
-        cur = conn.cursor()
-        log.info(f'DataBase connection complete')
-        return cur
+            conn = psycopg2.connect(dbname=self.__dsn['dbname'], user=self.__dsn['user'],
+                                    host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
+        except psycopg2.OperationalError:
+            log.info(textwrap.fill(f'There is no existing DataBase. Creating new DataBase', 80,
+                                   subsequent_indent='                   '))
+            DataBaseCreator(self.__dsn)
+            conn = psycopg2.connect(dbname=self.__dsn['dbname'], user=self.__dsn['user'],
+                                    host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
+        finally:
+            conn.autocommit = True
+            cur = conn.cursor()
+            log.info(f'DataBase connection complete')
+            return cur
 
     def insert_to_table(self, table_name: str, data: dict):
         columns = ','.join([f'"{x}"' for x in data])
-        param_placeholders = ','.join(['%s' for x in range(len(data))])
+        param_placeholders = ','.join(['%s' for _ in range(len(data))])
         query = f'INSERT INTO "{table_name}" ({columns}) VALUES ({param_placeholders})'
         param_values = tuple(x for x in data.values())
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
-            log.exception(f'\r\nException: {e}')
-        finally:
-            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 150,
-                                      subsequent_indent='                                '))
+            log.exception(f'\nException: {e}')
+        else:
+            log.warning(textwrap.fill(f'INSERT INTO "{table_name}" {data}', 82,
+                                      subsequent_indent='                   '))
 
-    def read_from_table(self, table_name: str, dict_for_get_pk: dict) -> list:
-        columns = ','.join([f'"{x}"' for x in dict_for_get_pk])
-        param_placeholders = ','.join(['%s' for x in range(len(dict_for_get_pk))])
+    def read_from_table(self, table_name: str, where_condition: dict) -> list:
+        columns = ','.join([f'"{x}"' for x in where_condition])
+        param_placeholders = ','.join(['%s' for _ in range(len(where_condition))])
         query = f'SELECT * FROM "{table_name}" WHERE ({columns}) = ({param_placeholders})'
-        param_values = tuple(x for x in dict_for_get_pk.values())
+        param_values = tuple(x for x in where_condition.values())
         try:
             self.cur.execute(query, param_values)
         except Exception as e:
-            log.exception(f'\r\nException: {e}')
+            log.exception(f'\nException: {e}')
         else:
             db_values = self.cur.fetchall()
-            if db_values:
-                return db_values
+            return db_values
 
-    def update_table(self, table_name: str, update_dict: dict, where_condition: dict, ) -> list:
-        where_condition = {}
-        key_for_condition = where_condition.keys()
-        value_for_condition = where_condition.values()
+    def update_table(self, table_name: str, update_dict: dict, where_condition: dict):
+        where_condition_keys = [x for x in where_condition.keys()]
+        for x in where_condition_keys:
+            try:
+                del update_dict[x]
+            except KeyError:
+                log.exception(f'KeyError Key {x} not in {update_dict}')
         columns = ','.join([f'"{x}"' for x in update_dict])
-        param_placeholders = ','.join(['%s' for x in range(len(update_dict))])
-        query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders}) ' \
-                f'WHERE {key_for_condition} = {value_for_condition}'
-        param_values = tuple(x for x in update_dict.values())
+        param_placeholders = ','.join(['%s' for _ in range(len(update_dict))])
+        keys = ' and '.join([f'"{k}" = {v}' for k, v in where_condition.items()])
+        query = f'UPDATE "{table_name}" SET ({columns}) = ({param_placeholders})' \
+                f'WHERE {keys}'
+        params_values = tuple(x for x in update_dict.values())
         try:
-            self.cur.execute(query, param_values)
+            self.cur.execute(query, params_values)
         except Exception as e:
-            log.exception(f'\r\nException: {e}')
+            log.exception(f'\nException: {e}')
         finally:
-            log.warning(textwrap.fill(f'UPDATE "{table_name}" SET ({columns})', 150,
-                                  subsequent_indent='                                '))
+            log.warning(textwrap.fill(f'UPDATE {table_name} '
+                                      f'SET {update_dict} '
+                                      f'WHERE {where_condition}', 82,
+                                      subsequent_indent='                   '))
 
-
-
-class DataBase(DataBaseMain):
-    def __init__(self, dsn: str):
-        super().__init__(dsn)
-
-    def get_pk(self, table_name: str, dict_for_get_pk: dict) -> int:
-        data_with_pk = self.read_from_table(table_name, dict_for_get_pk)
+    def get_pk(self, table_name: str, where_condition: dict) -> int:
+        data_with_pk = self.read_from_table(table_name, where_condition)
         if data_with_pk:
-            log.debug(f'PK received successfully : {data_with_pk[0][0]}')
+            log.debug(f'PK from {table_name} received successfully : {data_with_pk[0][0]}')
             return data_with_pk[0][0]
         else:
-            log.warning(f'PK in {table_name} : doesnt exists : {dict_for_get_pk}')
+            log.warning(textwrap.fill(f'PK in {table_name} : doesnt exists : {where_condition}', 82,
+                                      subsequent_indent='                   '))
 
-    # - FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN -- FIN ---FIN- #
-    def get_pk_b_tasks_beam_tasks(self, task_id: int, antenna_id: int) -> int:
-        table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id})
+    def read_specific_field(self, table_name: str, get_field: str, where_condition: dict) -> dict:
+        data_with_pk = self.read_from_table(table_name, where_condition)
+        for idx, col in enumerate(self.cur.description):
+            if [col[0]][0] == get_field:
+                log.debug(f'"{get_field}" from {table_name} received : {data_with_pk[0][idx]}')
+                return {get_field: data_with_pk[0][idx]}
 
-    def get_pk_b_tasks_prim_marks(self, task_id: int, antenna_id: int, task_type: int) -> int:
-        table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'taskId': task_id, 'antennaId': antenna_id,
-                                        'taskType': task_type})
 
-    def get_pk_b_tasks_candidates(self, track_id: int, task_id: int, antenna_id: int, task_type: int) -> int:
-        table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'trackId': track_id, 'taskId': task_id, 'antennaId': antenna_id,
-                                        'taskType': task_type})
-
-    def get_pk_b_tasks_air_tracks(self, ids: int, antenna_id: int, task_type: int) -> int:
-        table_name = 'BeamTasks'
-        return self.get_pk(table_name, {'trackId': ids, 'antennaId': antenna_id,
-                                        'taskType': task_type})
-
-    def get_pk_primary_marks(self, beam_task: int) -> int:
-        table_name = 'PrimaryMarks'
-        return self.get_pk(table_name, {'BeamTask': beam_task})
+class DataBase(DataBaseAPI):
+    def __init__(self):
+        super().__init__()
 
     def get_pk_candidates(self, ids: int) -> int:
         table_name = 'Candidates'
@@ -119,183 +127,140 @@ class DataBase(DataBaseMain):
         table_name = 'AirTracks'
         return self.get_pk(table_name, {'id': ids})
 
-    def get_pk_cand_hists(self, beam_task: int, primary_marks: int) -> int:
-        table_name = 'CandidatesHistory'
-        return self.get_pk(table_name, {'BeamTask': beam_task, 'PrimaryMark': primary_marks})
+    def get_pk_beam_tasks(self, dict_for_get_pk: dict) -> int:
+        table_name = 'BeamTasks'
+        return self.get_pk(table_name, dict_for_get_pk)
 
-    def get_pk_cand_hists_if_state_4(self, candidate_pk: int, antenna_id: int) -> int:
-        table_name = 'CandidatesHistory'
-        return self.get_pk(table_name, {'Candidate': candidate_pk, 'antennaId': antenna_id})
+    def get_pk_primary_marks(self, dict_for_get_pk: dict) -> int:
+        table_name = 'PrimaryMarks'
+        return self.get_pk(table_name, dict_for_get_pk)
 
-    def get_pk_c_hists_air_tracks(self, primary_marks: int) -> int:
+    def get_pk_cand_hists(self, dict_for_get_pk: dict) -> int:
         table_name = 'CandidatesHistory'
-        return self.get_pk(table_name, {'PrimaryMark': primary_marks})
+        return self.get_pk(table_name, dict_for_get_pk)
 
-    def get_pk_tracks_hists(self, primary_marks: int, cand_hists: int) -> int:
+    def get_pk_tracks_hists(self, dict_for_get_pk: dict) -> int:
         table_name = 'AirTracksHistory'
-        return self.get_pk(table_name, {'PrimaryMark': primary_marks, 'CandidatesHistory': cand_hists})
+        return self.get_pk(table_name, dict_for_get_pk)
 
-    def get_pk_forb_sectors(self, az_b_nssk: float, az_e_nssk: float, elev_b_nssk: float, elev_e_nssk: float) -> int:
+    def get_pk_forb_sectors(self, dict_for_get_pk: dict) -> int:
         table_name = 'ForbiddenSectors'
-        return self.get_pk(table_name, {'azimuthBeginNSSK': az_b_nssk, 'azimuthEndNSSK': az_e_nssk,
-                                        'elevationBeginNSSK': elev_b_nssk, 'elevationEndNSSK': elev_e_nssk})
+        return self.get_pk(table_name, dict_for_get_pk)
+
+    #
+    #
+    def insert_beam_tasks(self, insert_dict: dict):
+        table_name = 'BeamTasks'
+        fields = ['taskId', 'isFake', 'trackId', 'taskType', 'viewDirectionId', 'antennaId', 'pulsePeriod',
+                  'threshold', 'lowerVelocityTrim', 'upperVelocityTrim', 'lowerDistanceTrim',
+                  'upperDistanceTrim', 'beamAzimuth', 'beamElevation']
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_prim_marks(self, insert_dict: dict):
+        table_name = 'PrimaryMarks'
+        fields = ["BeamTask", "primaryMarkId", "scanTime", "antennaId", "beamAzimuth", "beamElevation",
+                  "azimuth", "elevation", "markType", "distance", "dopplerSpeed", "signalLevel",
+                  "reflectedEnergy"]
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_candidates(self, insert_dict: dict):
+        table_name = 'Candidates'
+        fields = ['id']
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_cand_histories(self, insert_dict: dict):
+        table_name = 'CandidatesHistory'
+        fields = ["BeamTask", "PrimaryMark", "Candidate", "azimuth", "elevation", "state", "antennaId",
+                  "distanceZoneWidth", "velocityZoneWidth", "numDistanceZone", "numVelocityZone", "timeUpdated"]
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_air_tracks(self, insert_dict: dict):
+        table_name = 'AirTracks'
+        fields = ['id']
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    def insert_air_tracks_histories(self, insert_dict: dict):
+        table_name = 'AirTracksHistory'
+        fields = ["CandidatesHistory", "PrimaryMark", "AirTrack", "antennaId"]
+        dict_to_insert = {k: v for k, v in insert_dict.items() if k in fields}
+        self.insert_to_table(table_name, dict_to_insert)
+
+    #
+    #
+    def update_air_tracks_histories(self, insert_dict: dict):
+        table_name = 'AirTracksHistory'
+        fields = ["AirTracksHistory", "AirTrack", "type", "priority", "antennaId", "azimuth", "elevation",
+                  "distance", "scanTime", "scanPeriod", "pulsePeriod", "missesCount", "possiblePeriods", "timeUpdated",
+                  "sigmaAzimuth", "sigmaElevation", "sigmaDistance", "sigmaRadialVelocity", "radialVelocity",
+                  "minRadialVelocity", "maxRadialVelocity", "minDistance", "maxDistance", ]
+        update_dict = {k: v for k, v in insert_dict.items() if k in fields}
+        where_fields = ['AirTracksHistory']
+        where_dict = {k: v for k, v in insert_dict.items() if k in where_fields}
+        self.update_table(table_name, update_dict, where_dict)
 
 
 class DataBaseCreator:
-    def __init__(self):
-        self.name = None
-        self.password = None
-        self.create_dsn_string()
-        self.cur = self.connection()
+    def __init__(self, __dsn):
+        self.__dsn = __dsn
+        self.__check_conf_file()
+        self.__create_data_base()
+        self.__restore_data_base()
 
-        self.create_table_beam_tasks()
-        self.create_table_primary_marks()
-        self.create_table_candidates_history()
-        self.create_table_candidates()
-        self.create_table_air_tracks_history()
-        self.create_table_air_tracks()
-        self.create_table_forb_sectors()
+    def __check_conf_file(self):
+        __app_data = os.environ.copy()["APPDATA"]
+        __postgres_path = Path(f'{__app_data}\postgresql')
+        __pgpass_file = Path(f'{__postgres_path}\pgpass.conf')
+        # сервер: порт:база_данных: имя_пользователя:пароль
+        parameters = f'{self.__dsn["host"]}:{5432}:{self.__dsn["dbname"]}:' \
+                     f'{self.__dsn["user"]}:{int(self.__dsn["password"])}\n'
+        if not os.path.isdir(__postgres_path):
+            os.makedirs(__postgres_path)
+        if os.path.isfile(__pgpass_file):
+            log.debug(f'File "pgpass.conf" in {__pgpass_file} already exists')
+            with open(__pgpass_file, 'r+') as f:
+                content = f.readlines()
+                if parameters not in content:
+                    # сервер: порт:база_данных: имя_пользователя:пароль
+                    f.write(parameters)
+                else:
+                    log.info(f' {parameters} already in "pgpass.conf" file')
+        else:
+            log.debug(f'Create "pgpass.conf" in {__pgpass_file}')
+            with open(__pgpass_file, 'x') as f:
+                f.write(parameters)
 
-    def create_dsn_string(self):
-        print(f'Enter name of DataBase')
-        self.name = input()
-        print(f'Enter password of DataBase')
-        self.password = input()
+    def __create_data_base(self):
+        try:
+            __conn = psycopg2.connect(dbname='postgres', user=self.__dsn['user'],
+                                      host=self.__dsn['host'], password=self.__dsn['password'], port=5432)
+        except Exception as _:
+            log.exception(f'{_}')
+        else:
+            __conn.autocommit = True
+            __cur = __conn.cursor()
+            __query = f'CREATE DATABASE "{self.__dsn["dbname"]}"'
+            __cur.execute(__query)
+            log.info(f'{__query}')
 
-    def connection(self):
-        con = psycopg2.connect(dbname=self.name,
-                               user='postgres', host='localhost',
-                               password=self.password)
-        con.autocommit = True
-        cur = con.cursor()
-        log.info(f'DataBase connection complete')
-        return cur
-
-    def create_table_beam_tasks(self):
-        query = """CREATE TABLE public."BeamTasks"
-        (
-        "BeamTask" serial PRIMARY KEY,
-        "taskId" integer,
-        "isFake" boolean,
-        "trackId" integer,
-        "taskType" integer,
-        "viewDirectionId" integer,
-        "antennaId" integer,
-        "pulsePeriod" real,
-        threshold real,
-        "lowerVelocityTrim" real,
-        "upperVelocityTrim" real,
-        "lowerDistanceTrim" real,
-        "upperDistanceTrim" real,
-        "beamAzimuth" real,
-        "beamElevation" real
-        )"""
-        self.cur.execute(query)
-
-    def create_table_primary_marks(self):
-        query = """CREATE TABLE public."PrimaryMarks"
-        (
-        "PrimaryMark" serial,
-        "BeamTask" serial,
-        "primaryMarkId" serial,
-        "scanTime" real,
-        "antennaId" integer,
-        "beamAzimuth" real,
-        "beamElevation" real,
-        "azimuth" real,
-        "elevation" real,
-        "markType" integer,
-        "distance" real,
-        "dopplerSpeed" real,
-        "signalLevel" real,
-        "reflectedEnergy" real,
-        CONSTRAINT "PrimaryMarks_pkey" PRIMARY KEY ("PrimaryMark"),
-        CONSTRAINT "PrimaryMarks_BeamTask_fkey" FOREIGN KEY ("BeamTask")
-        )"""
-        self.cur.execute(query)
-
-    def create_table_candidates_history(self):
-        query = """CREATE TABLE public."CandidatesHistory"
-        (
-        "CandidatesHistory" serial PRIMARY KEY,
-        "BeamTask" serial,
-        "PrimaryMark" serial,
-        "Candidate" serial,
-        azimuth real,
-        elevation real,
-        state integer,
-        "distanceZoneWeight" real,
-        "velocityZoneWeight" real,
-        "numDistanceZone" real,
-        "numVelocityZone" real,
-        "antennaId" integer,
-        "nextTimeUpdate" real,
-        CONSTRAINT "CandidatesHistory_pkey" PRIMARY KEY ("CandidatesHistory"),
-        CONSTRAINT "Candidates_BeamTask_fkey" FOREIGN KEY ("BeamTask")
-        CONSTRAINT "Candidates_CandidatesIds_fkey" FOREIGN KEY ("Candidate")
-        CONSTRAINT "Candidates_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
-        )"""
-        self.cur.execute(query)
-
-    def create_table_candidates(self):
-        query = """CREATE TABLE public."Candidates"
-        (
-        "Candidate" serial PRIMARY KEY,
-        id integer
-        )"""
-        self.cur.execute(query)
-
-    def create_table_air_tracks_history(self):
-        query = """CREATE TABLE public."AirTracksHistory"
-        (
-        "AirTracksHistory" serial PRIMARY KEY,
-        "PrimaryMark" serial,
-        "CandidatesHistory" serial,
-        "AirTrack" serial,
-        type integer,
-        priority integer,
-        "antennaId" integer,
-        azimuth real,
-        elevation real,
-        distance real,
-        "radialVelocity" real,
-        "pulsePeriod" real,
-        "missesCount" real,
-        "possiblePeriods" real[],
-        "nextTimeUpdate" integer,
-        "scanPeriod" real,
-        "sigmaAzimuth" real,
-        "sigmaElevation" real,
-        "sigmaDistance" real,
-        "sigmaRadialVelocity" real,
-        "minDistance" real,
-        "maxDistance" real,
-        "minRadialVelocity" real,
-        "maxRadialVelocity" real,
-        CONSTRAINT "AirTracks_pkey" PRIMARY KEY ("AirTracksHistory"),
-        CONSTRAINT "AirTracksHistory_AirTrack_fkey" FOREIGN KEY ("AirTrack")
-        CONSTRAINT "AirTracks_Candidate_fkey" FOREIGN KEY ("CandidatesHistory")
-        CONSTRAINT "AirTracks_PrimaryMark_fkey" FOREIGN KEY ("PrimaryMark")
-        )"""
-        self.cur.execute(query)
-
-    def create_table_air_tracks(self):
-        query = """CREATE TABLE public."AirTracks"
-        (
-        "AirTrack" serial PRIMARY KEY),
-        id integer)
-        )"""
-        self.cur.execute(query)
-
-    def create_table_forb_sectors(self):
-        query = """CREATE TABLE public."ForbiddenSectors"
-        (
-        "ForbiddenSector" serial PRIMARY KEY,
-        "azimuthBeginNSSK" real,
-        "azimuthEndNSSK" real,
-        "elevationBeginNSSK" real,
-        "elevationEndNSSK" real,
-        "nextTimeUpdate" integer,
-        "isActive" boolean)
-        )"""
-        self.cur.execute(query)
+    def __restore_data_base(self):
+        __col = [x for x in self.__dsn.values()]
+        __folder_name = Path(__file__).parent.parent
+        __folder_name_data = os.path.join(__folder_name, 'data')
+        __file_to_open = os.path.join(__folder_name_data, 'bd.backup')
+        __cmd = f'pg_restore --host={__col[3]} --dbname={__col[0]} --username={__col[1]} ' \
+                f'--verbose=True --no-password ' \
+                f'{__file_to_open}'
+        try:
+            __proc = Popen(__cmd, stdout=PIPE, stderr=PIPE)
+        except FileNotFoundError:
+            log.info(f'FileNotFoundError: [WinError 2] Не удается найти указанный файл')
+            log.info(textwrap.fill(f'You need to SET Windows $PATH for use "pg_restore" in cmd', 80,
+                                   subsequent_indent='                   '))
+        else:
+            __stderr = __proc.communicate()[1].decode('utf-8', errors="ignore").strip()
+            log.debug(textwrap.fill(f'{__stderr}', 80))
