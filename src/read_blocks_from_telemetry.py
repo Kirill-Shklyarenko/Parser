@@ -121,7 +121,7 @@ class DataBlocksReader:
                         track.update({'possiblePeriods': [track['possiblePeriod[0]'], track['possiblePeriod[1]'],
                                                           track['possiblePeriod[2]'], track['possiblePeriod[3]'],
                                                           track['possiblePeriod[4]'], track['possiblePeriod[5]'], ]})
-                        air_tracks_log.info(f'\tAirTrack : {"id": track["id"]} {"priority": track["priority"]} '
+                        air_tracks_log.info(f'\tAirTrack : "id": {track["id"]}, "priority": {track["priority"]} '
                                             f'"antennaId": {track["antennaId"]}')
                         container.append(track.copy())
                         tracks_count += 1
